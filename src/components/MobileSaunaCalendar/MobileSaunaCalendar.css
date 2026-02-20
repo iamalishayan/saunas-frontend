@@ -1,0 +1,296 @@
+.mobile-sauna-calendar {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin: 1rem 0;
+}
+
+.mobile-sauna-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.mobile-sauna-title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.calendar-title h3 {
+  margin: 0;
+  font-size: 1.4rem;
+  color: #2c3e50;
+}
+
+.mobile-sauna-nav-btn {
+  background: #f0f0f0;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: #555;
+}
+
+.mobile-sauna-nav-btn:hover {
+  background: #667eea;
+  color: white;
+  transform: scale(1.1);
+}
+
+.mobile-sauna-today-btn {
+  background: #e8f5e9;
+  border: 1px solid #4caf50;
+  border-radius: 6px;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: #2e7d32;
+  font-weight: 500;
+}
+
+.mobile-sauna-today-btn:hover {
+  background: #4caf50;
+  color: white;
+}
+
+.mobile-sauna-loading {
+  text-align: center;
+  padding: 1rem;
+  background: #f5f5f5;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.mobile-sauna-loading p {
+  margin: 0;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.mobile-sauna-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.mobile-sauna-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  color: #555;
+}
+
+.mobile-sauna-legend-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.mobile-sauna-legend-dot.pickup-day {
+  background: #667eea;
+}
+
+.mobile-sauna-legend-dot.booked {
+  background: #f44336;
+}
+
+.mobile-sauna-legend-dot.selected {
+  background: #4caf50;
+}
+
+.mobile-sauna-grid {
+  margin-bottom: 1rem;
+}
+
+.mobile-sauna-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.mobile-sauna-weekday {
+  text-align: center;
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: #666;
+  padding: 0.5rem 0;
+}
+
+.mobile-sauna-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.5rem;
+}
+
+.mobile-sauna-day {
+  aspect-ratio: 1;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  color: #333;
+  padding: 0.25rem;
+}
+
+.mobile-sauna-day:hover:not(.disabled) {
+  transform: scale(1.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  z-index: 1;
+}
+
+.mobile-sauna-day.other-month {
+  color: #bbb;
+  background: #fafafa;
+}
+
+.mobile-sauna-day.today {
+  border-color: #2196f3;
+  font-weight: bold;
+  background: #e3f2fd;
+}
+
+.mobile-sauna-day.past {
+  color: #ccc;
+  cursor: not-allowed;
+  background: #f5f5f5;
+}
+
+.mobile-sauna-day.pickup-day:not(.past):not(.booked) {
+  background: linear-gradient(135deg, #667eea22 0%, #764ba222 100%);
+  border-color: #667eea;
+}
+
+.mobile-sauna-day.booked {
+  background: #ffebee;
+  border-color: #f44336;
+  color: #c62828;
+  cursor: not-allowed;
+  position: relative;
+}
+
+.mobile-sauna-day.start-date,
+.mobile-sauna-day.end-date {
+  background: #4caf50;
+  color: white;
+  border-color: #2e7d32;
+  font-weight: bold;
+}
+
+.mobile-sauna-day.in-range {
+  background: #c8e6c9;
+  border-color: #81c784;
+  color: #2e7d32;
+}
+
+.mobile-sauna-day.disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.mobile-sauna-day-number {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.mobile-sauna-day-marker {
+  font-size: 0.7rem;
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+}
+
+.mobile-sauna-booked-marker {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.5rem;
+  color: #f44336;
+  font-weight: bold;
+}
+
+.mobile-sauna-footer {
+  text-align: center;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.mobile-sauna-hint {
+  margin: 0;
+  color: #666;
+  font-size: 0.9rem;
+  font-style: italic;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .mobile-sauna-calendar {
+    padding: 1rem;
+  }
+
+  .mobile-sauna-title h3 {
+    font-size: 1.2rem;
+  }
+
+  .mobile-sauna-nav-btn {
+    width: 35px;
+    height: 35px;
+    font-size: 1.3rem;
+  }
+
+  .mobile-sauna-legend {
+    gap: 0.5rem;
+  }
+
+  .mobile-sauna-legend-item {
+    font-size: 0.75rem;
+  }
+
+  .mobile-sauna-days {
+    gap: 0.3rem;
+  }
+
+  .mobile-sauna-day {
+    font-size: 0.85rem;
+  }
+
+  .mobile-sauna-day-marker {
+    font-size: 0.6rem;
+  }
+}
+
+/* Animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

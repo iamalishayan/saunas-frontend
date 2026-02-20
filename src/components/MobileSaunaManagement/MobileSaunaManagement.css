@@ -1,0 +1,945 @@
+/* Mobile Sauna Management - Card-based Layout */
+/* All class names prefixed with 'msauna-' to avoid conflicts */
+
+.msauna-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.msauna-modal-container {
+  background: white;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 95%;
+  max-height: 95vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.msauna-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2rem;
+  border-bottom: 2px solid #e0e0e0;
+  background: #8B4513;
+  color: white;
+  border-radius: 12px 12px 0 0;
+}
+
+.msauna-modal-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: white;
+}
+
+.msauna-close-button {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  font-size: 2rem;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  line-height: 1;
+}
+
+.msauna-close-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: rotate(90deg);
+}
+
+.msauna-modal-content {
+  padding: 2rem;
+  overflow-y: auto;
+  flex: 1;
+}
+
+/* Filters Section */
+.msauna-filters-section {
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 30px;
+}
+
+.msauna-filters-section h3 {
+  margin: 0 0 15px 0;
+  color: #333;
+  font-size: 1.1rem;
+}
+
+.msauna-filters-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.msauna-filter-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.msauna-filter-group label {
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: #333;
+  font-size: 0.9rem;
+}
+
+.msauna-filter-group input,
+.msauna-filter-group select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.msauna-filter-group input:focus,
+.msauna-filter-group select:focus {
+  outline: none;
+  border-color: #8B4513;
+  box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.1);
+}
+
+.msauna-filter-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.msauna-apply-btn,
+.msauna-clear-btn {
+  padding: 10px 24px;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.msauna-apply-btn {
+  background: #8B4513;
+  color: white;
+}
+
+.msauna-apply-btn:hover {
+  background: #6f3510;
+  transform: translateY(-1px);
+}
+
+.msauna-clear-btn {
+  background: #6c757d;
+  color: white;
+}
+
+.msauna-clear-btn:hover {
+  background: #5a6268;
+  transform: translateY(-1px);
+}
+
+/* Error Message */
+.msauna-error-message {
+  background: #ffebee;
+  border: 1px solid #f44336;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.msauna-error-message p {
+  margin: 0;
+  color: #c62828;
+  flex: 1;
+}
+
+.msauna-error-message button {
+  background: #f44336;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+/* Loading State */
+.msauna-loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+}
+
+.msauna-loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #667eea;
+  border-radius: 50%;
+  animation: msauna-spin 1s linear infinite;
+}
+
+@keyframes msauna-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.msauna-loading-container p {
+  margin-top: 1rem;
+  color: #666;
+}
+
+/* No Data Message */
+.msauna-no-data-message {
+  text-align: center;
+  padding: 3rem;
+  color: #666;
+}
+
+.msauna-no-data-message p {
+  font-size: 1.1rem;
+  margin: 0.5rem 0;
+}
+
+.msauna-no-data-hint {
+  font-size: 0.95rem;
+  color: #999;
+}
+
+/* Bookings Count */
+.msauna-bookings-count {
+  margin-bottom: 1.5rem;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.msauna-bookings-count p {
+  margin: 0;
+}
+
+/* Bookings Summary */
+.msauna-bookings-summary {
+  color: #666;
+  margin-bottom: 15px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* Table Container */
+.msauna-table-container {
+  overflow-x: auto;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.msauna-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  font-size: 14px;
+}
+
+.msauna-table thead {
+  background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+  color: white;
+}
+
+.msauna-table th {
+  padding: 15px 12px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.msauna-table td {
+  padding: 12px;
+  border-bottom: 1px solid #e9ecef;
+  vertical-align: top;
+}
+
+.msauna-table tbody tr {
+  transition: background-color 0.2s;
+}
+
+.msauna-table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+/* Table Cell Specific Styles */
+.msauna-booking-id-cell {
+  font-weight: 600;
+  color: #8B4513;
+  font-family: monospace;
+  font-size: 13px;
+}
+
+.msauna-customer-cell {
+  min-width: 180px;
+}
+
+.msauna-customer-name {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 3px;
+}
+
+.msauna-customer-email {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 2px;
+}
+
+.msauna-customer-phone {
+  font-size: 12px;
+  color: #777;
+}
+
+.msauna-dates-cell {
+  min-width: 150px;
+}
+
+.msauna-date-start,
+.msauna-date-end {
+  font-size: 13px;
+  color: #555;
+  margin-bottom: 2px;
+}
+
+.msauna-date-start strong,
+.msauna-date-end strong {
+  color: #333;
+}
+
+.msauna-days-duration {
+  font-size: 12px;
+  color: #8B4513;
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+.msauna-vessel-cell {
+  min-width: 140px;
+}
+
+.msauna-vessel-name {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 3px;
+}
+
+.msauna-vessel-type {
+  font-size: 12px;
+  color: #666;
+  font-style: italic;
+}
+
+.msauna-address-cell {
+  min-width: 200px;
+  max-width: 250px;
+  color: #555;
+  line-height: 1.4;
+}
+
+.msauna-distance-info {
+  font-size: 11px;
+  color: #8B4513;
+  margin-top: 4px;
+  font-weight: 500;
+}
+
+.msauna-woodbins-cell {
+  text-align: center;
+}
+
+.msauna-bins-total {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 2px;
+}
+
+.msauna-bins-breakdown {
+  font-size: 11px;
+  color: #666;
+}
+
+.msauna-price-cell {
+  min-width: 120px;
+}
+
+.msauna-total-amount {
+  font-weight: 700;
+  color: #4caf50;
+  font-size: 15px;
+  margin-bottom: 4px;
+}
+
+.msauna-price-details {
+  font-size: 11px;
+  color: #666;
+  line-height: 1.5;
+}
+
+.msauna-status-cell {
+  text-align: center;
+}
+
+.msauna-status-badge {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.msauna-status-confirmed {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.msauna-status-pending {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.msauna-status-cancelled {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.msauna-booked-date-cell {
+  font-size: 12px;
+  color: #555;
+  white-space: nowrap;
+  min-width: 140px;
+}
+
+.msauna-actions-cell {
+  min-width: 180px;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.msauna-actions-cell .action-btn {
+  padding: 6px 12px;
+  margin: 0 2px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.2s;
+  min-width: 60px;
+}
+
+.msauna-edit-btn {
+  background-color: #4a90e2;
+  color: white;
+}
+
+.msauna-edit-btn:hover:not(:disabled) {
+  background-color: #357abd;
+}
+
+.msauna-download-btn {
+  background: linear-gradient(135deg, #8B4513 0%, #2E7D32 100%);
+  color: white;
+}
+
+.msauna-download-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #6B3510 0%, #1B5E20 100%);
+  transform: translateY(-1px);
+}
+
+.msauna-extend-btn {
+  background-color: #ff9800;
+  color: white;
+}
+
+.msauna-extend-btn:hover:not(:disabled) {
+  background-color: #f57c00;
+}
+
+.msauna-cancel-btn {
+  background-color: #f44336;
+  color: white;
+}
+
+.msauna-cancel-btn:hover:not(:disabled) {
+  background-color: #d32f2f;
+}
+
+.msauna-confirm-cancel-btn {
+  background-color: #4caf50;
+  color: white;
+}
+
+.msauna-confirm-cancel-btn:hover:not(:disabled) {
+  background-color: #45a049;
+}
+
+.msauna-undo-btn {
+  background-color: #757575;
+  color: white;
+}
+
+.msauna-undo-btn:hover:not(:disabled) {
+  background-color: #616161;
+}
+
+.msauna-actions-cell .action-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Edit Modal Overlay */
+.msauna-edit-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    padding: 20px;
+    overflow-y: auto;
+    animation: msaunaFadeIn 0.2s ease;
+}
+
+@keyframes msaunaFadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Edit Modal Container */
+.msauna-edit-modal {
+    background: white;
+    border-radius: 12px;
+    max-width: 700px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    animation: msaunaSlideUp 0.3s ease;
+}
+
+@keyframes msaunaSlideUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Edit Modal Header */
+.msauna-edit-modal-header {
+    background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+    color: white;
+    padding: 20px 30px;
+    border-radius: 12px 12px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.msauna-edit-modal-header h3 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+    color: white;
+}
+
+.msauna-close-button {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 32px;
+    cursor: pointer;
+    padding: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: background 0.2s ease;
+}
+
+.msauna-close-button:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Error Message */
+.msauna-error-message {
+    background: #fee;
+    border-left: 4px solid #f44336;
+    padding: 15px;
+    margin: 20px 30px;
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.msauna-error-message p {
+    margin: 0;
+    color: #c62828;
+    flex: 1;
+}
+
+.msauna-error-message button {
+    background: transparent;
+    border: 1px solid #c62828;
+    color: #c62828;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.msauna-error-message button:hover {
+    background: #c62828;
+    color: white;
+}
+
+/* Edit Form */
+.msauna-edit-form {
+    padding: 30px;
+}
+
+.msauna-form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.msauna-form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.msauna-form-group label {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.msauna-form-group input,
+.msauna-form-group textarea {
+    padding: 10px 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: inherit;
+    transition: border-color 0.2s ease;
+}
+
+.msauna-form-group input:focus,
+.msauna-form-group textarea:focus {
+    outline: none;
+    border-color: #4a90e2;
+}
+
+.msauna-form-group input:disabled,
+.msauna-form-group textarea:disabled {
+    background: #f5f5f5;
+    cursor: not-allowed;
+}
+
+.msauna-form-hint {
+    font-size: 12px;
+    color: #666;
+    margin-top: 4px;
+    display: block;
+}
+
+.msauna-form-full {
+    grid-column: 1 / -1;
+}
+
+/* Modal Actions */
+.msauna-edit-modal-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: flex-end;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #e0e0e0;
+}
+
+.msauna-btn-primary,
+.msauna-btn-secondary {
+    padding: 12px 24px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+}
+
+.msauna-btn-primary {
+    background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+    color: white;
+}
+
+.msauna-btn-primary:hover:not(:disabled) {
+    background: linear-gradient(135deg, #45a049 0%, #3d8b40 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+}
+
+.msauna-btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.msauna-btn-secondary {
+    background: #f5f5f5;
+    color: #333;
+    border: 2px solid #e0e0e0;
+}
+
+.msauna-btn-secondary:hover:not(:disabled) {
+    background: #eeeeee;
+    border-color: #bdbdbd;
+}
+
+.msauna-btn-secondary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Form Note */
+.msauna-form-note {
+    background: #e3f2fd;
+    border-left: 4px solid #2196f3;
+    padding: 15px;
+    border-radius: 4px;
+    margin-top: 20px;
+    font-size: 13px;
+    color: #1565c0;
+}
+
+.msauna-form-note strong {
+    color: #0d47a1;
+}
+
+/* Extend Modal Overlay */
+.msauna-extend-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    padding: 20px;
+    overflow-y: auto;
+    animation: msaunaFadeIn 0.2s ease;
+}
+
+/* Extend Modal Container */
+.msauna-extend-modal {
+    background: white;
+    border-radius: 12px;
+    max-width: 600px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    animation: msaunaSlideUp 0.3s ease;
+}
+
+/* Extend Modal Header */
+.msauna-extend-modal-header {
+    background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+    color: white;
+    padding: 20px 30px;
+    border-radius: 12px 12px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.msauna-extend-modal-header h3 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+    color: white;
+}
+
+/* Extend Form */
+.msauna-extend-form {
+    padding: 30px;
+}
+
+.msauna-extend-info {
+    background: #f9f9f9;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 25px;
+    border-left: 4px solid #ff9800;
+}
+
+.msauna-extend-info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.msauna-extend-info-row:last-child {
+    border-bottom: none;
+}
+
+.msauna-info-label {
+    font-weight: 600;
+    color: #555;
+    font-size: 14px;
+}
+
+.msauna-info-value {
+    color: #333;
+    font-size: 14px;
+}
+
+.msauna-price-highlight {
+    color: #4caf50;
+    font-weight: 700;
+    font-size: 16px;
+}
+
+/* Extend Modal Actions */
+.msauna-extend-modal-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: flex-end;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #e0e0e0;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .msauna-cards-grid {
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .msauna-cards-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .msauna-modal-container {
+    max-width: 95%;
+  }
+  
+  .msauna-modal-header {
+    padding: 1rem 1.5rem;
+  }
+  
+  .msauna-modal-header h2 {
+    font-size: 1.2rem;
+  }
+  
+  .msauna-modal-content {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .msauna-card-header {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-start;
+  }
+  
+  .msauna-info-row {
+    flex-direction: column;
+  }
+  
+  .msauna-label {
+    margin-bottom: 0.25rem;
+  }
+
+  .msauna-form-row {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .msauna-edit-form {
+    padding: 20px;
+  }
+
+  .msauna-edit-modal-actions {
+    flex-direction: column;
+  }
+
+  .msauna-edit-modal-actions button {
+    width: 100%;
+  }
+
+  .msauna-extend-form {
+    padding: 20px;
+  }
+
+  .msauna-extend-modal-actions {
+    flex-direction: column;
+  }
+
+  .msauna-extend-modal-actions button {
+    width: 100%;
+  }
+}

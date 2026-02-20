@@ -1,0 +1,907 @@
+/* ============================================
+   Contact Page - Glassmorphism 3.0 + Neumorphism
+   Warm Wood-Brown Spa Theme
+   ============================================ */
+
+/* Keyframe Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes pulse-soft {
+  0%, 100% { 
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  50% { 
+    transform: scale(1.05);
+    opacity: 0.8;
+  }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* ============================================
+   Page Container
+   ============================================ */
+.contact-page {
+  min-height: 100vh;
+  background: linear-gradient(
+    180deg,
+    #faf8f5 0%,
+    #f5f0e8 50%,
+    #faf8f5 100%
+  );
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Subtle background pattern */
+.contact-page::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 80%, rgba(139, 69, 19, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(139, 90, 43, 0.04) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(205, 175, 149, 0.02) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ============================================
+   Hero Section
+   ============================================ */
+.contact-hero {
+  position: relative;
+  min-height: 45vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(
+    135deg,
+    #5c3d2e 0%,
+    #8b5a2b 25%,
+    #a0522d 50%,
+    #8b4513 75%,
+    #654321 100%
+  );
+  background-size: 300% 300%;
+  animation: gradientShift 15s ease infinite;
+  overflow: hidden;
+  padding: 80px 2rem 100px;
+}
+
+/* Hero overlay with texture */
+.contact-hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    linear-gradient(
+      135deg,
+      rgba(92, 61, 46, 0.4) 0%,
+      rgba(139, 90, 43, 0.2) 50%,
+      rgba(101, 67, 33, 0.5) 100%
+    );
+  z-index: 1;
+}
+
+/* Animated background elements */
+.contact-hero-overlay::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.08) 0%,
+    transparent 60%
+  );
+  animation: pulse-soft 12s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.contact-hero-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  max-width: 700px;
+  padding: 0 2rem;
+}
+
+.hero-icon-wrapper {
+  width: 90px;
+  height: 90px;
+  margin: 0 auto 1.5rem;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  animation: float 4s ease-in-out infinite;
+}
+
+.hero-icon-wrapper svg {
+  width: 36px;
+  height: 36px;
+  color: white;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.contact-hero-content h1 {
+  font-family: var(--font-secondary);
+  font-size: 3.5rem;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 1rem;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  letter-spacing: 1px;
+}
+
+.contact-hero-content p {
+  font-size: 1.25rem;
+  color: rgba(255, 255, 255, 0.92);
+  line-height: 1.7;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  max-width: 550px;
+  margin: 0 auto;
+}
+
+/* Hero wave transition */
+.hero-wave {
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  z-index: 3;
+  color: #faf8f5;
+  line-height: 0;
+}
+
+.hero-wave svg {
+  width: 100%;
+  height: 80px;
+}
+
+/* Animation triggers */
+.contact-hero.animate-in .contact-hero-content h1 {
+  animation: fadeInDown 0.8s ease-out both;
+}
+
+.contact-hero.animate-in .contact-hero-content p {
+  animation: fadeInDown 0.8s ease-out 0.2s both;
+}
+
+.contact-hero.animate-in .hero-icon-wrapper {
+  animation: scaleIn 0.6s ease-out both, float 4s ease-in-out 0.6s infinite;
+}
+
+/* ============================================
+   Main Content Area
+   ============================================ */
+.contact-content {
+  position: relative;
+  z-index: 1;
+  padding: 0 2rem 4rem;
+  margin-top: -20px;
+}
+
+.contact-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* ============================================
+   Contact Info Cards Section
+   ============================================ */
+.contact-info-section {
+  margin-bottom: 0;
+  margin-top: 1rem;
+}
+
+.contact-info-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* Glass Card - Glassmorphism 3.0 + Neumorphism */
+.contact-card.glass-card {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 24px;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 
+    0 8px 32px rgba(139, 69, 19, 0.08),
+    0 2px 8px rgba(0, 0, 0, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    inset 0 -1px 0 rgba(139, 69, 19, 0.05);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  opacity: 0;
+}
+
+/* Neumorphism subtle inner shadow */
+.contact-card.glass-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 24px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.4) 0%,
+    transparent 50%,
+    rgba(139, 69, 19, 0.02) 100%
+  );
+  pointer-events: none;
+}
+
+.contact-info-section.animate-in .contact-card:nth-child(1) {
+  animation: fadeInUp 0.6s ease-out 0.1s both;
+}
+.contact-info-section.animate-in .contact-card:nth-child(2) {
+  animation: fadeInUp 0.6s ease-out 0.2s both;
+}
+.contact-info-section.animate-in .contact-card:nth-child(3) {
+  animation: fadeInUp 0.6s ease-out 0.3s both;
+}
+.contact-info-section.animate-in .contact-card:nth-child(4) {
+  animation: fadeInUp 0.6s ease-out 0.4s both;
+}
+
+.contact-card.glass-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 
+    0 20px 50px rgba(139, 69, 19, 0.15),
+    0 8px 20px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 1);
+  border-color: rgba(139, 69, 19, 0.2);
+}
+
+.card-icon {
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 1.25rem;
+  background: linear-gradient(135deg, #8b5a2b 0%, #a0522d 50%, #8b4513 100%);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 
+    0 6px 20px rgba(139, 69, 19, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+.contact-card.glass-card:hover .card-icon {
+  transform: scale(1.1) rotate(-5deg);
+  box-shadow: 
+    0 10px 30px rgba(139, 69, 19, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.card-icon svg {
+  width: 26px;
+  height: 26px;
+  color: white;
+}
+
+.contact-card h3 {
+  font-family: var(--font-secondary);
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #5c3d2e;
+  margin-bottom: 0.5rem;
+}
+
+.contact-card .card-value {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #8b4513;
+  margin-bottom: 0.35rem;
+}
+
+.contact-card .card-subtitle {
+  font-size: 0.875rem;
+  color: #8e8e8e;
+  margin: 0;
+}
+
+/* ============================================
+   Contact Form Section
+   ============================================ */
+.contact-form-section {
+  opacity: 0;
+}
+
+.contact-form-section.animate-in {
+  animation: fadeInUp 0.8s ease-out 0.3s both;
+}
+
+/* Glass Form Container */
+.form-container.glass-form {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border-radius: 32px;
+  padding: 3rem;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 
+    0 20px 60px rgba(139, 69, 19, 0.1),
+    0 8px 24px rgba(0, 0, 0, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 1),
+    inset 0 -2px 0 rgba(139, 69, 19, 0.03);
+  position: relative;
+  overflow: hidden;
+  margin: 0 auto 3rem;
+  max-width: 850px;
+}
+
+/* Subtle gradient overlay for depth */
+.form-container.glass-form::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 200px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.5) 0%,
+    transparent 100%
+  );
+  pointer-events: none;
+  border-radius: 32px 32px 0 0;
+}
+
+/* Form Header */
+.form-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+.form-header-icon {
+  width: 70px;
+  height: 70px;
+  margin: 0 auto 1.25rem;
+  background: linear-gradient(135deg, #8b5a2b 0%, #a0522d 100%);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 
+    0 8px 24px rgba(139, 69, 19, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.form-header-icon svg {
+  width: 28px;
+  height: 28px;
+  color: white;
+}
+
+.form-header h2 {
+  font-family: var(--font-secondary);
+  font-size: 2rem;
+  font-weight: 700;
+  color: #5c3d2e;
+  margin-bottom: 0.5rem;
+}
+
+.form-header p {
+  font-size: 1.05rem;
+  color: #8e8e8e;
+  max-width: 450px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* Success Message */
+.success-message {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem;
+  background: linear-gradient(135deg, #4a6741 0%, #6b8f5a 100%);
+  color: white;
+  border-radius: 16px;
+  margin-bottom: 2rem;
+  font-weight: 500;
+  animation: slideDown 0.4s ease-out;
+  box-shadow: 0 6px 20px rgba(74, 103, 65, 0.3);
+}
+
+.success-message svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+/* Form Layout */
+.form-container form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+/* Form Group */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+.form-group label {
+  font-size: 0.925rem;
+  font-weight: 600;
+  color: #5c3d2e;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.3px;
+  transition: color 0.3s ease;
+}
+
+.form-group.focused label {
+  color: #8b4513;
+}
+
+.form-group.error label {
+  color: #c0392b;
+}
+
+.required {
+  color: #c0392b;
+  margin-left: 2px;
+}
+
+/* Input & Textarea Styles - Neumorphism */
+.form-group input,
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  padding: 1rem 1.25rem;
+  font-size: 1rem;
+  font-family: var(--font-primary);
+  color: #5c3d2e;
+  background: rgba(255, 255, 255, 0.7);
+  border: 2px solid rgba(139, 69, 19, 0.1);
+  border-radius: 14px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 
+    inset 2px 2px 6px rgba(139, 69, 19, 0.06),
+    inset -2px -2px 6px rgba(255, 255, 255, 0.8);
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: #b5a89a;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: rgba(139, 69, 19, 0.4);
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 
+    0 0 0 4px rgba(139, 69, 19, 0.08),
+    inset 2px 2px 6px rgba(139, 69, 19, 0.04),
+    inset -2px -2px 6px rgba(255, 255, 255, 0.9);
+  transform: translateY(-2px);
+}
+
+.form-group input.input-error,
+.form-group textarea.input-error,
+.form-group select.input-error {
+  border-color: rgba(192, 57, 43, 0.5);
+  background: rgba(253, 242, 242, 0.8);
+  box-shadow: 
+    0 0 0 4px rgba(192, 57, 43, 0.08),
+    inset 2px 2px 6px rgba(192, 57, 43, 0.05);
+}
+
+/* Select Styling */
+.form-group select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%238b4513' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 18px;
+  padding-right: 3rem;
+}
+
+/* Textarea */
+.form-group textarea {
+  resize: vertical;
+  min-height: 140px;
+  line-height: 1.6;
+}
+
+/* Error Text */
+.error-text {
+  font-size: 0.8rem;
+  color: #c0392b;
+  margin-top: 0.4rem;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  animation: fadeIn 0.2s ease-out;
+}
+
+/* Help Text */
+.help-text {
+  font-size: 0.85rem;
+  color: #a09080;
+  margin-top: 0.5rem;
+  line-height: 1.5;
+}
+
+/* Submit Button */
+.submit-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1.125rem 2.5rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  font-family: var(--font-primary);
+  color: white;
+  background: linear-gradient(135deg, #8b5a2b 0%, #a0522d 50%, #8b4513 100%);
+  background-size: 200% 200%;
+  border: none;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 
+    0 8px 24px rgba(139, 69, 19, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  align-self: center;
+  min-width: 220px;
+  position: relative;
+  overflow: hidden;
+  letter-spacing: 0.5px;
+  margin-top: 0.5rem;
+}
+
+/* Button shimmer effect */
+.submit-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: left 0.5s ease;
+}
+
+.submit-btn:hover::before {
+  left: 100%;
+}
+
+.submit-btn:hover {
+  transform: translateY(-4px);
+  box-shadow: 
+    0 16px 40px rgba(139, 69, 19, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  background-position: 100% 0;
+}
+
+.submit-btn:active {
+  transform: translateY(-2px);
+}
+
+.submit-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.submit-btn svg {
+  width: 18px;
+  height: 18px;
+  transition: transform 0.3s ease;
+}
+
+.submit-btn:hover svg {
+  transform: translateX(4px);
+}
+
+/* Loading Spinner */
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+/* ============================================
+   Responsive Design
+   ============================================ */
+@media (max-width: 1024px) {
+  .contact-info-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .contact-hero {
+    min-height: 40vh;
+    padding: 60px 1.5rem 80px;
+  }
+
+  .contact-hero-content h1 {
+    font-size: 2.5rem;
+  }
+
+  .contact-hero-content p {
+    font-size: 1.1rem;
+  }
+
+  .hero-icon-wrapper {
+    width: 75px;
+    height: 75px;
+  }
+
+  .hero-wave svg {
+    height: 60px;
+  }
+
+  .contact-content {
+    padding: 0 1.25rem 3rem;
+  }
+
+  .contact-info-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    max-width: 100%;
+  }
+
+  .contact-card.glass-card {
+    padding: 1.5rem 1rem;
+    border-radius: 20px;
+  }
+
+  .card-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 14px;
+  }
+
+  .card-icon svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .contact-card h3 {
+    font-size: 1.05rem;
+  }
+
+  .contact-card .card-value {
+    font-size: 0.95rem;
+  }
+
+  .form-container.glass-form {
+    padding: 2rem 1.5rem;
+    border-radius: 24px;
+    max-width: 100%;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  .form-header h2 {
+    font-size: 1.75rem;
+  }
+
+  .form-header-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 16px;
+  }
+
+  .submit-btn {
+    width: 100%;
+    min-width: unset;
+  }
+}
+
+@media (max-width: 480px) {
+  .contact-hero {
+    min-height: 35vh;
+    padding: 50px 1rem 70px;
+  }
+
+  .contact-hero-content h1 {
+    font-size: 2rem;
+  }
+
+  .contact-hero-content p {
+    font-size: 1rem;
+  }
+
+  .hero-icon-wrapper {
+    width: 65px;
+    height: 65px;
+  }
+
+  .hero-icon-wrapper svg {
+    width: 28px;
+    height: 28px;
+  }
+
+  .contact-info-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    max-width: 100%;
+  }
+
+  .contact-card.glass-card {
+    padding: 1.25rem;
+    border-radius: 18px;
+  }
+
+  .form-container.glass-form {
+    padding: 1.5rem 1.25rem;
+    border-radius: 20px;
+    max-width: 100%;
+  }
+
+  .form-header h2 {
+    font-size: 1.5rem;
+  }
+
+  .form-header p {
+    font-size: 0.95rem;
+  }
+
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    padding: 0.875rem 1rem;
+    font-size: 0.95rem;
+    border-radius: 12px;
+  }
+
+  .submit-btn {
+    padding: 1rem 2rem;
+    font-size: 1rem;
+    border-radius: 14px;
+  }
+}
+
+/* ============================================
+   Hover Effects - Desktop Only
+   ============================================ */
+@media (hover: hover) {
+  .contact-card.glass-card:hover h3 {
+    color: #8b4513;
+  }
+
+  .form-group:hover label {
+    color: #8b5a2b;
+  }
+}
+
+/* ============================================
+   Reduced Motion
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

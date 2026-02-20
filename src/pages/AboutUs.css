@@ -1,0 +1,246 @@
+/* Keyframe Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* AboutUs Page Styles */
+.aboutus-page {
+  padding: 0;
+  margin: 0;
+  min-height: 100vh;
+}
+
+/* Full Page Hero Section - Covers entire viewport including header area */
+.aboutus-hero-full {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  background-image: url('/images/aboutus/hero-bg.png');
+  background-size: cover;
+  background-position: center left;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow-y: auto;
+  padding: 120px 2rem 4rem;
+}
+
+.aboutus-hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.75) 0%,
+    rgba(0, 0, 0, 0.65) 40%,
+    rgba(0, 0, 0, 0.4) 70%,
+    rgba(0, 0, 0, 0.2) 100%
+  );
+  z-index: 1;
+}
+
+.aboutus-hero-content {
+  position: relative;
+  z-index: 2;
+  color: white;
+  max-width: 900px;
+  padding: 2rem;
+  animation: fadeInDown 1s ease-out;
+  text-align: left;
+}
+
+.aboutus-hero-content h1 {
+  font-family: var(--font-secondary);
+  font-size: 4.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+  line-height: 1.1;
+  color: white;
+  letter-spacing: 3px;
+  animation: fadeInDown 1s ease-out 0.2s both;
+}
+
+.hero-subtitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 3px;
+  margin-bottom: 2rem;
+  color: #f4d03f;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.7);
+  animation: fadeInDown 1s ease-out 0.4s both;
+  text-transform: uppercase;
+}
+
+.hero-description {
+  font-size: 1.15rem;
+  line-height: 1.9;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.7);
+  margin-bottom: 3rem;
+  color: rgba(255, 255, 255, 0.95);
+  animation: fadeInDown 1s ease-out 0.6s both;
+}
+
+/* Section Boxes within Hero */
+.hero-section-box {
+  background: rgba(0, 0, 0, 0.5);
+  padding: 2rem;
+  margin-bottom: 2rem;
+  border-radius: 8px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  animation: fadeInUp 1s ease-out 0.8s both;
+  opacity: 0;
+}
+
+.hero-section-box:nth-child(5) {
+  animation-delay: 1s;
+}
+
+.hero-section-box h3 {
+  font-family: var(--font-secondary);
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #f4d03f;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.hero-section-box p {
+  font-size: 1.05rem;
+  line-height: 1.8;
+  color: rgba(255, 255, 255, 0.9);
+  margin: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .aboutus-hero-full {
+    background-attachment: scroll;
+    padding: 100px 1.5rem 3rem;
+  }
+
+  .aboutus-hero-content h1 {
+    font-size: 3.5rem;
+  }
+
+  .hero-section-box {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .aboutus-hero-full {
+    padding: 100px 1.5rem 2rem;
+    background-position: center;
+  }
+
+  .aboutus-hero-overlay {
+    background: linear-gradient(
+      90deg,
+      rgba(0, 0, 0, 0.8) 0%,
+      rgba(0, 0, 0, 0.7) 50%,
+      rgba(0, 0, 0, 0.6) 100%
+    );
+  }
+
+  .aboutus-hero-content {
+    padding: 1.5rem;
+  }
+
+  .aboutus-hero-content h1 {
+    font-size: 2.8rem;
+    letter-spacing: 2px;
+  }
+
+  .hero-subtitle {
+    font-size: 1rem;
+    letter-spacing: 2px;
+  }
+
+  .hero-description {
+    font-size: 1.05rem;
+    margin-bottom: 2rem;
+  }
+
+  .hero-section-box {
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .hero-section-box h3 {
+    font-size: 1.15rem;
+  }
+
+  .hero-section-box p {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .aboutus-hero-full {
+    padding: 90px 1rem 2rem;
+  }
+
+  .aboutus-hero-content {
+    padding: 1rem;
+  }
+
+  .aboutus-hero-content h1 {
+    font-size: 2.2rem;
+    letter-spacing: 1px;
+  }
+
+  .hero-subtitle {
+    font-size: 0.9rem;
+    letter-spacing: 1.5px;
+  }
+
+  .hero-description {
+    font-size: 1rem;
+  }
+
+  .hero-section-box {
+    padding: 1rem;
+  }
+
+  .hero-section-box h3 {
+    font-size: 1.05rem;
+  }
+
+  .hero-section-box p {
+    font-size: 0.95rem;
+  }
+}

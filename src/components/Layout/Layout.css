@@ -1,0 +1,83 @@
+/* Layout Styles */
+.layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  position: relative;
+}
+
+.layout__main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  transition: margin-left var(--transition-normal);
+}
+
+/* Ensure main content takes full width and has proper spacing */
+.layout__main > * {
+  width: 100%;
+}
+
+/* Add consistent padding for page content that doesn't use container */
+/* .layout__main .page-content {
+  padding: var(--spacing-2xl) 0;
+} */
+
+/* For full-width sections like hero - only apply to section/div elements, not form elements */
+.layout__main > section.full-width,
+.layout__main > div.full-width {
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+}
+
+/* Accessibility improvements */
+.layout__main:focus {
+  outline: none;
+}
+
+/* Skip to main content link for screen readers */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  background: var(--color-primary-brown);
+  color: var(--color-warm-white);
+  padding: 8px;
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+  z-index: 1000;
+  transition: top var(--transition-fast);
+}
+
+.skip-link:focus {
+  top: 6px;
+}
+
+/* Sidebar overlay body class */
+body.sidebar-open {
+  overflow: hidden;
+}
+
+/* Responsive adjustments */
+@media (max-width: 767px) {
+  .layout__main .page-content {
+    padding: var(--spacing-xl) 0;
+  }
+}
+
+/* Print styles */
+@media print {
+  .layout {
+    min-height: auto;
+  }
+  
+  .layout__main {
+    flex: none;
+  }
+  
+  /* Hide sidebar and overlay when printing */
+  .sidebar,
+  .sidebar-overlay {
+    display: none !important;
+  }
+}

@@ -1,0 +1,595 @@
+/* Vessel Management Modal Styles */
+.vessel-management-modal {
+  background-color: var(--color-warm-white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl);
+  width: 95%;
+  max-width: 95%;
+  max-height: 95vh;
+  display: flex;
+  flex-direction: column;
+  animation: modalFadeIn 0.3s ease-in-out;
+  overflow: hidden;
+}
+
+/* Vessel Form Section */
+.vessel-form-section {
+  background-color: var(--color-neutral-beige-light);
+  padding: var(--spacing-lg);
+  border-bottom: 2px solid var(--color-neutral-beige);
+  margin-bottom: var(--spacing-md);
+}
+
+.vessel-form-section h3 {
+  margin: 0 0 var(--spacing-md) 0;
+  color: var(--color-primary-brown);
+  font-family: var(--font-secondary);
+}
+
+.vessel-form {
+  max-width: 600px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+}
+
+.price-helper {
+  display: block;
+  margin-top: var(--spacing-xs);
+  font-size: var(--font-size-sm);
+  color: var(--color-secondary-green);
+  font-weight: var(--font-weight-medium);
+}
+
+/* Vessels Table */
+.vessels-count {
+  margin-bottom: var(--spacing-md);
+  font-size: var(--font-size-base);
+  color: var(--color-soft-gray);
+}
+
+.vessels-table-container {
+  overflow-x: auto;
+  flex: 1;
+}
+
+.vessels-table {
+  width: 100%;
+  border-collapse: collapse;
+  white-space: nowrap;
+}
+
+.vessels-table th,
+.vessels-table td {
+  padding: var(--spacing-md);
+  text-align: left;
+  border-bottom: 1px solid var(--color-neutral-beige);
+}
+
+.vessels-table th {
+  background-color: var(--color-neutral-beige-light);
+  font-weight: var(--font-weight-semibold);
+  position: sticky;
+  top: 0;
+}
+
+.vessels-table tr:hover {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+.no-results {
+  text-align: center;
+  color: var(--color-soft-gray);
+  padding: var(--spacing-xl) !important;
+  font-style: italic;
+}
+
+/* Table Cell Styles */
+.vessel-name {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary-brown);
+}
+
+.inventory-cell {
+  text-align: center;
+}
+
+.inventory-number {
+  display: block;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-secondary-green);
+}
+
+.inventory-label {
+  display: block;
+  font-size: var(--font-size-xs);
+  color: var(--color-soft-gray);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.type-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  text-transform: capitalize;
+  color: var(--color-warm-white);
+}
+
+.type-boat {
+  background-color: var(--color-accent-blue);
+}
+
+.type-trailer {
+  background-color: var(--color-secondary-green);
+}
+
+.type-mobile_sauna {
+  background-color: var(--color-primary-brown);
+}
+
+/* .type-yacht {
+  background-color: #9c27b0;
+}
+
+.type-catamaran {
+  background-color: #ff5722;
+} */
+
+.capacity-cell {
+  text-align: center;
+}
+
+.capacity-number {
+  display: block;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary-brown);
+}
+
+.capacity-label {
+  display: block;
+  font-size: var(--font-size-xs);
+  color: var(--color-soft-gray);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.price-cell {
+  text-align: right;
+}
+
+.price-amount {
+  display: block;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-secondary-green);
+}
+
+.price-label {
+  display: block;
+  font-size: var(--font-size-xs);
+  color: var(--color-soft-gray);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Action Buttons */
+.actions-cell {
+  white-space: nowrap;
+}
+
+.action-btn {
+  background: none;
+  border: 1px solid currentColor;
+  min-width: 60px;
+  height: 32px;
+  padding: 0 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  margin-right: var(--spacing-xs);
+  transition: all 0.2s;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.edit-btn {
+  color: var(--color-secondary-green);
+  border-color: var(--color-secondary-green);
+}
+
+.edit-btn:hover {
+  background-color: var(--color-secondary-green);
+  color: var(--color-warm-white);
+}
+
+.calendar-btn {
+  color: var(--color-primary-brown);
+  border-color: var(--color-primary-brown);
+  font-size: 1.2rem;
+  padding: 4px 10px;
+  background-color: var(--color-primary-brown);
+}
+
+.calendar-btn:hover {
+  background-color: var(--color-primary-brown-dark);
+  color: var(--color-warm-white);
+  transform: scale(1.05);
+}
+
+.delete-btn {
+  color: #d32f2f;
+  border-color: #d32f2f;
+}
+
+.delete-btn:hover {
+  background-color: #d32f2f;
+  color: var(--color-warm-white);
+}
+
+.action-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Success and Error Messages */
+.success-message {
+  background-color: rgba(0, 200, 0, 0.1);
+  border-left: 4px solid #00c000;
+  padding: var(--spacing-md);
+  margin: var(--spacing-md) 0;
+  border-radius: var(--radius-md);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.error-message {
+  background-color: rgba(255, 0, 0, 0.1);
+  border-left: 4px solid #ff0000;
+  padding: var(--spacing-md);
+  margin: var(--spacing-md) 0;
+  border-radius: var(--radius-md);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.error-message button {
+  background: none;
+  border: 1px solid #d32f2f;
+  color: #d32f2f;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+}
+
+.error-message button:hover {
+  background-color: #d32f2f;
+  color: var(--color-warm-white);
+}
+
+/* Loading Container */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-3xl);
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--color-neutral-beige);
+  border-top: 3px solid var(--color-primary-brown);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: var(--spacing-md);
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Form Styles - Consistent across all management components */
+.vessel-management-modal .form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: var(--spacing-md);
+}
+
+.vessel-management-modal .form-group label {
+  margin-bottom: var(--spacing-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-charcoal);
+  font-size: var(--font-size-sm);
+}
+
+.vessel-management-modal .form-group input,
+.vessel-management-modal .form-group select,
+.vessel-management-modal .form-group textarea {
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: 1px solid var(--color-neutral-beige-dark);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-base);
+  font-family: var(--font-primary);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.vessel-management-modal .form-group input:focus,
+.vessel-management-modal .form-group select:focus,
+.vessel-management-modal .form-group textarea:focus {
+  outline: none;
+  border-color: var(--color-primary-brown);
+  box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.1);
+}
+
+.vessel-management-modal .form-group textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.vessel-management-modal .form-actions {
+  display: flex;
+  gap: var(--spacing-md);
+  justify-content: flex-end;
+  margin-top: var(--spacing-lg);
+  padding-top: var(--spacing-md);
+  border-top: 1px solid var(--color-neutral-beige);
+}
+
+.vessel-management-modal .form-actions .btn {
+  padding: var(--spacing-sm) var(--spacing-lg);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  transition: background-color var(--transition-fast);
+}
+
+.vessel-management-modal .form-actions .btn-primary {
+  background-color: var(--color-primary-brown);
+  color: var(--color-warm-white);
+}
+
+.vessel-management-modal .form-actions .btn-primary:hover {
+  background-color: var(--color-primary-brown-dark);
+}
+
+.vessel-management-modal .form-actions .btn-secondary {
+  background-color: var(--color-soft-gray);
+  color: var(--color-warm-white);
+}
+
+.vessel-management-modal .form-actions .btn-secondary:hover {
+  background-color: var(--color-charcoal);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .vessel-management-modal {
+    width: 98%;
+    max-height: 95vh;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .vessels-table th:nth-child(5),
+  .vessels-table td:nth-child(5),
+  .vessels-table th:nth-child(6),
+  .vessels-table td:nth-child(6) {
+    display: none;
+  }
+
+  .vessel-form-section {
+    padding: var(--spacing-md);
+  }
+
+  .action-btn {
+    min-width: 50px;
+    padding: 0 8px;
+    font-size: var(--font-size-xs);
+  }
+}
+
+/* Mobile Sauna Specific Styles */
+.form-section-title {
+  margin-top: var(--spacing-lg);
+  margin-bottom: var(--spacing-md);
+  padding-top: var(--spacing-lg);
+  border-top: 2px solid var(--color-neutral-beige);
+}
+
+.form-section-title h4 {
+  margin: 0 0 var(--spacing-xs) 0;
+  color: var(--color-primary-brown);
+  font-family: var(--font-secondary);
+  font-size: 1.1rem;
+}
+
+.section-description {
+  margin: 0;
+  color: var(--color-charcoal-light);
+  font-size: var(--font-size-sm);
+}
+
+.field-hint {
+  display: block;
+  margin-top: var(--spacing-xs);
+  font-size: var(--font-size-sm);
+  color: var(--color-charcoal-light);
+  font-style: italic;
+}
+
+.mobile-sauna-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: var(--font-size-sm);
+}
+
+.mobile-sauna-details div {
+  color: var(--color-charcoal);
+}
+
+.pickup-info {
+  color: var(--color-accent-blue) !important;
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-xs);
+}
+
+.discount-info {
+  color: var(--color-secondary-green) !important;
+  font-weight: var(--font-weight-medium);
+}
+
+.details-cell {
+  padding: var(--spacing-sm);
+}
+
+.details-na {
+  color: var(--color-charcoal-light);
+  font-style: italic;
+}
+
+/* Inline Capacity Editing */
+.capacity-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 6px;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.capacity-display:hover {
+  background: rgba(139, 69, 19, 0.05);
+}
+
+.capacity-display:hover .capacity-edit-hint {
+  opacity: 1;
+}
+
+.capacity-edit-hint {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  font-size: 0.7rem;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.capacity-edit-inline {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.capacity-input {
+  width: 60px;
+  padding: 6px 8px;
+  border: 2px solid var(--color-primary-brown);
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.capacity-input:focus {
+  outline: none;
+  border-color: var(--color-secondary-green);
+  box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.1);
+}
+
+.capacity-save-btn,
+.capacity-cancel-btn {
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.capacity-save-btn {
+  background: var(--color-secondary-green);
+  color: white;
+}
+
+.capacity-save-btn:hover:not(:disabled) {
+  background: #1B5E20;
+  transform: scale(1.1);
+}
+
+.capacity-save-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.capacity-cancel-btn {
+  background: #d32f2f;
+  color: white;
+}
+
+.capacity-cancel-btn:hover {
+  background: #b71c1c;
+  transform: scale(1.1);
+}
+
+@media (max-width: 480px) {
+  .vessels-table th:nth-child(3),
+  .vessels-table td:nth-child(3),
+  .vessels-table th:nth-child(4),
+  .vessels-table td:nth-child(4) {
+    display: none;
+  }
+
+  .type-badge {
+    padding: 2px 6px;
+    font-size: 10px;
+  }
+
+  .form-actions {
+    flex-direction: column-reverse;
+  }
+
+  .form-actions .btn {
+    width: 100%;
+    margin-bottom: var(--spacing-sm);
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .mobile-sauna-details {
+    font-size: 11px;
+  }
+}

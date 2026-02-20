@@ -1,0 +1,157 @@
+/* Booking Cancel Page Styles */
+.cancel-container, .cancelled-container {
+  text-align: center;
+  padding: var(--spacing-3xl);
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.cancel-icon, .warning-icon {
+  font-size: 4rem;
+  margin-bottom: var(--spacing-lg);
+  color: #d32f2f;
+}
+
+.cancel-container h1, .cancelled-container h1 {
+  color: var(--color-charcoal);
+  font-family: var(--font-secondary);
+  font-size: 2.5rem;
+  margin-bottom: var(--spacing-lg);
+}
+
+.cancel-container p, .cancelled-container p {
+  font-size: var(--font-size-lg);
+  color: var(--color-soft-gray);
+  margin-bottom: var(--spacing-lg);
+}
+
+.booking-details {
+  background-color: var(--color-neutral-beige-light);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-lg);
+  margin: var(--spacing-xl) 0;
+  text-align: left;
+}
+
+.booking-details h3 {
+  color: var(--color-primary-brown);
+  margin-bottom: var(--spacing-md);
+  font-family: var(--font-secondary);
+}
+
+.booking-details p {
+  margin: var(--spacing-sm) 0;
+  font-size: var(--font-size-base);
+  color: var(--color-charcoal);
+}
+
+.options {
+  margin: var(--spacing-xl) 0;
+}
+
+.options h3 {
+  color: var(--color-primary-brown);
+  font-family: var(--font-secondary);
+  margin-bottom: var(--spacing-lg);
+}
+
+.option-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--spacing-lg);
+  margin: var(--spacing-lg) 0;
+}
+
+.option-card {
+  background-color: var(--color-warm-white);
+  border: 2px solid var(--color-neutral-beige);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  transition: all var(--transition-fast);
+}
+
+.option-card:hover {
+  border-color: var(--color-primary-brown);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.option-card h4 {
+  color: var(--color-primary-brown);
+  font-family: var(--font-secondary);
+  margin-bottom: var(--spacing-md);
+  font-size: var(--font-size-lg);
+}
+
+.option-card p {
+  font-size: var(--font-size-base);
+  margin-bottom: var(--spacing-lg);
+  text-align: left;
+}
+
+.option-card .btn {
+  width: 100%;
+}
+
+.actions {
+  display: flex;
+  gap: var(--spacing-md);
+  justify-content: center;
+  margin-top: var(--spacing-xl);
+}
+
+.error-message {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: var(--spacing-md);
+  border-radius: var(--radius-md);
+  margin: var(--spacing-lg) 0;
+  border-left: 4px solid #d32f2f;
+}
+
+/* Button Styles */
+.btn-danger {
+  background-color: #d32f2f;
+  color: var(--color-warm-white);
+  border-color: #d32f2f;
+}
+
+.btn-danger:hover:not(:disabled) {
+  background-color: #c62828;
+  border-color: #c62828;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-danger:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .cancel-container, .cancelled-container {
+    padding: var(--spacing-lg);
+  }
+  
+  .cancel-container h1, .cancelled-container h1 {
+    font-size: 2rem;
+  }
+  
+  .cancel-icon, .warning-icon {
+    font-size: 3rem;
+  }
+  
+  .option-cards {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+  }
+  
+  .actions {
+    flex-direction: column;
+  }
+  
+  .booking-details {
+    padding: var(--spacing-md);
+  }
+}

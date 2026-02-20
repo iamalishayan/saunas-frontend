@@ -1,0 +1,131 @@
+/* Booking Success Page Styles */
+.success-container {
+  text-align: center;
+  padding: var(--spacing-3xl);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.success-icon {
+  font-size: 4rem;
+  margin-bottom: var(--spacing-lg);
+  animation: bounceIn 0.6s ease-out;
+}
+
+.warning-icon {
+  font-size: 4rem;
+  margin-bottom: var(--spacing-lg);
+  color: #ff9800;
+}
+
+.success-container h1 {
+  color: var(--color-secondary-green);
+  font-family: var(--font-secondary);
+  font-size: 2.5rem;
+  margin-bottom: var(--spacing-sm);
+}
+
+.success-container h2 {
+  color: var(--color-charcoal);
+  font-size: 1.5rem;
+  margin-bottom: var(--spacing-lg);
+  font-weight: var(--font-weight-medium);
+}
+
+.booking-details, .next-steps {
+  background-color: var(--color-neutral-beige-light);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-lg);
+  margin: var(--spacing-xl) 0;
+  text-align: left;
+}
+
+.booking-details h3, .next-steps h3 {
+  color: var(--color-primary-brown);
+  margin-bottom: var(--spacing-md);
+  font-family: var(--font-secondary);
+}
+
+.booking-details p {
+  margin: var(--spacing-sm) 0;
+  font-size: var(--font-size-base);
+}
+
+.next-steps ul {
+  margin: var(--spacing-md) 0;
+  padding-left: var(--spacing-lg);
+}
+
+.next-steps li {
+  margin: var(--spacing-xs) 0;
+  line-height: 1.5;
+}
+
+.redirect-notice {
+  font-style: italic;
+  color: var(--color-soft-gray);
+  font-size: var(--font-size-sm);
+  margin: var(--spacing-xl) 0;
+}
+
+.actions {
+  display: flex;
+  gap: var(--spacing-md);
+  justify-content: center;
+  margin-top: var(--spacing-xl);
+}
+
+.loading-container, .error-container {
+  text-align: center;
+  padding: var(--spacing-3xl);
+}
+
+.loading-container h2 {
+  color: var(--color-primary-brown);
+  margin: var(--spacing-lg) 0 var(--spacing-md);
+}
+
+.error-container h2 {
+  color: #d32f2f;
+  margin-bottom: var(--spacing-md);
+}
+
+@keyframes bounceIn {
+  0% {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .success-container {
+    padding: var(--spacing-lg);
+  }
+  
+  .success-container h1 {
+    font-size: 2rem;
+  }
+  
+  .success-icon, .warning-icon {
+    font-size: 3rem;
+  }
+  
+  .actions {
+    flex-direction: column;
+  }
+  
+  .booking-details, .next-steps {
+    padding: var(--spacing-md);
+  }
+}

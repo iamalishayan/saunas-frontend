@@ -9,7 +9,7 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ onSidebarToggle, isSidebarOpen = false }) => {
-  const { isAuthenticated } = useAuth();
+  useAuth();
   const location = useLocation();
   const isHomePage = location.pathname === '/';
   const [isScrolled, setIsScrolled] = useState(false);

@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+
 import { getUpcomingTrips, createBooking, createMobileSaunaBooking, initiatePayment, checkMobileSaunaAvailability, getMobileSaunaPricingPreview } from '../services/api';
 import { Trip, BookingFormData, PricingPreviewResponse } from '../types';
 import { useAuth } from '../contexts/AuthContext';
 import MobileSaunaCalendar from '../components/MobileSaunaCalendar/MobileSaunaCalendar';
 import GuestCheckoutFlow from '../components/GuestCheckout/GuestCheckoutFlow';
-import { hasGuestToken, clearGuestToken, getGuestEmail, isTokenExpired, getGuestToken } from '../services/guestAuth';
+import { clearGuestToken, getGuestEmail, isTokenExpired, getGuestToken } from '../services/guestAuth';
 import './Booking.css';
 
 interface MobileSaunaBookingData {
@@ -31,7 +31,7 @@ const Booking: React.FC = () => {
     const [guestVerified, setGuestVerified] = useState<boolean>(false); // Start as false, validate in useEffect
     const [showGuestCheckout, setShowGuestCheckout] = useState<boolean>(false);
     const [guestEmail, setGuestEmail] = useState<string>('');
-    const [guestToken, setGuestToken] = useState<string>('');
+    const [, setGuestToken] = useState<string>('');
     const [bookingData, setBookingData] = useState<BookingFormData>({
         tripId: '',
         vesselId: '',

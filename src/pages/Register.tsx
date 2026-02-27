@@ -172,8 +172,33 @@ const Register: React.FC = () => {
                         // Registration Form State
                         <>
                             <div className="auth-header">
+                                <div style={{ 
+                                    display: 'inline-block', 
+                                    background: 'linear-gradient(135deg, #8b5a2b 0%, #a0522d 100%)', 
+                                    color: 'white', 
+                                    padding: '6px 16px', 
+                                    borderRadius: '20px', 
+                                    fontSize: '12px', 
+                                    fontWeight: 'bold', 
+                                    marginBottom: '12px',
+                                    textTransform: 'uppercase',
+                                    letterSpacing: '1px'
+                                }}>
+                                    🔐 Admin Portal
+                                </div>
                                 <h1>Create Account</h1>
-                                <p>Join us for the ultimate relaxation experience</p>
+                                <p>Admin registration - contact your administrator</p>
+                                <div style={{
+                                    background: '#fff3cd',
+                                    border: '1px solid #ffc107',
+                                    borderRadius: '8px',
+                                    padding: '12px',
+                                    marginTop: '16px',
+                                    fontSize: '14px',
+                                    color: '#856404'
+                                }}>
+                                    <strong>ℹ️ Note:</strong> This registration is for administrators only. Customers don't need accounts - just book directly!
+                                </div>
                             </div>
 
                             {error && (

@@ -4,6 +4,8 @@ import { getUpcomingTrips, createBooking, createMobileSaunaBooking, initiatePaym
 import { Trip, BookingFormData, PricingPreviewResponse } from '../types';
 import { useAuth } from '../contexts/AuthContext';
 import MobileSaunaCalendar from '../components/MobileSaunaCalendar/MobileSaunaCalendar';
+import GuestCheckoutFlow from '../components/GuestCheckout/GuestCheckoutFlow';
+import { hasGuestToken, clearGuestToken, getGuestEmail, isTokenExpired, getGuestToken } from '../services/guestAuth';
 import './Booking.css';
 
 interface MobileSaunaBookingData {
@@ -24,6 +26,12 @@ const Booking: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [selectedTrip, setSelectedTrip] = useState<Trip | null>(null);
     const [showBookingForm, setShowBookingForm] = useState<boolean>(false);
+    
+    // Guest OTP verification state
+    const [guestVerified, setGuestVerified] = useState<boolean>(false); // Start as false, validate in useEffect
+    const [showGuestCheckout, setShowGuestCheckout] = useState<boolean>(false);
+    const [guestEmail, setGuestEmail] = useState<string>('');
+    const [guestToken, setGuestToken] = useState<string>('');
     const [bookingData, setBookingData] = useState<BookingFormData>({
         tripId: '',
         vesselId: '',
@@ -69,6 +77,24 @@ const Booking: React.FC = () => {
     const [agreementAccepted, setAgreementAccepted] = useState<boolean>(false);
     const [agreementHtml, setAgreementHtml] = useState<string>('');
 
+    // Validate guest token on mount
+    useEffect(() => {
+        const token = getGuestToken();
+        const email = getGuestEmail();
+        
+        if (token && email && !isTokenExpired(token)) {
+            setGuestVerified(true);
+            setGuestEmail(email);
+            setGuestToken(token);
+        } else if (token) {
+            // Token exists but is expired - clear it
+            clearGuestToken();
+            setGuestVerified(false);
+            setGuestEmail('');
+            setGuestToken('');
+        }
+    }, []);
+
     useEffect(() => {
         if (!authLoading) {
             fetchUpcomingTrips();
@@ -83,10 +109,30 @@ const Booking: React.FC = () => {
             setTrips(data);
         } catch (err: any) {
             console.error('Error fetching trips:', err);
-            setError(err.message || 'Failed to fetch upcoming trips');
+            
+            // Check if error is token expiration
+            if (err.response?.status === 401 && guestVerified) {
+                // Guest token expired
+                handleClearGuestState();
+                setError('Your session expired. Please verify your email again to continue.');
+            } else {
+                setError(err.message || 'Failed to fetch upcoming trips');
+            }
         } finally {
             setLoading(false);
         }
+    };
+
+    // Clear guest verification state
+    const handleClearGuestState = () => {
+        clearGuestToken();
+        setGuestVerified(false);
+        setGuestEmail('');
+        setGuestToken('');
+        setBookingCreated(false);
+        setPendingBookingId(null);
+        setAgreementAccepted(false);
+        setAgreementHtml('');
     };
 
 
@@ -137,7 +183,7 @@ const Booking: React.FC = () => {
                 startDate: tomorrow,
                 endDate: tomorrow,
                 customerName: '',
-                customerEmail: '',
+                customerEmail: guestVerified ? guestEmail : '',
                 customerBirthdate: '',
                 customerPhone: '',
                 deliveryAddress: '',
@@ -150,13 +196,19 @@ const Booking: React.FC = () => {
                 seatsBooked: 1,
                 isGroup: false,
                 customerName: '',
-                customerEmail: '',
+                customerEmail: guestVerified ? guestEmail : '',
                 customerPhone: ''
             });
         }
         
         setSelectedTrip(trip);
-        setShowBookingForm(true);
+        
+        // If not authenticated and not verified as guest, show OTP flow first
+        if (!isAuthenticated && !guestVerified) {
+            setShowGuestCheckout(true);
+        } else {
+            setShowBookingForm(true);
+        }
     };
 
     // Check availability when dates change
@@ -273,7 +325,8 @@ const Booking: React.FC = () => {
     };
 
     const handleMobileSaunaBooking = async () => {
-        if (!isAuthenticated || !selectedTrip) return;
+        // Allow both authenticated users and verified guests to book
+        if ((!isAuthenticated && !guestVerified) || !selectedTrip) return;
 
         // Clear any previous error
         setError(null);
@@ -429,7 +482,8 @@ const Booking: React.FC = () => {
     };
 
     const handleBookingSubmit = async () => {
-        if (!isAuthenticated || !selectedTrip) return;
+        // Allow both authenticated users and verified guests to book
+        if ((!isAuthenticated && !guestVerified) || !selectedTrip) return;
 
         // Validate customer information for boat/trailer bookings
         if (!bookingData.customerName?.trim()) {
@@ -483,12 +537,18 @@ const Booking: React.FC = () => {
             isGroup: true,
             seatsBooked: trip.vessel.capacity, // Full capacity for group booking
             customerName: '',
-            customerEmail: '',
+            customerEmail: guestVerified ? guestEmail : '',
             customerPhone: ''
         });
         
         setSelectedTrip(trip);
-        setShowBookingForm(true);
+        
+        // If not authenticated and not verified as guest, show OTP flow first
+        if (!isAuthenticated && !guestVerified) {
+            setShowGuestCheckout(true);
+        } else {
+            setShowBookingForm(true);
+        }
     };
 
     if (authLoading) {
@@ -529,9 +589,21 @@ const Booking: React.FC = () => {
                     <div className="error-container booking-glass-panel">
                         <h2>Unable to Load Trips</h2>
                         <p>{error}</p>
-                        <button className="btn btn-primary" onClick={fetchUpcomingTrips}>
-                            Try Again
-                        </button>
+                        {error.includes('session expired') || error.includes('verify your email') ? (
+                            <button 
+                                className="btn btn-primary" 
+                                onClick={() => {
+                                    handleClearGuestState();
+                                    setError(null);
+                                }}
+                            >
+                                Verify Email
+                            </button>
+                        ) : (
+                            <button className="btn btn-primary" onClick={fetchUpcomingTrips}>
+                                Try Again
+                            </button>
+                        )}
                     </div>
                 </div>
                 </div>
@@ -574,9 +646,29 @@ const Booking: React.FC = () => {
 
 
 
-                {!isAuthenticated && (
+                {!isAuthenticated && !guestVerified && (
                     <div className="auth-notice booking-glass-alert booking-glass-alert--info">
-                        <p>You can view dates and pricing without logging in. Please <Link to="/login" style={{color: '#667eea', fontWeight: 'bold', textDecoration: 'underline'}}>Log in</Link> to create a booking.</p>
+                        <p>✨ <strong>No account needed!</strong> View dates and pricing freely. When ready to book, we'll verify your email with a quick code.</p>
+                    </div>
+                )}
+                
+                {!isAuthenticated && guestVerified && (
+                    <div className="auth-notice booking-glass-alert booking-glass-alert--success" style={{background: 'linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%)', border: '1px solid #c3e6cb'}}>
+                        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%'}}>
+                            <p style={{margin: 0}}>✓ <strong>Email verified!</strong> You're all set to complete your booking as <strong>{guestEmail}</strong></p>
+                            <button 
+                                onClick={handleClearGuestState}
+                                className="btn-secondary"
+                                style={{
+                                    padding: '6px 12px',
+                                    fontSize: '0.85rem',
+                                    whiteSpace: 'nowrap',
+                                    marginLeft: '15px'
+                                }}
+                            >
+                                Use Different Email
+                            </button>
+                        </div>
                     </div>
                 )}
                 
@@ -679,7 +771,29 @@ const Booking: React.FC = () => {
                     </div>
                 )}
 
-                {showBookingForm && selectedTrip && (
+                {/* Guest OTP Checkout Modal */}
+                {showGuestCheckout && !isAuthenticated && !guestVerified && (
+                    <div className="trip-details-modal">
+                        <div className="modal-content booking-modal booking-glass-panel" style={{maxWidth: '600px'}}>
+                            <GuestCheckoutFlow
+                                onVerified={(email, token) => {
+                                    setGuestEmail(email);
+                                    setGuestToken(token);
+                                    setGuestVerified(true);
+                                    setShowGuestCheckout(false);
+                                    // Auto-open booking form after verification
+                                    setShowBookingForm(true);
+                                }}
+                                onCancel={() => {
+                                    setShowGuestCheckout(false);
+                                    setSelectedTrip(null);
+                                }}
+                            />
+                        </div>
+                    </div>
+                )}
+
+                {showBookingForm && selectedTrip && (isAuthenticated || guestVerified) && (
                     <div className="trip-details-modal">
                         <div className="modal-content booking-modal booking-glass-panel">
                             <div className="booking-modal__header">
@@ -1091,11 +1205,11 @@ const Booking: React.FC = () => {
                                         
                                         {!bookingCreated ? (
                                             <button 
-                                                className={`btn ${isAuthenticated && isValidMobileSaunaForm() && !processing && !checkingAvailability && (availabilityData?.available || 0) > 0 ? 'btn-primary' : 'btn-disabled'}`}
+                                                className={`btn ${(isAuthenticated || guestVerified) && isValidMobileSaunaForm() && !processing && !checkingAvailability && (availabilityData?.available || 0) > 0 ? 'btn-primary' : 'btn-disabled'}`}
                                                 onClick={handleMobileSaunaBooking}
-                                                disabled={!isAuthenticated || processing || !isValidMobileSaunaForm() || checkingAvailability || (availabilityData?.available || 0) === 0}
+                                                disabled={(!isAuthenticated && !guestVerified) || processing || !isValidMobileSaunaForm() || checkingAvailability || (availabilityData?.available || 0) === 0}
                                             >
-                                                {!isAuthenticated ? '🔒 Login Required' : processing ? 'Creating Booking...' : checkingAvailability ? 'Checking Availability...' : (availabilityData?.available || 0) === 0 ? 'No Units Available' : 'Create Booking'}
+                                                {(!isAuthenticated && !guestVerified) ? '🔒 Verify Email Required' : processing ? 'Creating Booking...' : checkingAvailability ? 'Checking Availability...' : (availabilityData?.available || 0) === 0 ? 'No Units Available' : 'Create Booking'}
                                             </button>
                                         ) : (
                                             <button 
@@ -1223,11 +1337,11 @@ const Booking: React.FC = () => {
                                             Cancel
                                         </button>
                                         <button 
-                                            className={`btn ${isAuthenticated && isValidBoatTrailerForm() && !processing ? 'btn-primary' : 'btn-disabled'}`}
+                                            className={`btn ${(isAuthenticated || guestVerified) && isValidBoatTrailerForm() && !processing ? 'btn-primary' : 'btn-disabled'}`}
                                             onClick={handleBookingSubmit}
-                                            disabled={!isAuthenticated || processing || !isValidBoatTrailerForm()}
+                                            disabled={(!isAuthenticated && !guestVerified) || processing || !isValidBoatTrailerForm()}
                                         >
-                                            {!isAuthenticated ? '🔒 Login Required' : processing ? 'Creating Booking...' : 'Proceed to Payment'}
+                                            {(!isAuthenticated && !guestVerified) ? '🔒 Verify Email Required' : processing ? 'Creating Booking...' : 'Proceed to Payment'}
                                         </button>
                                     </div>
                                 </>

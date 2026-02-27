@@ -13,7 +13,12 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000
 // Add axios interceptor for automatic token attachment and refresh
 axios.interceptors.request.use(
     (config) => {
-        const token = localStorage.getItem('accessToken') || localStorage.getItem('authToken');
+        // Prioritize admin/user token over guest token
+        const userToken = localStorage.getItem('accessToken') || localStorage.getItem('authToken');
+        const guestToken = localStorage.getItem('guestToken');
+        
+        // User/admin tokens take precedence over guest tokens
+        const token = userToken || guestToken;
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }
@@ -36,35 +41,45 @@ axios.interceptors.response.use(
             
             originalRequest._retry = true;
             
-            try {
-                const refreshToken = localStorage.getItem('refreshToken');
-                if (!refreshToken) {
-                    throw new Error('No refresh token available');
+            // Check which token type we're using
+            const userToken = localStorage.getItem('accessToken') || localStorage.getItem('authToken');
+            const guestToken = localStorage.getItem('guestToken');
+            const refreshToken = localStorage.getItem('refreshToken');
+            
+            // If we have a user token, try to refresh it
+            if (userToken && refreshToken) {
+                try {
+                    const response = await axios.post(`${API_BASE_URL}/auth/refresh-token`, {
+                        refreshToken: refreshToken
+                    });
+                    
+                    const { accessToken } = response.data;
+                    localStorage.setItem('accessToken', accessToken);
+                    
+                    // Retry the original request with new token
+                    originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+                    return axios(originalRequest);
+                    
+                } catch (refreshError) {
+                    // Refresh failed, clear storage and redirect to login
+                    localStorage.removeItem('accessToken');
+                    localStorage.removeItem('refreshToken');
+                    localStorage.removeItem('authToken');
+                    localStorage.removeItem('userData');
+                    
+                    // Don't redirect if we're already on the login page
+                    if (window.location.pathname !== '/login') {
+                        window.location.href = '/login';
+                    }
+                    return Promise.reject(refreshError);
                 }
-                
-                const response = await axios.post(`${API_BASE_URL}/auth/refresh-token`, {
-                    refreshToken: refreshToken
-                });
-                
-                const { accessToken } = response.data;
-                localStorage.setItem('accessToken', accessToken);
-                
-                // Retry the original request with new token
-                originalRequest.headers.Authorization = `Bearer ${accessToken}`;
-                return axios(originalRequest);
-                
-            } catch (refreshError) {
-                // Refresh failed, clear storage and redirect to login
-                localStorage.removeItem('accessToken');
-                localStorage.removeItem('refreshToken');
-                localStorage.removeItem('authToken');
-                localStorage.removeItem('userData');
-                
-                // Don't redirect if we're already on the login page
-                if (window.location.pathname !== '/login') {
-                    window.location.href = '/login';
-                }
-                return Promise.reject(refreshError);
+            }
+            
+            // If we're using guest token (no user token), clear it
+            if (!userToken && guestToken) {
+                localStorage.removeItem('guestToken');
+                localStorage.removeItem('guestEmail');
+                return Promise.reject(error);
             }
         }
         
@@ -972,6 +987,20 @@ export const getUserBookings = async (): Promise<any> => {
     } catch (error: any) {
         console.error('Error fetching user bookings:', error);
         throw new Error(error.response?.data?.message || 'Failed to fetch your bookings');
+    }
+};
+
+// Lookup booking by email and booking ID (for guests)
+export const lookupBooking = async (email: string, bookingId: string): Promise<any> => {
+    try {
+        const response = await axios.post(`${API_BASE_URL}/bookings/lookup`, {
+            email,
+            bookingId
+        });
+        return response.data;
+    } catch (error: any) {
+        console.error('Error looking up booking:', error);
+        throw new Error(error.response?.data?.message || 'Failed to find booking');
     }
 };
 

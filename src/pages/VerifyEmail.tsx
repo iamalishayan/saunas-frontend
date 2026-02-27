@@ -93,11 +93,11 @@ const VerifyEmail: React.FC = () => {
               </div>
             ) : (
               <div className="verify-actions">
-                <button className="verify-retry-btn" onClick={() => navigate('/register')}>
-                  Register Again
-                </button>
                 <button className="verify-support-btn" onClick={() => navigate('/contact')}>
                   Contact Support
+                </button>
+                <button className="verify-login-btn" onClick={handleLoginRedirect}>
+                  Go to Home
                 </button>
               </div>
             )}

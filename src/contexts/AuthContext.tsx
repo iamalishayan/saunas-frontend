@@ -5,6 +5,7 @@ import { User, LoginCredentials, RegisterData, AuthResponse } from '../types';
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
+  isAdmin: boolean;
   isLoading: boolean;
   error: string | null;
   login: (credentials: LoginCredentials) => Promise<void>;
@@ -108,6 +109,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
       
       localStorage.setItem('userData', JSON.stringify(user));
       
+      // Clear any guest tokens when admin/user logs in
+      localStorage.removeItem('guestToken');
+      localStorage.removeItem('guestEmail');
+      
       // Update state immediately
       setUser(user);
       
@@ -161,6 +166,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const value: AuthContextType = {
     user,
     isAuthenticated: !!user,
+    isAdmin: user?.role === 'admin',
     isLoading,
     error,
     login,

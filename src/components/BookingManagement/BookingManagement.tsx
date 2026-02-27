@@ -80,8 +80,13 @@ const BookingManagement: React.FC<BookingManagementProps> = ({ isOpen, onClose }
       return;
     }
 
-    const userName = typeof booking.user === 'object' && booking.user ? booking.user.name : 'this user';
-    if (!confirm(`Are you sure you want to cancel this booking for ${userName}?`)) {
+    // Safely handle both guest and user bookings
+    const customerName = booking.customerName || 
+      (typeof booking.user === 'object' && booking.user ? booking.user.name : null) || 
+      booking.customerEmail || 
+      'this customer';
+    
+    if (!confirm(`Are you sure you want to cancel this booking for ${customerName}?`)) {
       return;
     }
 
@@ -245,11 +250,20 @@ const BookingManagement: React.FC<BookingManagementProps> = ({ isOpen, onClose }
                         <td colSpan={8} className="no-results">No bookings found</td>
                       </tr>
                     ) : (
-                      bookings.map(booking => (
+                      bookings.map(booking => {
+                        // Determine if this is a guest or user booking
+                        const isGuestBooking = !booking.user || booking.user === null;
+                        
+                        return (
                         <tr key={booking._id}>
                           <td className="customer-info">
-                            <div className="customer-name">
-                              {booking.customerName || (typeof booking.user === 'object' && booking.user ? booking.user.name : 'Unknown User')}
+                            <div className="customer-header">
+                              <div className="customer-name">
+                                {booking.customerName || (typeof booking.user === 'object' && booking.user ? booking.user.name : 'Unknown User')}
+                              </div>
+                              <span className={`booking-type-badge ${isGuestBooking ? 'guest-badge' : 'user-badge'}`}>
+                                {isGuestBooking ? '👤 Guest' : '🔐 User'}
+                              </span>
                             </div>
                             <div className="customer-email">
                               {booking.customerEmail || (typeof booking.user === 'object' && booking.user ? booking.user.email : 'No email')}
@@ -321,7 +335,8 @@ const BookingManagement: React.FC<BookingManagementProps> = ({ isOpen, onClose }
                             )}
                           </td>
                         </tr>
-                      ))
+                      );
+                      })
                     )}
                   </tbody>
                 </table>

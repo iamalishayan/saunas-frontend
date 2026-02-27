@@ -50,15 +50,9 @@ const Header: React.FC<HeaderProps> = ({ onSidebarToggle, isSidebarOpen = false 
 
           {/* Desktop CTA Buttons */}
           <div className="header__cta">
-            {isAuthenticated ? (
-              <Link to="/booking" className="btn btn-primary">
-                Book Now
-              </Link>
-            ) : (
-              <Link to="/login" className="btn btn-secondary header__login-btn">
-                Login
-              </Link>
-            )}
+            <Link to="/booking" className="btn btn-primary">
+              Book Now
+            </Link>
           </div>
         </div>
       </div>

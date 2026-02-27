@@ -19,7 +19,10 @@ export interface Booking {
   };
   status: 'pending' | 'confirmed' | 'cancelled';
   seatsBooked?: number;
+  numberOfSeats?: number; // Alias for seatsBooked
   totalPriceCents: number;
+  totalAmount?: number; // Alias for totalPriceCents (in cents)
+  paymentStatus?: string; // Stripe payment status
   holdExpiresAt?: string;
   startTime?: string;
   endTime?: string;
@@ -40,6 +43,8 @@ export interface Booking {
   customerPhone?: string;
   deliveryAddress?: string;
   additionalWoodBins?: number; // NEW: 0-10 range
+  deliveryFee?: number; // Delivery fee in cents
+  woodBinsFee?: number; // Wood bins fee in cents
   rulesAgreed?: boolean;
   waiverSigned?: boolean;
   pricingBreakdown?: PricingBreakdown; // NEW: Detailed pricing info
@@ -502,4 +507,33 @@ export interface TriggerRefundCheckResponse {
   message: string;
   processedCount: number;
   refundedBookings: string[];
+}
+
+// Guest OTP Authentication Types
+export interface GuestToken {
+  email: string;
+  type: 'guest';
+  token: string;
+  expiresAt: string;
+}
+
+export interface OTPVerificationRequest {
+  email: string;
+  code: string;
+}
+
+export interface OTPVerificationResponse {
+  message: string;
+  email: string;
+  token: string;
+}
+
+export interface SendOTPRequest {
+  email: string;
+  purpose?: 'booking' | 'staff-verification';
+}
+
+export interface SendOTPResponse {
+  message: string;
+  expiresIn: number; // seconds
 }

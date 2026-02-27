@@ -1,0 +1,339 @@
+/* Guest Checkout Container */
+.guest-checkout-container {
+  min-height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.guest-checkout-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  padding: 40px;
+  max-width: 500px;
+  width: 100%;
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Header */
+.guest-checkout-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.step-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #8b5a2b 0%, #a0522d 100%);
+  color: white;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: bold;
+  margin-bottom: 16px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.guest-checkout-header h2 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #333;
+  margin: 0 0 12px 0;
+}
+
+.guest-checkout-header p {
+  font-size: 16px;
+  color: #666;
+  margin: 8px 0;
+}
+
+.email-display {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 16px;
+  padding: 12px 16px;
+  background: #f0f8ff;
+  border-radius: 8px;
+  font-size: 16px;
+}
+
+.email-display strong {
+  color: #8b5a2b;
+}
+
+.change-email-btn {
+  background: none;
+  border: none;
+  color: #a0522d;
+  font-size: 14px;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 4px 8px;
+}
+
+.change-email-btn:hover:not(:disabled) {
+  color: #8b5a2b;
+}
+
+.change-email-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Form */
+.guest-checkout-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.guest-checkout-form .form-group {
+  margin-bottom: 0;
+}
+
+.guest-checkout-form label {
+  display: block;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.guest-checkout-form input[type="email"] {
+  width: 100%;
+  padding: 14px 16px;
+  font-size: 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  background: white;
+}
+
+.guest-checkout-form input[type="email"]:focus {
+  outline: none;
+  border-color: #a0522d;
+  box-shadow: 0 0 0 3px rgba(160, 82, 45, 0.1);
+}
+
+.guest-checkout-form input[type="email"].error {
+  border-color: #dc3545;
+}
+
+/* OTP Input */
+.otp-form {
+  gap: 20px;
+}
+
+.otp-input-group {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin: 24px 0;
+}
+
+.otp-input {
+  width: 56px;
+  height: 56px;
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  background: white;
+}
+
+.otp-input:focus {
+  outline: none;
+  border-color: #a0522d;
+  box-shadow: 0 0 0 3px rgba(160, 82, 45, 0.1);
+}
+
+.otp-input.error {
+  border-color: #dc3545;
+  animation: shake 0.4s;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-8px); }
+  75% { transform: translateX(8px); }
+}
+
+.otp-input:disabled {
+  background: #f5f5f5;
+  cursor: not-allowed;
+}
+
+/* Buttons */
+.btn-large {
+  padding: 16px 32px;
+  font-size: 16px;
+  font-weight: 600;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Messages */
+.error-message {
+  color: #dc3545;
+  font-size: 14px;
+  margin-top: 8px;
+  display: block;
+}
+
+.error-box {
+  background: #fff5f5;
+  border: 1px solid #ffdddd;
+  border-radius: 8px;
+  padding: 12px;
+  text-align: center;
+  margin: 0;
+}
+
+.success-message {
+  background: #f0fff4;
+  border: 1px solid #c6f6d5;
+  color: #22543d;
+  border-radius: 8px;
+  padding: 12px;
+  text-align: center;
+  font-size: 14px;
+}
+
+/* Info Box */
+.guest-checkout-info {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  margin-top: 8px;
+}
+
+.guest-checkout-info svg {
+  flex-shrink: 0;
+  color: #6c757d;
+  margin-top: 2px;
+}
+
+.guest-checkout-info p {
+  margin: 0;
+  font-size: 14px;
+  color: #495057;
+  line-height: 1.5;
+}
+
+/* Resend */
+.otp-resend {
+  text-align: center;
+  margin-top: -8px;
+}
+
+.btn-link {
+  background: none;
+  border: none;
+  color: #a0522d;
+  font-size: 14px;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 8px;
+}
+
+.btn-link:hover:not(:disabled) {
+  color: #8b5a2b;
+}
+
+.btn-link:disabled {
+  color: #999;
+  cursor: not-allowed;
+  text-decoration: none;
+}
+
+.resend-timer {
+  color: #6c757d;
+  font-size: 14px;
+}
+
+/* Cancel Button */
+.guest-checkout-cancel {
+  text-align: center;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.guest-checkout-cancel button:hover{
+    background-color: #f0f0f0;
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+  .guest-checkout-card {
+    padding: 24px;
+  }
+
+  .guest-checkout-header h2 {
+    font-size: 24px;
+  }
+
+  .otp-input {
+    width: 48px;
+    height: 48px;
+    font-size: 20px;
+  }
+
+  .otp-input-group {
+    gap: 8px;
+  }
+
+  .email-display {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 400px) {
+  .otp-input {
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+  }
+
+  .otp-input-group {
+    gap: 6px;
+  }
+}

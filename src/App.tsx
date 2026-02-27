@@ -10,9 +10,10 @@ import Booking from './pages/Booking';
 import BookingSuccess from './pages/BookingSuccess';
 import BookingCancel from './pages/BookingCancel';
 import MyBookings from './pages/MyBookings';
+import TrackBooking from './pages/TrackBooking';
 import Contact from './pages/Contact';
 import Login from './pages/Login';
-import Register from './pages/Register';
+// import Register from './pages/Register'; // Removed - Admin-only system
 import VerifyEmail from './pages/VerifyEmail';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
@@ -32,14 +33,15 @@ const App = () => {
             <Route path="/booking" element={<Booking />} />
             <Route path="/booking/success" element={<BookingSuccess />} />
             <Route path="/booking/cancel" element={<BookingCancel />} />
+            <Route path="/track-booking" element={<TrackBooking />} />
             <Route path="/my-bookings" element={
               <ProtectedRoute>
                 <MyBookings />
               </ProtectedRoute>
             } />
             <Route path="/contact" element={<Contact />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
+            <Route path="/login" element={<Login />} /> {/* Admin login only - Backend enforces role check */}
+            {/* Register route removed - Only one admin needed. Guests use OTP, Staff created by admin */}
             <Route path="/verify-email/:token" element={<VerifyEmail />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password/:token" element={<ResetPassword />} />

@@ -116,8 +116,22 @@ const Login: React.FC = () => {
             <div className="auth-container">
                 <div className="auth-card glass-card">
                     <div className="auth-header">
+                        <div style={{ 
+                            display: 'inline-block', 
+                            background: 'linear-gradient(135deg, #8b5a2b 0%, #a0522d 100%)', 
+                            color: 'white', 
+                            padding: '6px 16px', 
+                            borderRadius: '20px', 
+                            fontSize: '12px', 
+                            fontWeight: 'bold', 
+                            marginBottom: '12px',
+                            textTransform: 'uppercase',
+                            letterSpacing: '1px'
+                        }}>
+                            🔐 Admin Portal
+                        </div>
                         <h1>Welcome Back</h1>
-                        <p>Login to continue your wellness journey</p>
+                        <p>Administrator and Staff Login</p>
                     </div>
 
                     {showBookingContext && (
@@ -219,16 +233,7 @@ const Login: React.FC = () => {
                         </button>
                     </form>
 
-                    <div className="auth-divider">
-                        <span>or</span>
-                    </div>
-
-                    <div className="auth-redirect">
-                        <p>Don't have an account?</p>
-                        <Link to="/register" className="btn btn-secondary">
-                            Create Account
-                        </Link>
-                    </div>
+                    {/* Registration removed - Admin-only system. Guests use OTP verification */}
                 </div>
             </div>
         </div>

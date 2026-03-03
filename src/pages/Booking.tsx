@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 
 import { getUpcomingTrips, createBooking, createMobileSaunaBooking, initiatePayment, checkMobileSaunaAvailability, getMobileSaunaPricingPreview } from '../services/api';
 import { Trip, BookingFormData, PricingPreviewResponse } from '../types';
 import { useAuth } from '../contexts/AuthContext';
-import MobileSaunaCalendar from '../components/MobileSaunaCalendar/MobileSaunaCalendar';
+// Lazy load calendar component for better performance
+const MobileSaunaCalendar = lazy(() => import('../components/MobileSaunaCalendar/MobileSaunaCalendar'));
 import GuestCheckoutFlow from '../components/GuestCheckout/GuestCheckoutFlow';
 import { clearGuestToken, getGuestEmail, isTokenExpired, getGuestToken } from '../services/guestAuth';
 import './Booking.css';
@@ -845,19 +846,21 @@ const Booking: React.FC = () => {
 
                                     {/* Mobile Sauna Calendar */}
                                     {showCalendar && (
-                                        <MobileSaunaCalendar
-                                            vesselId={selectedTrip.vessel._id}
-                                            selectedStartDate={mobileSaunaData.startDate || null}
-                                            selectedEndDate={mobileSaunaData.endDate || null}
-                                            onDateSelect={(startDate, endDate) => {
-                                                setMobileSaunaData({
-                                                    ...mobileSaunaData,
-                                                    startDate: startDate,
-                                                    endDate: endDate
-                                                });
-                                            }}
-                                            minDays={selectedTrip.vessel.minimumDays || 1}
-                                        />
+                                        <Suspense fallback={<div style={{ textAlign: 'center', padding: '2rem' }}>Loading calendar...</div>}>
+                                            <MobileSaunaCalendar
+                                                vesselId={selectedTrip.vessel._id}
+                                                selectedStartDate={mobileSaunaData.startDate || null}
+                                                selectedEndDate={mobileSaunaData.endDate || null}
+                                                onDateSelect={(startDate, endDate) => {
+                                                    setMobileSaunaData({
+                                                        ...mobileSaunaData,
+                                                        startDate: startDate,
+                                                        endDate: endDate
+                                                    });
+                                                }}
+                                                minDays={selectedTrip.vessel.minimumDays || 1}
+                                            />
+                                        </Suspense>
                                     )}
 
                                     <div className="booking-form mobile-sauna-form">

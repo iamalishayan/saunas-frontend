@@ -6,6 +6,11 @@ import { getFeaturedPosts } from '../services/api';
 import { ServicePost } from '../types';
 import './Home.css';
 
+// Preload Booking component for faster navigation
+const preloadBooking = () => {
+    import('../pages/Booking');
+};
+
 const Home: React.FC = () => {
     const navigate = useNavigate();
     const servicesPreviewRef = useRef<HTMLElement>(null);
@@ -233,11 +238,13 @@ const Home: React.FC = () => {
                         <div 
                             className="bento-card bento-card-large"
                             onClick={() => navigate('/booking')}
+                            onMouseEnter={preloadBooking}
                         >
                             <img 
                                 src="/images/home/floating-sauna.png" 
                                 alt="Floating Sauna" 
                                 className="card-bg"
+                                loading="eager"
                             />
                             <div className="card-overlay"></div>
                             <div className="card-content">
@@ -250,11 +257,13 @@ const Home: React.FC = () => {
                         <div 
                             className="bento-card bento-card-small bento-card-events"
                             onClick={() => navigate('/booking')}
+                            onMouseEnter={preloadBooking}
                         >
                             <img 
                                 src="/images/booking/hero-bg.jpg" 
                                 alt="Mobile Rental" 
                                 className="card-bg"
+                                loading="eager"
                             />
                             <div className="card-overlay"></div>
                             <div className="card-content">
@@ -272,6 +281,7 @@ const Home: React.FC = () => {
                                 src="/images/home/private-events.png" 
                                 alt="Private Events" 
                                 className="card-bg"
+                                loading="eager"
                             />
                             <div className="card-overlay"></div>
                             <div className="card-content">
@@ -303,10 +313,10 @@ const Home: React.FC = () => {
                                 enjoyment. With a dedicated team of sauna experts, we guide each client 
                                 with care and knowledge, making it simple to choose the right solution.
                             </p>
-                            <a className="mobile-rental-btn" href="/booking">Book Now</a>
+                            <a className="mobile-rental-btn" href="/booking" onMouseEnter={preloadBooking}>Book Now</a>
                         </div>
                         <div className="mobile-rental-image">
-                            <img src="/images/mobile-rental/mobile-sauna-rental.png" alt="Mobile Sauna Rental" />
+                            <img src="/images/mobile-rental/mobile-sauna-rental.png" alt="Mobile Sauna Rental" loading="lazy" />
                         </div>
                     </div>
                 </section>
@@ -389,7 +399,7 @@ const Home: React.FC = () => {
                 <section ref={missionRef} className="mission-section">
                     <div className="mission-container">
                         <div className="mission-image">
-                            <img src="/images/mission/mission-bg.png" alt="Luxury Sauna Interior" />
+                            <img src="/images/mission/mission-bg.png" alt="Luxury Sauna Interior" loading="lazy" />
                         </div>
                         <div className="mission-content">
                             <h2>Our Mission</h2>

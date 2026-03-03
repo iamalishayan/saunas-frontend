@@ -1,0 +1,17 @@
+# Allow all crawlers
+User-agent: *
+Allow: /
+
+# Disallow admin and authentication pages
+Disallow: /admin
+Disallow: /login
+Disallow: /register
+Disallow: /reset-password
+Disallow: /verify-email
+
+# Disallow booking management pages (user-specific)
+Disallow: /my-bookings
+Disallow: /track-booking
+
+# Sitemap location
+Sitemap: https://victoriasaunarentals.ca/sitemap.xml

@@ -1,0 +1,17 @@
+{
+  "name": "Victoria Sauna Rentals",
+  "short_name": "Victoria Saunas",
+  "description": "Floating sauna boat rentals and mobile sauna services in Victoria, BC",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1a1a1a",
+  "icons": [
+    {
+      "src": "/vite.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

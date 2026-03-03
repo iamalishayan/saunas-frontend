@@ -10,7 +10,7 @@ interface ImageCarouselProps {
 const ImageCarousel: React.FC<ImageCarouselProps> = ({ 
   images, 
   autoSlide = true, 
-  autoSlideInterval = 5000 
+  autoSlideInterval = 20000
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 

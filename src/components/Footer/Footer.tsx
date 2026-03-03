@@ -11,7 +11,7 @@ const Footer: React.FC = () => {
         <div className="footer__content">
           {/* Brand & Description */}
           <div className="footer__brand">
-            <h3>Sauna Boat Co.</h3>
+            <h3>Victoria Mobile Sauna Rentals</h3>
             <p>
               Experience the ultimate relaxation with our unique floating sauna 
               adventures and mobile sauna rentals. Creating unforgettable wellness 
@@ -87,7 +87,7 @@ const Footer: React.FC = () => {
         {/* Bottom Bar */}
         <div className="footer__bottom">
           <div className="footer__bottom-content">
-            <p>&copy; {currentYear} Sauna Boat Co. All rights reserved.</p>
+            <p>&copy; {currentYear} Victoria Mobile Sauna Rentals. All rights reserved.</p>
             <div className="footer__legal">
               <a href="/privacy">Privacy Policy</a>
               <a href="/terms">Terms of Service</a>

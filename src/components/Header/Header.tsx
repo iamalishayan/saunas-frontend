@@ -44,7 +44,7 @@ const Header: React.FC<HeaderProps> = ({ onSidebarToggle, isSidebarOpen = false 
           {/* Centered Logo/Brand */}
           <div className="header__brand">
             <Link to="/" className="header__logo">
-              <h2>Sauna Boat Co.</h2>
+              <h2>Victoria Mobile Sauna Rentals</h2>
             </Link>
           </div>
 

@@ -74,7 +74,7 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
 
         {/* Content Overlay */}
         <div className="carousel-content">
-          <h1>Welcome to Sauna Boat Co.</h1>
+          <h1>Welcome to Victoria Mobile Sauna Rentals</h1>
           <p>Experience the ultimate relaxation with our unique floating sauna adventures and mobile sauna rentals. Creating unforgettable wellness experiences on and off the water.</p>
           <div className="carousel-cta">
             <a href="/booking" className="btn btn-primary">Book Your Experience</a>

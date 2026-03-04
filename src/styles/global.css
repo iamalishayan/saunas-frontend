@@ -1,5 +1,5 @@
-/* Google Fonts Import */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
+/* Google Fonts - Now loaded in index.html for better performance */
+/* Moved to <link> tag to prevent render-blocking CSS @import */
 
 /* CSS Custom Properties - Design System */
 :root {
@@ -99,6 +99,7 @@ html {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
 }
 
 body {
@@ -106,6 +107,10 @@ body {
   color: var(--color-charcoal);
   font-size: var(--font-size-base);
   line-height: 1.6;
+  overflow-x: hidden;
+  width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 /* Typography Helpers */

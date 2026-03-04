@@ -42,7 +42,7 @@
   position: relative;
   width: 100%;
   min-height: 100vh;
-  background-image: url('/images/aboutus/hero-bg.png');
+  background-image: url('/images/aboutus/hero-bg.webp');
   background-size: cover;
   background-position: center left;
   background-repeat: no-repeat;
@@ -165,6 +165,7 @@
   .aboutus-hero-full {
     padding: 100px 1.5rem 2rem;
     background-position: center;
+    background-image: url('/images/aboutus/hero-bg-mobile.webp');
   }
 
   .aboutus-hero-overlay {

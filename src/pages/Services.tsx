@@ -172,7 +172,13 @@ const Services: React.FC = () => {
                     >
                       {post.image && (
                         <div className="post-image">
-                          <img src={post.image} alt={post.title} />
+                          <img 
+                            src={post.image} 
+                            alt={post.title}
+                            width="800"
+                            height="600"
+                            style={{ width: '100%', height: 'auto' }}
+                          />
                         </div>
                       )}
                       <div className="post-header">
@@ -205,7 +211,13 @@ const Services: React.FC = () => {
                   >
                     {post.image && (
                       <div className="post-image">
-                        <img src={post.image} alt={post.title} />
+                        <img 
+                          src={post.image} 
+                          alt={post.title}
+                          width="800"
+                          height="600"
+                          style={{ width: '100%', height: 'auto' }}
+                        />
                       </div>
                     )}
                     <div className="post-header">

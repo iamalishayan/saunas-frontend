@@ -362,7 +362,14 @@ const BlogManagement: React.FC<BlogManagementProps> = ({ isOpen, onClose }) => {
 
                   {imagePreview && (
                     <div className="image-preview-container">
-                      <img src={imagePreview} alt="Preview" className="image-preview" />
+                      <img 
+                        src={imagePreview} 
+                        alt="Preview" 
+                        className="image-preview"
+                        width="800"
+                        height="600"
+                        style={{ width: '100%', height: 'auto' }}
+                      />
                       <button
                         type="button"
                         className="remove-image-btn"
@@ -505,7 +512,13 @@ const BlogManagement: React.FC<BlogManagementProps> = ({ isOpen, onClose }) => {
                     <div key={post._id} className="post-card">
                       {post.image && (
                         <div className="post-image">
-                          <img src={post.image} alt={post.title} />
+                          <img 
+                            src={post.image} 
+                            alt={post.title}
+                            width="800"
+                            height="600"
+                            style={{ width: '100%', height: 'auto' }}
+                          />
                         </div>
                       )}
                       <div className="post-content">

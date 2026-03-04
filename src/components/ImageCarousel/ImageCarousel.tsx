@@ -1,8 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import './ImageCarousel.css';
 
+interface CarouselImage {
+  desktop: string;
+  mobile: string;
+}
+
 interface ImageCarouselProps {
-  images: string[];
+  images: CarouselImage[];
   autoSlide?: boolean;
   autoSlideInterval?: number;
 }
@@ -45,8 +50,18 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
           <div
             key={index}
             className={`carousel-slide ${index === currentIndex ? 'active' : ''}`}
-            style={{ backgroundImage: `url(${image})` }}
           >
+            <img
+              src={image.mobile}
+              srcSet={`${image.mobile} 800w, ${image.desktop} 1536w`}
+              sizes="(max-width: 768px) 100vw, 1536px"
+              alt={`Sauna experience ${index + 1}`}
+              className="carousel-slide-img"
+              loading={index === 0 ? 'eager' : 'lazy'}
+              fetchPriority={index === 0 ? 'high' : 'auto'}
+              width="1536"
+              height="1024"
+            />
             <div className="carousel-overlay" />
           </div>
         ))}
@@ -74,7 +89,14 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
 
         {/* Content Overlay */}
         <div className="carousel-content">
-          <h1>Welcome to Victoria Mobile Sauna Rentals</h1>
+          <h1 style={{ 
+            fontFamily: "'Playfair Display', Georgia, serif",
+            fontSize: 'clamp(2rem, 5vw, 4rem)',
+            fontWeight: 700,
+            lineHeight: 1.2
+          }}>
+            Welcome to Victoria Mobile Sauna Rentals
+          </h1>
           <p>Experience the ultimate relaxation with our unique floating sauna adventures and mobile sauna rentals. Creating unforgettable wellness experiences on and off the water.</p>
           <div className="carousel-cta">
             <a href="/booking" className="btn btn-primary">Book Your Experience</a>

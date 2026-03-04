@@ -5,8 +5,10 @@ import Layout from './components/Layout/Layout';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 import './App.css';
 
-// Lazy load all pages for better performance (code splitting)
-const Home = lazy(() => import('./pages/Home'));
+// Eagerly load Home - it's the landing page and critical for LCP
+import Home from './pages/Home';
+
+// Lazy load all other pages for better performance (code splitting)
 const AboutUs = lazy(() => import('./pages/AboutUs'));
 const Services = lazy(() => import('./pages/Services'));
 const BlogPost = lazy(() => import('./pages/BlogPost'));

@@ -507,7 +507,7 @@
   padding: var(--spacing-3xl) var(--spacing-lg);
   /* margin: var(--spacing-3xl) 0; */
   margin-bottom: 0px;
-  background: url('/images/home/wood-texture.png');
+  background: url('/images/home/wood-texture.webp');
   background-size: cover;
   background-position: center;
   border-radius: var(--border-radius);
@@ -824,7 +824,7 @@
 .expectations-section {
   padding: var(--spacing-3xl) 0;
   margin: var(--spacing-3xl) 0;
-  background: url('/images/home/wood-texture.png');
+  background: url('/images/home/wood-texture.webp');
   background-size: cover;
   background-position: center;
   position: relative;

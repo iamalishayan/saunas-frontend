@@ -237,7 +237,14 @@ const BlogPost: React.FC = () => {
                 >
                   {relatedPost.image && (
                     <div className="related-post-image">
-                      <img src={relatedPost.image} alt={relatedPost.title} />
+                      <img 
+                        src={relatedPost.image} 
+                        alt={relatedPost.title}
+                        loading="lazy"
+                        width="800"
+                        height="600"
+                        style={{ width: '100%', height: 'auto' }}
+                      />
                     </div>
                   )}
                   <div className="related-post-content">

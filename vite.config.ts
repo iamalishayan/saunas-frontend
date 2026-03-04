@@ -32,7 +32,7 @@ export default defineConfig({
         manualChunks: {
           // Vendor chunks
           'react-vendor': ['react', 'react-dom', 'react-router-dom'],
-          'icons': ['react-icons/fa', 'react-icons/md'],
+          'icons': ['react-icons/fa'],
           'utils': ['axios']
         }
       }

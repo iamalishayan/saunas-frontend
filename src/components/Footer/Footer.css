@@ -3,6 +3,7 @@
   background-color: var(--color-charcoal);
   color: var(--color-warm-white);
   margin-top: auto;
+  min-height: 400px; /* Prevent CLS by reserving space */
 }
 
 .footer__content {
@@ -10,6 +11,7 @@
   grid-template-columns: 2fr 1fr 1fr 1fr;
   gap: var(--spacing-3xl);
   padding: var(--spacing-4xl) 0 var(--spacing-3xl);
+  min-height: 300px; /* Prevent collapse during load */
 }
 
 /* Brand Section */

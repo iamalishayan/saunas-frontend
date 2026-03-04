@@ -25,10 +25,10 @@ const Home: React.FC = () => {
     const [featuredPosts, setFeaturedPosts] = useState<ServicePost[]>([]);
     const [blogLoading, setBlogLoading] = useState<boolean>(true);
     const carouselImages = [
-        '/images/carousel/sauna1.png',
-        '/images/carousel/sauna2.png',
-        '/images/carousel/sauna3.png',
-        '/images/carousel/sauna4.png'
+        { desktop: '/images/carousel/sauna1.webp', mobile: '/images/carousel/sauna1-mobile.webp' },
+        { desktop: '/images/carousel/sauna2.webp', mobile: '/images/carousel/sauna2-mobile.webp' },
+        { desktop: '/images/carousel/sauna3.webp', mobile: '/images/carousel/sauna3-mobile.webp' },
+        { desktop: '/images/carousel/sauna4.webp', mobile: '/images/carousel/sauna4-mobile.webp' }
     ];
 
     // Scroll to top when component mounts
@@ -241,10 +241,15 @@ const Home: React.FC = () => {
                             onMouseEnter={preloadBooking}
                         >
                             <img 
-                                src="/images/home/floating-sauna.png" 
+                                src="/images/home/floating-sauna-mobile.webp" 
+                                srcSet="/images/home/floating-sauna-mobile.webp 800w, /images/home/floating-sauna.webp 1024w"
+                                sizes="(max-width: 768px) 100vw, 50vw"
                                 alt="Floating Sauna" 
                                 className="card-bg"
-                                loading="eager"
+                                loading="lazy"
+                                width="1024"
+                                height="1024"
+                                style={{ width: '100%', height: 'auto' }}
                             />
                             <div className="card-overlay"></div>
                             <div className="card-content">
@@ -260,10 +265,15 @@ const Home: React.FC = () => {
                             onMouseEnter={preloadBooking}
                         >
                             <img 
-                                src="/images/booking/hero-bg.jpg" 
+                                src="/images/booking/hero-bg-mobile.webp" 
+                                srcSet="/images/booking/hero-bg-mobile.webp 800w, /images/booking/hero-bg.webp 1920w"
+                                sizes="(max-width: 768px) 100vw, 50vw"
                                 alt="Mobile Rental" 
                                 className="card-bg"
-                                loading="eager"
+                                loading="lazy"
+                                width="1920"
+                                height="1080"
+                                style={{ width: '100%', height: 'auto' }}
                             />
                             <div className="card-overlay"></div>
                             <div className="card-content">
@@ -278,10 +288,15 @@ const Home: React.FC = () => {
                             onClick={() => navigate('/services')}
                         >
                             <img 
-                                src="/images/home/private-events.png" 
+                                src="/images/home/private-events-mobile.webp" 
+                                srcSet="/images/home/private-events-mobile.webp 800w, /images/home/private-events.webp 1024w"
+                                sizes="(max-width: 768px) 100vw, 50vw"
                                 alt="Private Events" 
                                 className="card-bg"
-                                loading="eager"
+                                loading="lazy"
+                                width="1024"
+                                height="1024"
+                                style={{ width: '100%', height: 'auto' }}
                             />
                             <div className="card-overlay"></div>
                             <div className="card-content">
@@ -316,7 +331,16 @@ const Home: React.FC = () => {
                             <a className="mobile-rental-btn" href="/booking" onMouseEnter={preloadBooking}>Book Now</a>
                         </div>
                         <div className="mobile-rental-image">
-                            <img src="/images/mobile-rental/mobile-sauna-rental.png" alt="Mobile Sauna Rental" loading="lazy" />
+                            <img 
+                                src="/images/mobile-rental/mobile-sauna-rental-mobile.webp" 
+                                srcSet="/images/mobile-rental/mobile-sauna-rental-mobile.webp 800w, /images/mobile-rental/mobile-sauna-rental.webp 1024w"
+                                sizes="(max-width: 768px) 100vw, 50vw"
+                                alt="Mobile Sauna Rental" 
+                                loading="lazy"
+                                width="1024"
+                                height="1024"
+                                style={{ width: '100%', height: 'auto' }}
+                            />
                         </div>
                     </div>
                 </section>
@@ -356,37 +380,37 @@ const Home: React.FC = () => {
                     <h2>Why Choose Sauna Therapy?</h2>
                     <p className="benefits-subtitle">Discover the proven health benefits of regular sauna use</p>
                     <div className="benefits-grid">
-                        <div className="benefit-card" style={{backgroundImage: 'url(/images/benefits/stress-relief.jpg)'}}>
+                        <div className="benefit-card" style={{backgroundImage: 'url(/images/benefits/stress-relief.webp)'}}>
                             <div className="benefit-content">
                                 <h3>Stress Relief</h3>
                                 <p>Reduce cortisol levels and promote deep relaxation through heat therapy</p>
                             </div>
                         </div>
-                        <div className="benefit-card" style={{backgroundImage: 'url(/images/benefits/heart-health.png)'}}>
+                        <div className="benefit-card" style={{backgroundImage: 'url(/images/benefits/heart-health.webp)'}}>
                             <div className="benefit-content">
                                 <h3>Heart Health</h3>
                                 <p>Improve cardiovascular function and circulation with regular sauna sessions</p>
                             </div>
                         </div>
-                        <div className="benefit-card" style={{backgroundImage: 'url(/images/benefits/better-sleep.png)'}}>
+                        <div className="benefit-card" style={{backgroundImage: 'url(/images/benefits/better-sleep.webp)'}}>
                             <div className="benefit-content">
                                 <h3>Better Sleep</h3>
                                 <p>Enhance sleep quality through natural body temperature regulation</p>
                             </div>
                         </div>
-                        <div className="benefit-card" style={{backgroundImage: 'url(/images/benefits/skin-health.jpg)'}}>
+                        <div className="benefit-card" style={{backgroundImage: 'url(/images/benefits/skin-health.webp)'}}>
                             <div className="benefit-content">
                                 <h3>Skin Health</h3>
                                 <p>Cleanse pores deeply and improve skin elasticity through sweating</p>
                             </div>
                         </div>
-                        <div className="benefit-card" style={{backgroundImage: 'url(/images/benefits/detoxification.jpg)'}}>
+                        <div className="benefit-card" style={{backgroundImage: 'url(/images/benefits/detoxification.webp)'}}>
                             <div className="benefit-content">
                                 <h3>Detoxification</h3>
                                 <p>Eliminate toxins naturally while boosting your immune system</p>
                             </div>
                         </div>
-                        <div className="benefit-card" style={{backgroundImage: 'url(/images/benefits/muscle-recovery.jpg)'}}>
+                        <div className="benefit-card" style={{backgroundImage: 'url(/images/benefits/muscle-recovery.webp)'}}>
                             <div className="benefit-content">
                                 <h3>Muscle Recovery</h3>
                                 <p>Accelerate recovery and reduce muscle soreness after workouts</p>
@@ -399,7 +423,16 @@ const Home: React.FC = () => {
                 <section ref={missionRef} className="mission-section">
                     <div className="mission-container">
                         <div className="mission-image">
-                            <img src="/images/mission/mission-bg.png" alt="Luxury Sauna Interior" loading="lazy" />
+                            <img 
+                                src="/images/mission/mission-bg-mobile.webp" 
+                                srcSet="/images/mission/mission-bg-mobile.webp 800w, /images/mission/mission-bg.webp 1024w"
+                                sizes="(max-width: 768px) 100vw, 50vw"
+                                alt="Luxury Sauna Interior" 
+                                loading="lazy"
+                                width="1024"
+                                height="1024"
+                                style={{ width: '100%', height: 'auto' }}
+                            />
                         </div>
                         <div className="mission-content">
                             <h2>Our Mission</h2>
@@ -517,7 +550,14 @@ const Home: React.FC = () => {
                                 >
                                     {post.image && (
                                         <div className="blog-image-container">
-                                            <img src={post.image} alt={post.title} loading="lazy" />
+                                            <img 
+                                                src={post.image} 
+                                                alt={post.title} 
+                                                loading="lazy"
+                                                width="800"
+                                                height="600"
+                                                style={{ width: '100%', height: 'auto' }}
+                                            />
                                             <div className="blog-image-overlay">
                                                 <div className="featured-glass-badge">Featured</div>
                                             </div>

@@ -30,17 +30,8 @@ const BookingSuccess: React.FC = () => {
             const status = await checkPaymentStatus(bookingId);
             setPaymentStatus(status);
             
-            // Auto-redirect after showing success message
             if (status.paymentStatus === 'succeeded') {
-                setTimeout(() => {
-                    // Redirect authenticated users to their bookings page
-                    // Redirect guests to track booking page
-                    if (isAuthenticated) {
-                        navigate('/my-bookings');
-                    } else {
-                        navigate('/booking');
-                    }
-                }, 8000);
+                // No auto-redirect — user navigates manually via buttons
             }
         } catch (err: any) {
             console.log('Payment verification failed, showing generic success:', err.message);
@@ -51,14 +42,6 @@ const BookingSuccess: React.FC = () => {
                 message: 'Payment completed successfully',
                 bookingId: bookingId
             });
-            setTimeout(() => {
-                // Redirect based on authentication status
-                if (isAuthenticated) {
-                    navigate('/my-bookings');
-                } else {
-                    navigate('/booking');
-                }
-            }, 8000);
         } finally {
             setLoading(false);
         }
@@ -116,19 +99,15 @@ const BookingSuccess: React.FC = () => {
                                 <p><strong>Status:</strong> {paymentStatus.paymentStatus}</p>
                             </div>
 
-                            <div className="next-steps">{isAuthenticated ? 'your bookings page' : 'the booking page'}
+                            <div className="next-steps">{isAuthenticated ? 'your bookings page' : 'The Booking page'}
                                 <h3>What's Next?</h3>
                                 <ul>
                                     <li>You will receive a confirmation email shortly</li>
-                                    <li>Please arrive 15 minutes before departure time</li>
-                                    <li>Bring towels and any personal items you might need</li>
                                     <li>Contact us if you have any questions</li>
                                 </ul>
                             </div>
 
-                            <p className="redirect-notice">
-                                You will be redirected to your bookings page in 8 seconds...
-                            </p>
+
                         </>
                     ) : (
                         <>

@@ -58,6 +58,16 @@ body.sidebar-open {
   overflow: hidden;
 }
 
+/* Click-outside backdrop — sits above content but below sidebar */
+.sidebar-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 998; /* just below the sidebar (which should be 999+) */
+  background: transparent;
+  cursor: pointer;
+}
+
+
 /* Responsive adjustments */
 @media (max-width: 767px) {
   .layout__main .page-content {

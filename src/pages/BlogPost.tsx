@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getPostBySlug, getPublishedPosts } from '../services/api';
 import { ServicePost } from '../types';
+import { getResponsiveImageProps, getOptimizedImageUrl } from '../utils/imageUtils';
 import './BlogPost.css';
 
 const BlogPost: React.FC = () => {
@@ -140,7 +141,7 @@ const BlogPost: React.FC = () => {
   return (
     <div className="blog-post-page">
       {/* Hero Section with Post Image */}
-      <section className="blog-post-hero" style={{ backgroundImage: post.image ? `url(${post.image})` : undefined }}>
+      <section className="blog-post-hero" style={{ backgroundImage: post.image ? `url(${getOptimizedImageUrl(post.image, post.imageVariants, 'desktop')})` : undefined }}>
         <div className="blog-post-hero-overlay"></div>
         <div className="blog-post-hero-content">
           <div className="breadcrumb">
@@ -238,7 +239,10 @@ const BlogPost: React.FC = () => {
                   {relatedPost.image && (
                     <div className="related-post-image">
                       <img 
-                        src={relatedPost.image} 
+                        {...(() => {
+                          const props = getResponsiveImageProps(relatedPost.image!, relatedPost.imageVariants);
+                          return { src: props.src, srcSet: props.srcSet, sizes: props.sizes };
+                        })()}
                         alt={relatedPost.title}
                         loading="lazy"
                         width="800"

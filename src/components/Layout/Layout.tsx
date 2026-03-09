@@ -54,6 +54,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     <div className={`layout ${isHomePage ? 'layout--home' : ''}`}>
       <Header onSidebarToggle={toggleSidebar} isSidebarOpen={isSidebarOpen} />
       <Sidebar isOpen={isSidebarOpen} onClose={closeSidebar} />
+      {/* Click-outside overlay — closes sidebar when user clicks anywhere else */}
+      {isSidebarOpen && (
+        <div className="sidebar-backdrop" onClick={closeSidebar} aria-hidden="true" />
+      )}
       <main className="layout__main">
         {children}
       </main>

@@ -4,6 +4,7 @@ import ImageCarousel from '../components/ImageCarousel/ImageCarousel';
 import { FaTruck, FaHandshake, FaShieldAlt, FaHeart, FaPlus, FaMinus, FaCalendar, FaClock, FaTag, FaArrowRight, FaQuoteLeft, FaStar } from 'react-icons/fa';
 import { getFeaturedPosts } from '../services/api';
 import { ServicePost } from '../types';
+import { getResponsiveImageProps } from '../utils/imageUtils';
 import './Home.css';
 
 // Preload Booking component for faster navigation
@@ -551,7 +552,10 @@ const Home: React.FC = () => {
                                     {post.image && (
                                         <div className="blog-image-container">
                                             <img 
-                                                src={post.image} 
+                                                {...(() => {
+                                                    const props = getResponsiveImageProps(post.image!, post.imageVariants);
+                                                    return { src: props.src, srcSet: props.srcSet, sizes: props.sizes };
+                                                })()}
                                                 alt={post.title} 
                                                 loading="lazy"
                                                 width="800"

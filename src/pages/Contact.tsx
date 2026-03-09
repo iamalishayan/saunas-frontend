@@ -381,7 +381,7 @@ const Contact: React.FC = () => {
                   <FaEnvelope />
                 </div>
                 <h3>Email Us</h3>
-                <p className="card-value">hello@havnsaunas.com</p>
+                <p className="card-value">Info@victoriasaunarentals.ca</p>
                 <p className="card-subtitle">We reply within 24 hours</p>
               </div>
 

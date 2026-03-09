@@ -20,6 +20,7 @@ const TrackBooking = lazy(() => import('./pages/TrackBooking'));
 const Contact = lazy(() => import('./pages/Contact'));
 const Login = lazy(() => import('./pages/Login'));
 const VerifyEmail = lazy(() => import('./pages/VerifyEmail'));
+const StaffVerifyEmail = lazy(() => import('./pages/StaffVerifyEmail'));
 const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
 const ResetPassword = lazy(() => import('./pages/ResetPassword'));
 const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
@@ -62,6 +63,7 @@ const App = () => {
               <Route path="/login" element={<Login />} /> {/* Admin login only - Backend enforces role check */}
               {/* Register route removed - Only one admin needed. Guests use OTP, Staff created by admin */}
               <Route path="/verify-email/:token" element={<VerifyEmail />} />
+              <Route path="/staff/verify-email/:token" element={<StaffVerifyEmail />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/reset-password/:token" element={<ResetPassword />} />
               <Route path="/admin" element={

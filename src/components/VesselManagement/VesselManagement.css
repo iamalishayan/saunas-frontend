@@ -441,6 +441,42 @@
   font-style: italic;
 }
 
+/* Weekly boundary toggle */
+.form-group--checkbox {
+  background: rgba(245, 240, 232, 0.6);
+  border: 1px solid var(--color-neutral-beige-dark);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-sm) var(--spacing-md);
+}
+
+.checkbox-toggle-label {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  cursor: pointer;
+  font-weight: var(--font-weight-semibold) !important;
+  margin-bottom: 0 !important;
+}
+
+.checkbox-toggle-label input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: var(--color-secondary-green);
+  flex-shrink: 0;
+}
+
+.checkbox-toggle-text {
+  color: var(--color-charcoal);
+  font-size: var(--font-size-sm);
+}
+
+.form-group--checkbox .field-hint {
+  margin-top: var(--spacing-xs);
+  margin-left: 26px; /* align under text, past the checkbox */
+}
+
+
 .mobile-sauna-details {
   display: flex;
   flex-direction: column;

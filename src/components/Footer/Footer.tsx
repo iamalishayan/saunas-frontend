@@ -51,10 +51,10 @@ const Footer: React.FC = () => {
           <div className="footer__services">
             <h4>Services</h4>
             <ul>
-              <li><a href="#boat-sauna">Floating Sauna Trips</a></li>
-              <li><a href="#mobile-sauna">Mobile Sauna Rentals</a></li>
-              <li><a href="#group-bookings">Group Charters</a></li>
-              <li><a href="#private-events">Private Events</a></li>
+              <li><Link to="/booking">Mobile Sauna Rental</Link></li>
+              <li><Link to="/booking">Backyard Delivery</Link></li>
+              <li><Link to="/booking">Private Events</Link></li>
+              <li><Link to="/booking">Corporate Wellness</Link></li>
             </ul>
           </div>
 
@@ -72,7 +72,7 @@ const Footer: React.FC = () => {
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
                 </svg>
-                <span>hello@saunaboatco.com</span>
+                <span>Info@victoriasaunarentals.ca</span>
               </div>
               <div className="footer__contact-item">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">

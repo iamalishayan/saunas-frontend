@@ -1333,3 +1333,54 @@ export const deleteContact = async (contactId: string): Promise<void> => {
         throw new Error(error.response?.data?.message || 'Failed to delete contact');
     }
 };
+
+// ─── Staff Management ────────────────────────────────────────────────────────
+
+export const getStaffList = async (): Promise<any[]> => {
+    try {
+        const response = await axios.get(`${API_BASE_URL}/staff`);
+        return response.data.staff || [];
+    } catch (error: any) {
+        throw new Error(error.response?.data?.message || 'Failed to fetch staff');
+    }
+};
+
+export const createStaffMember = async (data: { name: string; email: string; phone?: string }): Promise<any> => {
+    try {
+        const response = await axios.post(`${API_BASE_URL}/staff`, data);
+        return response.data;
+    } catch (error: any) {
+        throw new Error(error.response?.data?.message || 'Failed to create staff member');
+    }
+};
+
+export const updateStaffMember = async (
+    id: string,
+    data: { name?: string; email?: string; phone?: string; isActive?: boolean }
+): Promise<any> => {
+    try {
+        const response = await axios.put(`${API_BASE_URL}/staff/${id}`, data);
+        return response.data;
+    } catch (error: any) {
+        throw new Error(error.response?.data?.message || 'Failed to update staff member');
+    }
+};
+
+export const deactivateStaffMember = async (id: string): Promise<any> => {
+    try {
+        const response = await axios.delete(`${API_BASE_URL}/staff/${id}`);
+        return response.data;
+    } catch (error: any) {
+        throw new Error(error.response?.data?.message || 'Failed to deactivate staff member');
+    }
+};
+
+export const verifyStaffEmail = async (token: string): Promise<any> => {
+    try {
+        const response = await axios.get(`${API_BASE_URL}/staff/verify-email/${token}`);
+        return response.data;
+    } catch (error: any) {
+        throw new Error(error.response?.data?.message || 'Failed to verify staff email');
+    }
+};
+

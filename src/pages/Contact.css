@@ -421,6 +421,7 @@
   overflow: hidden;
   margin: 0 auto 3rem;
   max-width: 850px;
+  margin-top: 2.5rem;
 }
 
 /* Subtle gradient overlay for depth */

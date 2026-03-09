@@ -278,8 +278,7 @@ const TrackBooking: React.FC = () => {
                             <div className="track-info-box">
                                 <h4>📧 Need Help?</h4>
                                 <p>If you have questions about your booking, please contact our support team:</p>
-                                <p><strong>Email:</strong> hello@saunaboatco.com</p>
-                                <p><strong>Phone:</strong> (555) 123-4567</p>
+                                <p><strong>Email:</strong> Info@victoriasaunarentals.ca</p>
                             </div>
 
                         </div>{/* /track-booking-details */}

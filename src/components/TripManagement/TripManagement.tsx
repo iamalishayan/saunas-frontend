@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { createTrip, listTrips, updateTrip, deleteTrip, notifyTripStaff, listVessels, getStaffMembers } from '../../services/api';
 import { Trip, TripFormData, Vessel, User } from '../../types';
 import './TripManagement.css';
@@ -24,6 +24,13 @@ const TripManagement: React.FC<TripManagementProps> = ({ isOpen, onClose }) => {
     durationMinutes: 180,
     assignedStaff: []
   });
+
+  // Derive the selected vessel's type to conditionally show/hide fields
+  const selectedVessel = useMemo(
+    () => vessels.find(v => v._id === formData.vesselId),
+    [vessels, formData.vesselId]
+  );
+  const isMobileSauna = selectedVessel?.type === 'mobile_sauna';
 
   useEffect(() => {
     if (isOpen) {
@@ -58,7 +65,6 @@ const TripManagement: React.FC<TripManagementProps> = ({ isOpen, onClose }) => {
   const fetchStaffMembers = async () => {
     try {
       const response = await getStaffMembers();
-      // Handle the response format from getStaffMembers
       const staffList = response.staff || response;
       setStaffMembers(Array.isArray(staffList) ? staffList : []);
     } catch (err: any) {
@@ -85,18 +91,15 @@ const TripManagement: React.FC<TripManagementProps> = ({ isOpen, onClose }) => {
     try {
       if (editingTrip) {
         await updateTrip(editingTrip._id, formData);
-        // Re-fetch trips to ensure vessel data is properly populated
         await fetchTrips(false);
         setSuccessMessage('Trip updated successfully');
       } else {
         await createTrip(formData);
-        // Re-fetch trips to ensure consistency
         await fetchTrips(false);
         setSuccessMessage('Trip created successfully');
       }
       
       resetForm();
-      
       setTimeout(() => setSuccessMessage(null), 3000);
     } catch (err: any) {
       setError(err.message || 'Failed to save trip');
@@ -109,7 +112,9 @@ const TripManagement: React.FC<TripManagementProps> = ({ isOpen, onClose }) => {
     setFormData({
       vesselId: trip.vessel?._id || '',
       title: trip.title || '',
-      departureTime: new Date(trip.departureTime).toISOString().slice(0, -1), // Remove Z for datetime-local
+      departureTime: trip.departureTime
+        ? new Date(trip.departureTime).toISOString().slice(0, -1)
+        : '',
       durationMinutes: trip.durationMinutes || 180,
       assignedStaff: trip.assignedStaff?.map(staff => staff._id) || []
     });
@@ -160,27 +165,22 @@ const TripManagement: React.FC<TripManagementProps> = ({ isOpen, onClose }) => {
   const formatDateTime = (dateString: string): string => {
     const date = new Date(dateString);
     return date.toLocaleString('en-US', { 
-      year: 'numeric', 
-      month: 'short', 
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+      year: 'numeric', month: 'short', day: 'numeric',
+      hour: '2-digit', minute: '2-digit'
     });
   };
 
   const formatDuration = (minutes: number): string => {
     const hours = Math.floor(minutes / 60);
-    const mins = minutes % 60;
-    if (hours > 0) {
-      return mins > 0 ? `${hours}h ${mins}m` : `${hours}h`;
-    }
+    const mins  = minutes % 60;
+    if (hours > 0) return mins > 0 ? `${hours}h ${mins}m` : `${hours}h`;
     return `${mins}m`;
   };
 
   const handleStaffSelection = (staffId: string, isSelected: boolean) => {
     setFormData(prev => ({
       ...prev,
-      assignedStaff: isSelected 
+      assignedStaff: isSelected
         ? [...prev.assignedStaff, staffId]
         : prev.assignedStaff.filter(id => id !== staffId)
     }));
@@ -205,12 +205,10 @@ const TripManagement: React.FC<TripManagementProps> = ({ isOpen, onClose }) => {
           )}
 
           {successMessage && (
-            <div className="success-message">
-              {successMessage}
-            </div>
+            <div className="success-message">{successMessage}</div>
           )}
 
-          <button 
+          <button
             className="create-trip-btn"
             onClick={() => setShowCreateForm(true)}
           >
@@ -222,6 +220,7 @@ const TripManagement: React.FC<TripManagementProps> = ({ isOpen, onClose }) => {
               <h3>{editingTrip ? 'Edit Trip' : 'Create New Trip'}</h3>
               <form onSubmit={handleSubmit} className="trip-form">
                 <div className="form-row">
+                  {/* Vessel selector — always shown */}
                   <div className="form-group">
                     <label htmlFor="vessel">Vessel *</label>
                     <select
@@ -239,31 +238,50 @@ const TripManagement: React.FC<TripManagementProps> = ({ isOpen, onClose }) => {
                     </select>
                   </div>
 
-                  <div className="form-group">
-                    <label htmlFor="departureTime">Departure Time *</label>
-                    <input
-                      type="datetime-local"
-                      id="departureTime"
-                      value={formData.departureTime}
-                      onChange={(e) => setFormData(prev => ({ ...prev, departureTime: e.target.value }))}
-                      required
-                    />
-                  </div>
+                  {/* Departure Time — hidden for mobile saunas */}
+                  {!isMobileSauna && (
+                    <div className="form-group">
+                      <label htmlFor="departureTime">Departure Time *</label>
+                      <input
+                        type="datetime-local"
+                        id="departureTime"
+                        value={formData.departureTime}
+                        onChange={(e) => setFormData(prev => ({ ...prev, departureTime: e.target.value }))}
+                        required
+                      />
+                    </div>
+                  )}
                 </div>
 
                 <div className="form-row">
-                  <div className="form-group">
-                    <label htmlFor="durationMinutes">Duration (minutes) *</label>
-                    <input
-                      type="number"
-                      id="durationMinutes"
-                      value={formData.durationMinutes}
-                      onChange={(e) => setFormData(prev => ({ ...prev, durationMinutes: parseInt(e.target.value) || 180 }))}
-                      min="30"
-                      max="600"
-                      required
-                    />
-                  </div>
+                  {/* Duration — hidden for mobile saunas */}
+                  {!isMobileSauna && (
+                    <div className="form-group">
+                      <label htmlFor="durationMinutes">Duration (minutes) *</label>
+                      <input
+                        type="number"
+                        id="durationMinutes"
+                        value={formData.durationMinutes}
+                        onChange={(e) => setFormData(prev => ({ ...prev, durationMinutes: parseInt(e.target.value) || 180 }))}
+                        min="30"
+                        max="600"
+                        required
+                      />
+                    </div>
+                  )}
+
+                  {/* Info banner for mobile sauna */}
+                  {isMobileSauna && (
+                    <div className="form-group form-group--full">
+                      <div className="mobile-sauna-info-banner">
+                        <span>🛖</span>
+                        <div>
+                          <strong>Mobile Sauna Availability Slot</strong>
+                          <p>No fixed departure or duration needed — customers set their own rental dates when booking.</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
 
                   {editingTrip && (
                     <div className="form-group">
@@ -296,19 +314,17 @@ const TripManagement: React.FC<TripManagementProps> = ({ isOpen, onClose }) => {
                 </div>
 
                 <div className="form-actions">
-                  <button 
-                    type="button" 
-                    className="cancel-btn"
-                    onClick={resetForm}
-                  >
+                  <button type="button" className="cancel-btn" onClick={resetForm}>
                     Cancel
                   </button>
-                  <button 
-                    type="submit" 
+                  <button
+                    type="submit"
                     className="submit-btn"
                     disabled={processingTrip === 'form'}
                   >
-                    {processingTrip === 'form' ? 'Saving...' : (editingTrip ? 'Update Trip' : 'Create Trip')}
+                    {processingTrip === 'form'
+                      ? 'Saving...'
+                      : editingTrip ? 'Update Trip' : 'Create Trip'}
                   </button>
                 </div>
               </form>
@@ -319,9 +335,7 @@ const TripManagement: React.FC<TripManagementProps> = ({ isOpen, onClose }) => {
             <div className="loading">Loading trips...</div>
           ) : (
             <>
-              <div className="trips-summary">
-                {trips.length} trips found
-              </div>
+              <div className="trips-summary">{trips.length} trips found</div>
 
               <div className="trips-table-container">
                 <table className="trips-table">
@@ -343,62 +357,67 @@ const TripManagement: React.FC<TripManagementProps> = ({ isOpen, onClose }) => {
                         <td colSpan={8} className="no-results">No trips found</td>
                       </tr>
                     ) : (
-                      trips.map(trip => (
-                        <tr key={trip._id}>
-                          <td className="trip-title">{trip.title || 'Untitled Trip'}</td>
-                          <td>
-                            <div className="vessel-info">
-                              <span className="vessel-name">{trip.vessel?.name || 'Unknown Vessel'}</span>
-                              <span className="vessel-type">{trip.vessel?.type || 'boat'}</span>
-                            </div>
-                          </td>
-                          <td className="departure-time">
-                            {trip.departureTime ? formatDateTime(trip.departureTime) : 'N/A'}
-                          </td>
-                          <td className="duration">
-                            {formatDuration(trip.durationMinutes || 180)}
-                          </td>
-                          <td className="capacity">
-                            {trip.vessel?.capacity || trip.capacity || 0}
-                          </td>
-                          <td className="remaining-seats">
-                            <span className={`seats ${trip.remainingSeats === 0 ? 'full' : ''}`}>
-                              {trip.remainingSeats || 0}
-                            </span>
-                          </td>
-                          <td className="staff-info">
-                            <div className="staff-count">
-                              {trip.assignedStaff?.length || 0} staff
-                              {trip.staffNotified && <span className="notified-badge">✓</span>}
-                            </div>
-                          </td>
-                          <td className="actions-cell">
-                            <button 
-                              className="action-btn edit-btn"
-                              onClick={() => handleEdit(trip)}
-                              title="Edit Trip"
-                            >
-                              Edit
-                            </button>
-                            <button 
-                              className="action-btn notify-btn"
-                              onClick={() => handleNotifyStaff(trip)}
-                              disabled={processingTrip === trip._id || !trip.assignedStaff?.length}
-                              title="Notify Staff"
-                            >
-                              {processingTrip === trip._id ? '...' : 'Notify'}
-                            </button>
-                            <button 
-                              className="action-btn delete-btn"
-                              onClick={() => handleDelete(trip)}
-                              disabled={processingTrip === trip._id}
-                              title="Delete Trip"
-                            >
-                              {processingTrip === trip._id ? '...' : 'Delete'}
-                            </button>
-                          </td>
-                        </tr>
-                      ))
+                      trips.map(trip => {
+                        const tripIsMobileSauna = trip.vessel?.type === 'mobile_sauna';
+                        return (
+                          <tr key={trip._id}>
+                            <td className="trip-title">{trip.title || 'Untitled Trip'}</td>
+                            <td>
+                              <div className="vessel-info">
+                                <span className="vessel-name">{trip.vessel?.name || 'Unknown Vessel'}</span>
+                                <span className="vessel-type">{trip.vessel?.type || 'boat'}</span>
+                              </div>
+                            </td>
+                            <td className="departure-time">
+                              {tripIsMobileSauna
+                                ? <span className="na-text">Rental</span>
+                                : trip.departureTime ? formatDateTime(trip.departureTime) : '—'}
+                            </td>
+                            <td className="duration">
+                              {tripIsMobileSauna
+                                ? <span className="na-text">Flexible</span>
+                                : formatDuration(trip.durationMinutes || 180)}
+                            </td>
+                            <td className="capacity">
+                              {trip.vessel?.capacity || trip.capacity || 0}
+                            </td>
+                            <td className="remaining-seats">
+                              <span className={`seats ${trip.remainingSeats === 0 ? 'full' : ''}`}>
+                                {trip.remainingSeats || 0}
+                              </span>
+                            </td>
+                            <td className="staff-info">
+                              <div className="staff-count">
+                                {trip.assignedStaff?.length || 0} staff
+                                {trip.staffNotified && <span className="notified-badge">✓</span>}
+                              </div>
+                            </td>
+                            <td className="actions-cell">
+                              <button
+                                className="action-btn edit-btn"
+                                onClick={() => handleEdit(trip)}
+                                title="Edit Trip"
+                              >Edit</button>
+                              <button
+                                className="action-btn notify-btn"
+                                onClick={() => handleNotifyStaff(trip)}
+                                disabled={processingTrip === trip._id || !trip.assignedStaff?.length}
+                                title="Notify Staff"
+                              >
+                                {processingTrip === trip._id ? '...' : 'Notify'}
+                              </button>
+                              <button
+                                className="action-btn delete-btn"
+                                onClick={() => handleDelete(trip)}
+                                disabled={processingTrip === trip._id}
+                                title="Delete Trip"
+                              >
+                                {processingTrip === trip._id ? '...' : 'Delete'}
+                              </button>
+                            </td>
+                          </tr>
+                        );
+                      })
                     )}
                   </tbody>
                 </table>

@@ -476,6 +476,93 @@
   border-left: 3px solid var(--sage-green);
 }
 
+/* Pricing tiers — smart grouped display */
+.pricing-tiers {
+  margin: var(--spacing-sm) 0;
+}
+
+.pricing-tiers > p {
+  margin-bottom: var(--spacing-xs) !important;
+}
+
+.pricing-tier-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 6px;
+}
+
+.pricing-tier-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: rgba(245, 240, 232, 0.6);
+  border: 1px solid transparent;
+  transition: background 0.2s ease;
+}
+
+.pricing-tier-row.best-value {
+  background: rgba(74, 103, 65, 0.07);
+  border-color: rgba(74, 103, 65, 0.25);
+  border-left: 3px solid var(--sage-green);
+}
+
+.tier-left {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.tier-label {
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--color-charcoal);
+}
+
+.tier-note {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--color-primary-brown);
+  background: rgba(139, 90, 43, 0.1);
+  padding: 1px 6px;
+  border-radius: 20px;
+  letter-spacing: 0.3px;
+}
+
+.best-value-badge {
+  font-size: 9px;
+  font-weight: 700;
+  color: white;
+  background: var(--sage-green);
+  padding: 2px 7px;
+  border-radius: 20px;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
+.tier-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tier-per-day {
+  font-size: 11px;
+  color: var(--color-soft-gray);
+}
+
+.tier-price {
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--color-primary-brown);
+  min-width: 60px;
+  text-align: right;
+}
+
+
 .trip-description {
   margin: var(--spacing-md) 0;
   padding-top: var(--spacing-md);
@@ -1293,6 +1380,7 @@
   background: rgba(74, 103, 65, 0.16);
   color: rgba(41, 70, 35, 0.95);
   border: 1px solid rgba(74, 103, 65, 0.22);
+  width: max-content;
 }
 
 .booking-glass .availability.full {

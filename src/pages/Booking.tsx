@@ -649,7 +649,7 @@ const Booking: React.FC = () => {
 
                 {!isAuthenticated && !guestVerified && (
                     <div className="auth-notice booking-glass-alert booking-glass-alert--info">
-                        <p>✨ <strong>No account needed!</strong> View dates and pricing freely. When ready to book, we'll verify your email with a quick code.</p>
+                        <p>When ready to book, we'll verify your email with a quick code.</p>
                     </div>
                 )}
                 
@@ -709,12 +709,79 @@ const Booking: React.FC = () => {
                                     // Mobile Sauna Rental Information
                                     <div className="trip-details">
                                         <p><strong>Type:</strong> Mobile Sauna Rental</p>
-                                        <p><strong>Minimum Rental:</strong> {trip.vessel.minimumDays || 1} day{(trip.vessel.minimumDays || 1) > 1 ? 's' : ''}</p>
                                         <p><strong>Capacity:</strong> Up to {trip.vessel.capacity} people</p>
-                                        <p><strong>Starting Price:</strong> {formatPrice(trip.vessel.pricingTiers?.days1to3 || trip.vessel.basePriceCents)}</p>
-                                        {trip.vessel.discountThreshold && trip.vessel.discountPercent && (
+                                        <p><strong>Minimum Rental:</strong> {trip.vessel.minimumDays || 1} day{(trip.vessel.minimumDays || 1) > 1 ? 's' : ''}</p>
+                                        {(trip.vessel.inventory ?? 1) > 1 && (
+                                            <p><strong>Units Available:</strong> {trip.vessel.inventory}</p>
+                                        )}
+                                        {trip.vessel.enforceWeeklyBoundary && trip.vessel.pickupDropoffDay !== undefined && (
+                                            <p><strong>Pickup / Drop-off Day:</strong> {['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][trip.vessel.pickupDropoffDay]}</p>
+                                        )}
+
+                                        {/* Smart pricing breakdown */}
+                                        {trip.vessel.pricingTiers ? (() => {
+                                            const pt = trip.vessel.pricingTiers!;
+
+                                            // Build raw tiers: [minDay, maxDay, totalPriceCents]
+                                            const rawTiers: Array<[number, number, number]> = [
+                                                [1, 3, pt.days1to3],
+                                                ...(pt.day4 ? [[4, 4, pt.day4] as [number, number, number]] : []),
+                                                ...(pt.day5 ? [[5, 5, pt.day5] as [number, number, number]] : []),
+                                                ...(pt.day6 ? [[6, 6, pt.day6] as [number, number, number]] : []),
+                                                ...(pt.day7 ? [[7, 7, pt.day7] as [number, number, number]] : []),
+                                            ];
+
+                                            // Group consecutive tiers with the same total price
+                                            type TierGroup = { min: number; max: number; price: number };
+                                            const groups: TierGroup[] = [];
+                                            for (const [min, max, price] of rawTiers) {
+                                                const prev = groups[groups.length - 1];
+                                                if (prev && prev.price === price && prev.max + 1 === min) {
+                                                    prev.max = max; // extend range
+                                                } else {
+                                                    groups.push({ min, max, price });
+                                                }
+                                            }
+
+                                            // Best value = lowest price per max-day in group
+                                            const bestIdx = groups.length > 1
+                                                ? groups.reduce((bi, g, i) =>
+                                                    g.price / g.max < groups[bi].price / groups[bi].max ? i : bi, 0)
+                                                : -1;
+
+                                            return (
+                                                <div className="pricing-tiers">
+                                                    <p><strong>Rental Pricing:</strong></p>
+                                                    <div className="pricing-tier-list">
+                                                        {groups.map((g, i) => {
+                                                            const isFlat = g.min === 1 && g.max === 3;
+                                                            const label = isFlat
+                                                                ? '1–3 days'
+                                                                : g.min === g.max
+                                                                    ? `${g.min} day${g.min > 1 ? 's' : ''}`
+                                                                    : `${g.min}–${g.max} days`;
+
+                                                            return (
+                                                                <div key={i} className={`pricing-tier-row${i === bestIdx ? ' best-value' : ''}`}>
+                                                                    <div className="tier-left">
+                                                                        <span className="tier-label">{label}</span>
+                                                                    </div>
+                                                                    <div className="tier-right">
+                                                                        <span className="tier-price">{formatPrice(g.price)}</span>
+                                                                    </div>
+                                                                </div>
+                                                            );
+                                                        })}
+                                                    </div>
+                                                </div>
+                                            );
+                                        })() : (
+                                            <p><strong>Starting Price:</strong> {formatPrice(trip.vessel.basePriceCents)}</p>
+                                        )}
+
+                                        {(trip.vessel.discountThreshold ?? 0) > 0 && (trip.vessel.discountPercent ?? 0) > 0 && (
                                             <p className="discount-info">
-                                                <strong>Special:</strong> {trip.vessel.discountPercent}% off for {trip.vessel.discountThreshold}+ days
+                                                🎉 <strong>{trip.vessel.discountPercent}% off</strong> for rentals of {trip.vessel.discountThreshold}+ days
                                             </p>
                                         )}
                                     </div>

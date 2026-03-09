@@ -30,6 +30,7 @@ const VesselManagement: React.FC<VesselManagementProps> = ({ isOpen, onClose }) 
     discountPercent: 0,
     inventory: 1,
     pickupDropoffDay: 5,
+    enforceWeeklyBoundary: false,
     pricingTiers: {
       days1to3: 0,
       day4: 0,
@@ -68,6 +69,7 @@ const VesselManagement: React.FC<VesselManagementProps> = ({ isOpen, onClose }) 
       discountPercent: 0,
       inventory: 1,
       pickupDropoffDay: 5,
+      enforceWeeklyBoundary: false,
       pricingTiers: {
         days1to3: 0,
         day4: 0,
@@ -119,6 +121,7 @@ const VesselManagement: React.FC<VesselManagementProps> = ({ isOpen, onClose }) 
       discountPercent: vessel.discountPercent || 0,
       inventory: vessel.inventory || 1,
       pickupDropoffDay: vessel.pickupDropoffDay !== undefined ? vessel.pickupDropoffDay : 5,
+      enforceWeeklyBoundary: vessel.enforceWeeklyBoundary ?? false,
       pricingTiers: vessel.pricingTiers || {
         days1to3: 0,
         day4: 0,
@@ -307,6 +310,47 @@ const VesselManagement: React.FC<VesselManagementProps> = ({ isOpen, onClose }) 
                   {/* Mobile Sauna Specific Fields */}
                   {formData.type === 'mobile_sauna' && (
                     <>
+                      {/* Weekly Boundary Enforcement */}
+                      <div className="form-group form-group--checkbox">
+                        <label className="checkbox-toggle-label" htmlFor="enforceWeeklyBoundary">
+                          <input
+                            type="checkbox"
+                            id="enforceWeeklyBoundary"
+                            checked={formData.enforceWeeklyBoundary ?? false}
+                            onChange={(e) => setFormData({ ...formData, enforceWeeklyBoundary: e.target.checked })}
+                          />
+                          <span className="checkbox-toggle-text">
+                            Enforce weekly pickup/drop-off boundary
+                          </span>
+                        </label>
+                        <small className="field-hint">
+                          {formData.enforceWeeklyBoundary
+                            ? '✅ Bookings must start and end on the designated day below'
+                            : '🔓 Any day-to-any day bookings allowed (current behaviour)'}
+                        </small>
+                      </div>
+
+                      {/* Pickup/Dropoff Day — only meaningful when boundary is enforced */}
+                      {formData.enforceWeeklyBoundary && (
+                        <div className="form-group">
+                          <label htmlFor="pickupDropoffDay">Pickup / Drop-off Day</label>
+                          <select
+                            id="pickupDropoffDay"
+                            value={formData.pickupDropoffDay ?? 5}
+                            onChange={(e) => setFormData({ ...formData, pickupDropoffDay: parseInt(e.target.value) })}
+                          >
+                            <option value={0}>Sunday</option>
+                            <option value={1}>Monday</option>
+                            <option value={2}>Tuesday</option>
+                            <option value={3}>Wednesday</option>
+                            <option value={4}>Thursday</option>
+                            <option value={5}>Friday (default)</option>
+                            <option value={6}>Saturday</option>
+                          </select>
+                          <small className="field-hint">Guests must pick up and drop off on this day</small>
+                        </div>
+                      )}
+
                       <div className="form-group">
                         <label htmlFor="minimumDays">Minimum Rental Days *</label>
                         <input

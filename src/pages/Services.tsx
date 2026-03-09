@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { getPublishedPosts, getFeaturedPosts, getCategories } from "../services/api";
 import { ServicePost, Category } from "../types";
+import { getResponsiveImageProps } from "../utils/imageUtils";
 import "./Services.css";
 
 const Services: React.FC = () => {
@@ -173,8 +174,12 @@ const Services: React.FC = () => {
                       {post.image && (
                         <div className="post-image">
                           <img 
-                            src={post.image} 
+                            {...(() => {
+                              const props = getResponsiveImageProps(post.image!, post.imageVariants);
+                              return { src: props.src, srcSet: props.srcSet, sizes: props.sizes };
+                            })()}
                             alt={post.title}
+                            loading="lazy"
                             width="800"
                             height="600"
                             style={{ width: '100%', height: 'auto' }}
@@ -212,8 +217,12 @@ const Services: React.FC = () => {
                     {post.image && (
                       <div className="post-image">
                         <img 
-                          src={post.image} 
+                          {...(() => {
+                            const props = getResponsiveImageProps(post.image!, post.imageVariants);
+                            return { src: props.src, srcSet: props.srcSet, sizes: props.sizes };
+                          })()}
                           alt={post.title}
+                          loading="lazy"
                           width="800"
                           height="600"
                           style={{ width: '100%', height: 'auto' }}

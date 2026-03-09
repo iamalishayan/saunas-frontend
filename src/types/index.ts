@@ -118,6 +118,11 @@ export interface ServicePost {
   content: string;
   slug: string;
   image?: string;
+  imageVariants?: {
+    mobile: string;
+    tablet: string;
+    desktop: string;
+  };
   category: string;
   featured: boolean;
   published: boolean;
@@ -160,8 +165,9 @@ export interface Vessel {
     day6: number;
     day7: number;
   };
-  inventory?: number; // NEW: Total units available (e.g., 3 Bubble Barrel Saunas)
-  pickupDropoffDay?: number; // NEW: Day of week (0=Sunday, 5=Friday)
+  inventory?: number; // Total units available
+  pickupDropoffDay?: number; // Day of week (0=Sunday, 5=Friday)
+  enforceWeeklyBoundary?: boolean; // Restrict bookings to designated day boundaries
   createdAt: string;
   updatedAt: string;
 }
@@ -181,8 +187,9 @@ export interface VesselFormData {
     day6: number;
     day7: number;
   };
-  inventory?: number; // NEW: Total units available
-  pickupDropoffDay?: number; // NEW: Day of week (0-6)
+  inventory?: number;
+  pickupDropoffDay?: number; // Day of week (0-6)
+  enforceWeeklyBoundary?: boolean;
 }
 
 // Trip Types
@@ -205,8 +212,9 @@ export interface Trip {
       day6: number;
       day7: number;
     };
-    inventory?: number; // Total units available
+    inventory?: number;
     pickupDropoffDay?: number; // Day of week (0=Sunday, 5=Friday)
+    enforceWeeklyBoundary?: boolean;
   };
   title: string;
   departureTime: string;

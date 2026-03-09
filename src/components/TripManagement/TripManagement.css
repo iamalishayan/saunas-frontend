@@ -327,12 +327,14 @@
 
 .vessel-type {
   display: inline-block;
-  font-size: 11px;
+  font-size: 13px;
   padding: 2px 6px;
   border-radius: 10px;
   text-transform: capitalize;
   background-color: var(--color-primary-brown);
   margin-top: 2px;
+  color: white;
+
 }
 
 .departure-time {
@@ -485,4 +487,45 @@
     font-size: 11px;
     min-width: 50px;
   }
+}
+
+/* Mobile Sauna form info banner */
+.mobile-sauna-info-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  background: #fff8e8;
+  border: 1px solid #f5d97a;
+  border-radius: 8px;
+  font-size: 0.875rem;
+}
+
+.mobile-sauna-info-banner span {
+  font-size: 1.5rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.mobile-sauna-info-banner strong {
+  display: block;
+  color: #7c5200;
+  margin-bottom: 3px;
+}
+
+.mobile-sauna-info-banner p {
+  margin: 0;
+  color: #665000;
+  line-height: 1.4;
+}
+
+.form-group--full {
+  grid-column: 1 / -1;
+}
+
+/* N/A label in table for mobile sauna rows */
+.na-text {
+  color: #aaa;
+  font-style: italic;
+  font-size: 0.82rem;
 }

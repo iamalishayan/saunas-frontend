@@ -6,6 +6,7 @@ import {
   deleteBlogPost
 } from '../../services/api';
 import { ServicePost, BlogPostFormData } from '../../types';
+import { getResponsiveImageProps } from '../../utils/imageUtils';
 import './BlogManagement.css';
 
 interface BlogManagementProps {
@@ -513,8 +514,12 @@ const BlogManagement: React.FC<BlogManagementProps> = ({ isOpen, onClose }) => {
                       {post.image && (
                         <div className="post-image">
                           <img 
-                            src={post.image} 
+                            {...(() => {
+                              const props = getResponsiveImageProps(post.image!, post.imageVariants);
+                              return { src: props.src, srcSet: props.srcSet, sizes: props.sizes };
+                            })()}
                             alt={post.title}
+                            loading="lazy"
                             width="800"
                             height="600"
                             style={{ width: '100%', height: 'auto' }}

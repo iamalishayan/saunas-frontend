@@ -18,29 +18,38 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
   autoSlideInterval = 20000
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  // Track which slides have been visited so we keep them rendered for smooth transitions
+  const [loadedSlides, setLoadedSlides] = useState<Set<number>>(new Set([0]));
 
   useEffect(() => {
     if (!autoSlide) return;
 
     const interval = setInterval(() => {
-      setCurrentIndex((prevIndex) => 
-        prevIndex === images.length - 1 ? 0 : prevIndex + 1
-      );
+      setCurrentIndex((prevIndex) => {
+        const next = prevIndex === images.length - 1 ? 0 : prevIndex + 1;
+        setLoadedSlides(prev => new Set(prev).add(next));
+        return next;
+      });
     }, autoSlideInterval);
 
     return () => clearInterval(interval);
   }, [autoSlide, autoSlideInterval, images.length]);
 
   const goToSlide = (index: number) => {
+    setLoadedSlides(prev => new Set(prev).add(index));
     setCurrentIndex(index);
   };
 
   const goToPrevious = () => {
-    setCurrentIndex(currentIndex === 0 ? images.length - 1 : currentIndex - 1);
+    const prev = currentIndex === 0 ? images.length - 1 : currentIndex - 1;
+    setLoadedSlides(s => new Set(s).add(prev));
+    setCurrentIndex(prev);
   };
 
   const goToNext = () => {
-    setCurrentIndex(currentIndex === images.length - 1 ? 0 : currentIndex + 1);
+    const next = currentIndex === images.length - 1 ? 0 : currentIndex + 1;
+    setLoadedSlides(s => new Set(s).add(next));
+    setCurrentIndex(next);
   };
 
   return (
@@ -51,17 +60,19 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
             key={index}
             className={`carousel-slide ${index === currentIndex ? 'active' : ''}`}
           >
-            <img
-              src={image.mobile}
-              srcSet={`${image.mobile} 800w, ${image.desktop} 1536w`}
-              sizes="(max-width: 768px) 100vw, 1536px"
-              alt={`Sauna experience ${index + 1}`}
-              className="carousel-slide-img"
-              loading={index === 0 ? 'eager' : 'lazy'}
-              fetchPriority={index === 0 ? 'high' : 'auto'}
-              width="1536"
-              height="1024"
-            />
+            {loadedSlides.has(index) && (
+              <img
+                src={image.mobile}
+                srcSet={`${image.mobile} 800w, ${image.desktop} 1536w`}
+                sizes="(max-width: 768px) 100vw, 1536px"
+                alt={`Sauna experience ${index + 1}`}
+                className="carousel-slide-img"
+                loading={index === 0 ? 'eager' : 'lazy'}
+                fetchPriority={index === 0 ? 'high' : 'auto'}
+                width="1536"
+                height="1024"
+              />
+            )}
             <div className="carousel-overlay" />
           </div>
         ))}

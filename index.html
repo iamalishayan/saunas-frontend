@@ -40,12 +40,7 @@
   <link rel="dns-prefetch" href="//victoriasaunarentals.ca" />
   <link rel="preconnect" href="https://victoriasaunarentals.ca" />
 
-  <!-- Self-hosted fonts (no external requests) -->
-  <link rel="preload" as="font" type="font/woff2" href="/fonts/inter-400.woff2" crossorigin />
-  <link rel="preload" as="font" type="font/woff2" href="/fonts/playfair-600.woff2" crossorigin />
-  <link rel="stylesheet" href="/fonts/fonts.css" />
-
-  <!-- Preload hero/carousel critical image to reduce LCP -->
+  <!-- Preload hero/carousel critical image to reduce LCP — only resource that needs high priority -->
   <link rel="preload" as="image" href="/images/carousel/sauna1-mobile.webp" type="image/webp" fetchpriority="high"
     media="(max-width: 768px)" />
   <link rel="preload" as="image" href="/images/carousel/sauna1.webp" type="image/webp" fetchpriority="high"
@@ -92,6 +87,55 @@
 
   <!-- Critical CSS - Inlined to prevent render blocking and improve LCP -->
   <style>
+    /* Self-hosted @font-face — inlined to avoid render-blocking stylesheet request */
+    @font-face {
+      font-family: 'Inter';
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+      src: url('/fonts/inter-400.woff2') format('woff2');
+    }
+
+    @font-face {
+      font-family: 'Inter';
+      font-style: normal;
+      font-weight: 500;
+      font-display: swap;
+      src: url('/fonts/inter-500.woff2') format('woff2');
+    }
+
+    @font-face {
+      font-family: 'Inter';
+      font-style: normal;
+      font-weight: 600;
+      font-display: swap;
+      src: url('/fonts/inter-600.woff2') format('woff2');
+    }
+
+    @font-face {
+      font-family: 'Inter';
+      font-style: normal;
+      font-weight: 700;
+      font-display: swap;
+      src: url('/fonts/inter-700.woff2') format('woff2');
+    }
+
+    @font-face {
+      font-family: 'Playfair Display';
+      font-style: normal;
+      font-weight: 600;
+      font-display: swap;
+      src: url('/fonts/playfair-600.woff2') format('woff2');
+    }
+
+    @font-face {
+      font-family: 'Playfair Display';
+      font-style: normal;
+      font-weight: 700;
+      font-display: swap;
+      src: url('/fonts/playfair-700.woff2') format('woff2');
+    }
+
     /* Critical Reset */
     *,
     *::before,

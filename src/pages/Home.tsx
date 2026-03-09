@@ -381,37 +381,97 @@ const Home: React.FC = () => {
                     <h2>Why Choose Sauna Therapy?</h2>
                     <p className="benefits-subtitle">Discover the proven health benefits of regular sauna use</p>
                     <div className="benefits-grid">
-                        <div className="benefit-card" style={{backgroundImage: 'url(/images/benefits/stress-relief.webp)'}}>
+                        <div className="benefit-card">
+                            <img 
+                                src="/images/benefits/stress-relief-mobile.webp"
+                                srcSet="/images/benefits/stress-relief-mobile.webp 800w, /images/benefits/stress-relief.webp 1024w"
+                                sizes="(max-width: 768px) 100vw, 33vw"
+                                alt="Stress Relief"
+                                className="benefit-card-bg"
+                                loading="lazy"
+                                width="1024"
+                                height="1024"
+                            />
                             <div className="benefit-content">
                                 <h3>Stress Relief</h3>
                                 <p>Reduce cortisol levels and promote deep relaxation through heat therapy</p>
                             </div>
                         </div>
-                        <div className="benefit-card" style={{backgroundImage: 'url(/images/benefits/heart-health.webp)'}}>
+                        <div className="benefit-card">
+                            <img 
+                                src="/images/benefits/heart-health-mobile.webp"
+                                srcSet="/images/benefits/heart-health-mobile.webp 800w, /images/benefits/heart-health.webp 1024w"
+                                sizes="(max-width: 768px) 100vw, 33vw"
+                                alt="Heart Health"
+                                className="benefit-card-bg"
+                                loading="lazy"
+                                width="1024"
+                                height="1024"
+                            />
                             <div className="benefit-content">
                                 <h3>Heart Health</h3>
                                 <p>Improve cardiovascular function and circulation with regular sauna sessions</p>
                             </div>
                         </div>
-                        <div className="benefit-card" style={{backgroundImage: 'url(/images/benefits/better-sleep.webp)'}}>
+                        <div className="benefit-card">
+                            <img 
+                                src="/images/benefits/better-sleep-mobile.webp"
+                                srcSet="/images/benefits/better-sleep-mobile.webp 800w, /images/benefits/better-sleep.webp 1024w"
+                                sizes="(max-width: 768px) 100vw, 33vw"
+                                alt="Better Sleep"
+                                className="benefit-card-bg"
+                                loading="lazy"
+                                width="1024"
+                                height="1024"
+                            />
                             <div className="benefit-content">
                                 <h3>Better Sleep</h3>
                                 <p>Enhance sleep quality through natural body temperature regulation</p>
                             </div>
                         </div>
-                        <div className="benefit-card" style={{backgroundImage: 'url(/images/benefits/skin-health.webp)'}}>
+                        <div className="benefit-card">
+                            <img 
+                                src="/images/benefits/skin-health-mobile.webp"
+                                srcSet="/images/benefits/skin-health-mobile.webp 800w, /images/benefits/skin-health.webp 1024w"
+                                sizes="(max-width: 768px) 100vw, 33vw"
+                                alt="Skin Health"
+                                className="benefit-card-bg"
+                                loading="lazy"
+                                width="1024"
+                                height="1024"
+                            />
                             <div className="benefit-content">
                                 <h3>Skin Health</h3>
                                 <p>Cleanse pores deeply and improve skin elasticity through sweating</p>
                             </div>
                         </div>
-                        <div className="benefit-card" style={{backgroundImage: 'url(/images/benefits/detoxification.webp)'}}>
+                        <div className="benefit-card">
+                            <img 
+                                src="/images/benefits/detoxification-mobile.webp"
+                                srcSet="/images/benefits/detoxification-mobile.webp 800w, /images/benefits/detoxification.webp 1024w"
+                                sizes="(max-width: 768px) 100vw, 33vw"
+                                alt="Detoxification"
+                                className="benefit-card-bg"
+                                loading="lazy"
+                                width="1024"
+                                height="1024"
+                            />
                             <div className="benefit-content">
                                 <h3>Detoxification</h3>
                                 <p>Eliminate toxins naturally while boosting your immune system</p>
                             </div>
                         </div>
-                        <div className="benefit-card" style={{backgroundImage: 'url(/images/benefits/muscle-recovery.webp)'}}>
+                        <div className="benefit-card">
+                            <img 
+                                src="/images/benefits/muscle-recovery-mobile.webp"
+                                srcSet="/images/benefits/muscle-recovery-mobile.webp 800w, /images/benefits/muscle-recovery.webp 1024w"
+                                sizes="(max-width: 768px) 100vw, 33vw"
+                                alt="Muscle Recovery"
+                                className="benefit-card-bg"
+                                loading="lazy"
+                                width="1024"
+                                height="1024"
+                            />
                             <div className="benefit-content">
                                 <h3>Muscle Recovery</h3>
                                 <p>Accelerate recovery and reduce muscle soreness after workouts</p>

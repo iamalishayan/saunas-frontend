@@ -66,3 +66,28 @@ export const getOptimizedImageUrl = (
   // No variant — return original
   return imageUrl;
 };
+
+/**
+ * Get responsive image props for vessel images.
+ * Uses relative paths (same as blog images) since uploads are served from the same origin.
+ */
+export const getVesselImageProps = (
+  imagePath: string | undefined,
+  imageVariants?: ImageVariants | null,
+  sizesHint: string = '(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'
+): ResponsiveImageProps | null => {
+  if (!imagePath) return null;
+
+  // Use stored variants if available
+  if (imageVariants?.mobile && imageVariants?.tablet && imageVariants?.desktop) {
+    return {
+      src: imagePath,
+      srcSet: `${imageVariants.mobile} 400w, ${imageVariants.tablet} 800w, ${imageVariants.desktop} 1200w`,
+      sizes: sizesHint,
+    };
+  }
+
+  // No variants available — return path directly
+  return { src: imagePath };
+};
+

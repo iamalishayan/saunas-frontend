@@ -168,6 +168,12 @@ export interface Vessel {
   inventory?: number; // Total units available
   pickupDropoffDay?: number; // Day of week (0=Sunday, 5=Friday)
   enforceWeeklyBoundary?: boolean; // Restrict bookings to designated day boundaries
+  images?: string[]; // Array of image URLs
+  imageVariants?: Array<{
+    mobile?: string;
+    tablet?: string;
+    desktop?: string;
+  }>; // Responsive image variants
   createdAt: string;
   updatedAt: string;
 }
@@ -190,6 +196,8 @@ export interface VesselFormData {
   inventory?: number;
   pickupDropoffDay?: number; // Day of week (0-6)
   enforceWeeklyBoundary?: boolean;
+  images?: File[]; // Image files for upload
+  existingImages?: string[]; // Keep track of existing images when editing
 }
 
 // Trip Types
@@ -215,6 +223,12 @@ export interface Trip {
     inventory?: number;
     pickupDropoffDay?: number; // Day of week (0=Sunday, 5=Friday)
     enforceWeeklyBoundary?: boolean;
+    images?: string[];
+    imageVariants?: Array<{
+      mobile?: string;
+      tablet?: string;
+      desktop?: string;
+    }>;
   };
   title: string;
   departureTime: string;

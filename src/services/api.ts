@@ -620,6 +620,9 @@ export const createVessel = async (vesselData: {
     minimumDays?: number;
     discountThreshold?: number;
     discountPercent?: number;
+    inventory?: number;
+    pickupDropoffDay?: number;
+    enforceWeeklyBoundary?: boolean;
     pricingTiers?: {
         days1to3: number;
         day4: number;
@@ -627,9 +630,49 @@ export const createVessel = async (vesselData: {
         day6: number;
         day7: number;
     };
+    images?: File[];
 }): Promise<any> => {
     try {
-        const response = await axios.post(`${API_BASE_URL}/vessels/createVessel`, vesselData);
+        // Check if vesselData contains File objects for images
+        const hasFiles = vesselData.images && vesselData.images.length > 0;
+        
+        let requestData: FormData | typeof vesselData;
+        let headers: any = {};
+        
+        if (hasFiles) {
+            // Use FormData for file upload
+            const formData = new FormData();
+            formData.append('name', vesselData.name);
+            formData.append('type', vesselData.type);
+            if (vesselData.capacity) formData.append('capacity', vesselData.capacity.toString());
+            formData.append('basePriceCents', vesselData.basePriceCents.toString());
+            if (vesselData.minimumDays) formData.append('minimumDays', vesselData.minimumDays.toString());
+            if (vesselData.discountThreshold) formData.append('discountThreshold', vesselData.discountThreshold.toString());
+            if (vesselData.discountPercent) formData.append('discountPercent', vesselData.discountPercent.toString());
+            if (vesselData.inventory) formData.append('inventory', vesselData.inventory.toString());
+            if (vesselData.pickupDropoffDay !== undefined) formData.append('pickupDropoffDay', vesselData.pickupDropoffDay.toString());
+            if (vesselData.enforceWeeklyBoundary !== undefined) formData.append('enforceWeeklyBoundary', vesselData.enforceWeeklyBoundary.toString());
+            
+            // Add pricingTiers as JSON string
+            if (vesselData.pricingTiers) {
+                formData.append('pricingTiers', JSON.stringify(vesselData.pricingTiers));
+            }
+            
+            // Add image files
+            if (vesselData.images) {
+                vesselData.images.forEach((file) => {
+                    formData.append('images', file);
+                });
+            }
+            
+            requestData = formData;
+            headers['Content-Type'] = 'multipart/form-data';
+        } else {
+            // Use JSON for no files
+            requestData = vesselData;
+        }
+        
+        const response = await axios.post(`${API_BASE_URL}/vessels/createVessel`, requestData, { headers });
         return response.data;
     } catch (error: any) {
         console.error('Error creating vessel:', error);
@@ -655,6 +698,9 @@ export const updateVessel = async (id: string, vesselData: Partial<{
     minimumDays?: number;
     discountThreshold?: number;
     discountPercent?: number;
+    inventory?: number;
+    pickupDropoffDay?: number;
+    enforceWeeklyBoundary?: boolean;
     pricingTiers?: {
         days1to3: number;
         day4: number;
@@ -662,9 +708,56 @@ export const updateVessel = async (id: string, vesselData: Partial<{
         day6: number;
         day7: number;
     };
+    images?: File[];
+    existingImages?: string[];
 }>): Promise<any> => {
     try {
-        const response = await axios.put(`${API_BASE_URL}/vessels/updateVessel/${id}`, vesselData);
+        // Check if vesselData contains File objects for images
+        const hasFiles = vesselData.images && vesselData.images.length > 0;
+        
+        let requestData: FormData | typeof vesselData;
+        let headers: any = {};
+        
+        if (hasFiles || vesselData.existingImages) {
+            // Use FormData for file upload or when managing existing images
+            const formData = new FormData();
+            
+            if (vesselData.name) formData.append('name', vesselData.name);
+            if (vesselData.type) formData.append('type', vesselData.type);
+            if (vesselData.capacity !== undefined) formData.append('capacity', vesselData.capacity.toString());
+            if (vesselData.basePriceCents !== undefined) formData.append('basePriceCents', vesselData.basePriceCents.toString());
+            if (vesselData.minimumDays !== undefined) formData.append('minimumDays', vesselData.minimumDays.toString());
+            if (vesselData.discountThreshold !== undefined) formData.append('discountThreshold', vesselData.discountThreshold.toString());
+            if (vesselData.discountPercent !== undefined) formData.append('discountPercent', vesselData.discountPercent.toString());
+            if (vesselData.inventory !== undefined) formData.append('inventory', vesselData.inventory.toString());
+            if (vesselData.pickupDropoffDay !== undefined) formData.append('pickupDropoffDay', vesselData.pickupDropoffDay.toString());
+            if (vesselData.enforceWeeklyBoundary !== undefined) formData.append('enforceWeeklyBoundary', vesselData.enforceWeeklyBoundary.toString());
+            
+            // Add pricingTiers as JSON string
+            if (vesselData.pricingTiers) {
+                formData.append('pricingTiers', JSON.stringify(vesselData.pricingTiers));
+            }
+            
+            // Add existing images array
+            if (vesselData.existingImages) {
+                formData.append('existingImages', JSON.stringify(vesselData.existingImages));
+            }
+            
+            // Add new image files
+            if (vesselData.images) {
+                vesselData.images.forEach((file) => {
+                    formData.append('images', file);
+                });
+            }
+            
+            requestData = formData;
+            headers['Content-Type'] = 'multipart/form-data';
+        } else {
+            // Use JSON for no files
+            requestData = vesselData;
+        }
+        
+        const response = await axios.put(`${API_BASE_URL}/vessels/updateVessel/${id}`, requestData, { headers });
         // Handle new response format where vessel data is wrapped in 'vessel' property
         if (response.data.vessel) {
             return response.data.vessel;

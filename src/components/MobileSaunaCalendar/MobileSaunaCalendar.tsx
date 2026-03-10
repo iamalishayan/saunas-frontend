@@ -65,11 +65,24 @@ const MobileSaunaCalendar: React.FC<MobileSaunaCalendarProps> = ({
         const calendarEnd = new Date(endOfMonth);
         calendarEnd.setDate(calendarEnd.getDate() + (6 - endOfMonth.getDay()));
 
+        // Don't check availability for dates in the past
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        
+        // Use today or calendarStart, whichever is later
+        const effectiveStart = calendarStart < today ? today : calendarStart;
+        
+        // If all dates in the calendar view are in the past, skip the API call
+        if (effectiveStart > calendarEnd) {
+            setBookedDates(new Set());
+            return;
+        }
+
         try {
             setCheckingAvailability(true);
             const result = await checkMobileSaunaAvailability(
                 vesselId,
-                formatDateToString(calendarStart),
+                formatDateToString(effectiveStart),
                 formatDateToString(calendarEnd)
             );
 

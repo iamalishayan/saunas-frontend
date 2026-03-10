@@ -20,6 +20,9 @@ const VesselManagement: React.FC<VesselManagementProps> = ({ isOpen, onClose }) 
   const [calendarVessel, setCalendarVessel] = useState<{ id: string; name: string } | null>(null);
   const [editingCapacity, setEditingCapacity] = useState<string | null>(null);
   const [tempCapacity, setTempCapacity] = useState<number>(0);
+  const [imageFiles, setImageFiles] = useState<File[]>([]);
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+  const [existingImages, setExistingImages] = useState<string[]>([]);
   const [formData, setFormData] = useState<VesselFormData>({
     name: '',
     type: 'boat',
@@ -78,8 +81,69 @@ const VesselManagement: React.FC<VesselManagementProps> = ({ isOpen, onClose }) 
         day7: 0
       }
     });
+    setImageFiles([]);
+    setImagePreviews([]);
+    setExistingImages([]);
     setEditingVessel(null);
     setShowCreateForm(false);
+  };
+
+  const handleImageFilesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    const newFiles: File[] = [];
+    const newPreviews: string[] = [];
+
+    // Check total images limit (existing + new)
+    const totalImages = existingImages.length + imageFiles.length + files.length;
+    if (totalImages > 5) {
+      setError(`Maximum 5 images allowed. You currently have ${existingImages.length + imageFiles.length} images.`);
+      setTimeout(() => setError(null), 3000);
+      return;
+    }
+
+    Array.from(files).forEach((file) => {
+      // Validate file type
+      const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'];
+      if (!allowedTypes.includes(file.type)) {
+        setError(`Invalid file type: ${file.name}. Only JPEG, PNG, WebP, and GIF are allowed.`);
+        setTimeout(() => setError(null), 3000);
+        return;
+      }
+
+      // Validate file size (5MB max)
+      if (file.size > 5 * 1024 * 1024) {
+        setError(`File too large: ${file.name}. Maximum size is 5MB.`);
+        setTimeout(() => setError(null), 3000);
+        return;
+      }
+
+      newFiles.push(file);
+      
+      // Create preview URL
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        newPreviews.push(reader.result as string);
+        if (newPreviews.length === newFiles.length) {
+          setImagePreviews([...imagePreviews, ...newPreviews]);
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+
+    setImageFiles([...imageFiles, ...newFiles]);
+  };
+
+  const handleRemoveNewImage = (index: number) => {
+    const newFiles = imageFiles.filter((_, i) => i !== index);
+    const newPreviews = imagePreviews.filter((_, i) => i !== index);
+    setImageFiles(newFiles);
+    setImagePreviews(newPreviews);
+  };
+
+  const handleRemoveExistingImage = (imagePath: string) => {
+    setExistingImages(existingImages.filter(img => img !== imagePath));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -88,14 +152,25 @@ const VesselManagement: React.FC<VesselManagementProps> = ({ isOpen, onClose }) 
     setError(null);
     
     try {
+      // Prepare data with images
+      const submitData: any = { ...formData };
+      
+      if (imageFiles.length > 0) {
+        submitData.images = imageFiles;
+      }
+      
+      if (editingVessel && existingImages.length > 0) {
+        submitData.existingImages = existingImages;
+      }
+      
       if (editingVessel) {
-        const updatedVessel = await updateVessel(editingVessel._id, formData);
+        const updatedVessel = await updateVessel(editingVessel._id, submitData);
         setVessels(prevVessels => prevVessels.map(v => 
           v._id === editingVessel._id ? updatedVessel : v
         ));
         setSuccessMessage('Vessel updated successfully');
       } else {
-        const newVessel = await createVessel(formData);
+        const newVessel = await createVessel(submitData);
         setVessels(prevVessels => [newVessel, ...prevVessels]);
         setSuccessMessage('Vessel created successfully');
       }
@@ -130,6 +205,9 @@ const VesselManagement: React.FC<VesselManagementProps> = ({ isOpen, onClose }) 
         day7: 0
       }
     });
+    setExistingImages(vessel.images || []);
+    setImageFiles([]);
+    setImagePreviews([]);
     setEditingVessel(vessel);
     setShowCreateForm(true);
   };
@@ -522,6 +600,86 @@ const VesselManagement: React.FC<VesselManagementProps> = ({ isOpen, onClose }) 
                   )}
                 </div>
 
+                {/* Image Upload Section */}
+                <div className="form-section-title">
+                  <h4>Vessel Images</h4>
+                  <p className="section-description">Upload up to 5 images (JPEG, PNG, WebP, max 5MB each)</p>
+                </div>
+
+                <div className="vessel-image-upload-section">
+                  {/* Existing Images */}
+                  {existingImages.length > 0 && (
+                    <div className="existing-images-grid">
+                      <label>Current Images</label>
+                      <div className="image-preview-grid">
+                        {existingImages.map((imagePath, index) => (
+                          <div key={`existing-${index}`} className="image-preview-item">
+                            <img 
+                              src={imagePath}
+                              alt={`Vessel ${index + 1}`}
+                              className="image-preview"
+                            />
+                            <button
+                              type="button"
+                              className="remove-image-btn"
+                              onClick={() => handleRemoveExistingImage(imagePath)}
+                              title="Remove image"
+                            >
+                              ✕
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* New Images Preview */}
+                  {imagePreviews.length > 0 && (
+                    <div className="new-images-grid">
+                      <label>New Images to Upload</label>
+                      <div className="image-preview-grid">
+                        {imagePreviews.map((preview, index) => (
+                          <div key={`new-${index}`} className="image-preview-item">
+                            <img 
+                              src={preview}
+                              alt={`New ${index + 1}`}
+                              className="image-preview"
+                            />
+                            <button
+                              type="button"
+                              className="remove-image-btn"
+                              onClick={() => handleRemoveNewImage(index)}
+                              title="Remove image"
+                            >
+                              ✕
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* File Input */}
+                  {(existingImages.length + imageFiles.length) < 5 && (
+                    <div className="file-upload-section">
+                      <input
+                        type="file"
+                        id="vesselImages"
+                        accept="image/jpeg,image/jpg,image/png,image/webp,image/gif"
+                        multiple
+                        onChange={handleImageFilesChange}
+                        style={{ display: 'none' }}
+                      />
+                      <label htmlFor="vesselImages" className="file-upload-label">
+                        📁 Choose Images ({5 - existingImages.length - imageFiles.length} remaining)
+                      </label>
+                      <small className="form-hint">
+                        Supported: JPEG, PNG, WebP, GIF • Max 5MB per image
+                      </small>
+                    </div>
+                  )}
+                </div>
+
                 <div className="form-actions">
                   <button 
                     type="button" 
@@ -570,6 +728,7 @@ const VesselManagement: React.FC<VesselManagementProps> = ({ isOpen, onClose }) 
                 <table className="vessels-table">
                   <thead>
                     <tr>
+                      <th>Image</th>
                       <th>Name</th>
                       <th>Type</th>
                       <th>Inventory</th>
@@ -583,11 +742,25 @@ const VesselManagement: React.FC<VesselManagementProps> = ({ isOpen, onClose }) 
                   <tbody>
                     {vessels.length === 0 ? (
                       <tr>
-                        <td colSpan={8} className="no-results">No vessels found</td>
+                        <td colSpan={9} className="no-results">No vessels found</td>
                       </tr>
                     ) : (
                       vessels.map(vessel => (
                         <tr key={vessel._id}>
+                          <td className="vessel-thumbnail-cell">
+                            {vessel.images && vessel.images.length > 0 ? (
+                              <img 
+                                src={vessel.images[0]}
+                                alt={vessel.name}
+                                className="vessel-thumbnail"
+                                loading="lazy"
+                              />
+                            ) : (
+                              <div className="vessel-thumbnail-placeholder">
+                                {vessel.type === 'mobile_sauna' ? '🛁' : '⛵'}
+                              </div>
+                            )}
+                          </td>
                           <td className="vessel-name">{vessel.name || 'Unnamed Vessel'}</td>
                           <td>
                             <span className={`type-badge type-${vessel.type || 'boat'}`}>

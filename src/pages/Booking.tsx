@@ -6,6 +6,7 @@ import { useAuth } from '../contexts/AuthContext';
 // Lazy load calendar component for better performance
 const MobileSaunaCalendar = lazy(() => import('../components/MobileSaunaCalendar/MobileSaunaCalendar'));
 import GuestCheckoutFlow from '../components/GuestCheckout/GuestCheckoutFlow';
+import VesselImageCarousel from '../components/VesselImageCarousel/VesselImageCarousel';
 import { clearGuestToken, getGuestEmail, isTokenExpired, getGuestToken } from '../services/guestAuth';
 import './Booking.css';
 
@@ -107,7 +108,9 @@ const Booking: React.FC = () => {
         setError(null);
         try {
             const data = await getUpcomingTrips();
-            setTrips(data);
+            // Filter out trips with null vessels (orphaned trips)
+            const validTrips = data.filter((trip: any) => trip.vessel != null);
+            setTrips(validTrips);
         } catch (err: any) {
             console.error('Error fetching trips:', err);
             
@@ -683,6 +686,28 @@ const Booking: React.FC = () => {
                     <div className="booking-options">
                         {trips.map(trip => (
                             <div key={trip._id} className="booking-option trip-card booking-card">
+                                {/* Vessel Image */}
+                                {trip.vessel.images && trip.vessel.images.length > 0 ? (
+                                    <div className="trip-card-image-container">
+                                        <VesselImageCarousel
+                                            images={trip.vessel.images}
+                                            imageVariants={trip.vessel.imageVariants}
+                                            vesselName={trip.vessel.name}
+                                            autoRotate={true}
+                                            rotateInterval={20000}
+                                        />
+                                    </div>
+                                ) : (
+                                    <div className={`trip-card-image-placeholder ${trip.vessel.type === 'mobile_sauna' ? 'sauna-placeholder' : 'boat-placeholder'}`}>
+                                        <div className="placeholder-content">
+                                            <div className="placeholder-icon">
+                                                📷
+                                            </div>
+                                            <div className="placeholder-text">No Photo Available</div>
+                                        </div>
+                                    </div>
+                                )}
+                                
                                 <div className="trip-header">
                                     <h3>{trip.vessel.name}</h3>
                                     <div className="trip-badges">

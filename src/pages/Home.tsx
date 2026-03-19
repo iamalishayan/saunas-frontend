@@ -315,7 +315,7 @@ const Home: React.FC = () => {
                             <p className="mobile-rental-subtitle">Premium Saunas, Direct to Your Door</p>
                             <h2>Mobile Sauna Rentals</h2>
                             <p className="mobile-rental-description">
-                                At Havn Saunas, we believe your wellness experience should come to you. 
+                                At Victoria Sauna Rentals, we believe your wellness experience should come to you. 
                                 That's why we offer a carefully selected range of premium mobile saunas, 
                                 all crafted with quality you can count on. Each sauna rental includes 
                                 professional delivery, setup, and pickup, ensuring you can enjoy the 
@@ -498,7 +498,7 @@ const Home: React.FC = () => {
                         <div className="mission-content">
                             <h2>Our Mission</h2>
                             <p className="mission-description">
-                                At Havn Saunas, our mission is to help you bring wellness home. We offer premium sauna experiences and curated services designed for relaxation, recovery, and everyday comfort. Whether you're seeking a floating sauna adventure or bringing our mobile saunas to your location, our goal is to help you create a personal sanctuary that feels both restorative and refined.
+                                At Victoria Sauna Rentals, our mission is to help you bring wellness home. We offer premium sauna experiences and curated services designed for relaxation, recovery, and everyday comfort. Whether you're seeking a floating sauna adventure or bringing our mobile saunas to your location, our goal is to help you create a personal sanctuary that feels both restorative and refined.
                             </p>
                             <div className="mission-features">
                                 <div className="mission-feature">

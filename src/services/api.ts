@@ -1083,12 +1083,12 @@ export const getUserBookings = async (): Promise<any> => {
     }
 };
 
-// Lookup booking by email and booking ID (for guests)
-export const lookupBooking = async (email: string, bookingId: string): Promise<any> => {
+// Lookup booking by email (and optional booking ID) - no login required
+export const lookupBooking = async (email: string, bookingId?: string): Promise<any> => {
     try {
         const response = await axios.post(`${API_BASE_URL}/bookings/lookup`, {
             email,
-            bookingId
+            ...(bookingId ? { bookingId } : {})
         });
         return response.data;
     } catch (error: any) {

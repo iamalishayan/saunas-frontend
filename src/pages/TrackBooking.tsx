@@ -10,7 +10,7 @@ const TrackBooking: React.FC = () => {
     const [bookingId, setBookingId] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
-    const [booking, setBooking] = useState<Booking | null>(null);
+    const [bookings, setBookings] = useState<Booking[] | null>(null);
 
     const handleLookup = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -18,11 +18,13 @@ const TrackBooking: React.FC = () => {
         setLoading(true);
 
         try {
-            const response = await lookupBooking(email.trim(), bookingId.trim());
-            setBooking(response.booking);
+            const response = await lookupBooking(email.trim(), bookingId.trim() || undefined);
+            // Backend now returns `bookings` array
+            const results = (response as any).bookings ?? (response.booking ? [response.booking] : []);
+            setBookings(results);
         } catch (err: any) {
-            setError(err.message || 'Failed to find booking. Please check your email and booking ID.');
-            setBooking(null);
+            setError(err.message || 'No bookings found for this email address.');
+            setBookings(null);
         } finally {
             setLoading(false);
         }
@@ -31,7 +33,7 @@ const TrackBooking: React.FC = () => {
     const handleReset = () => {
         setEmail('');
         setBookingId('');
-        setBooking(null);
+        setBookings(null);
         setError(null);
     };
 
@@ -42,8 +44,6 @@ const TrackBooking: React.FC = () => {
             year: 'numeric',
             month: 'long',
             day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
         });
     };
 
@@ -69,14 +69,14 @@ const TrackBooking: React.FC = () => {
                 <div className="track-booking-header">
                     <div className="track-icon-wrap">🔍</div>
                     <h1>Track Your Booking</h1>
-                    <p>Enter your email and booking ID to view your reservation details</p>
+                    <p>Enter your email address to view all your reservations. You can also add your Booking ID to find a specific one.</p>
                 </div>
 
-                {!booking ? (
+                {!bookings ? (
                     /* ── Lookup Form ── */
                     <form onSubmit={handleLookup} className="track-booking-form">
                         <div className="form-group">
-                            <label htmlFor="email">Email Address</label>
+                            <label htmlFor="email">Email Address <span style={{ color: 'var(--color-primary)' }}>*</span></label>
                             <input
                                 type="email"
                                 id="email"
@@ -89,14 +89,13 @@ const TrackBooking: React.FC = () => {
                         </div>
 
                         <div className="form-group">
-                            <label htmlFor="bookingId">Booking ID</label>
+                            <label htmlFor="bookingId">Booking ID <span style={{ color: '#999', fontWeight: 400 }}>(optional)</span></label>
                             <input
                                 type="text"
                                 id="bookingId"
                                 value={bookingId}
                                 onChange={(e) => setBookingId(e.target.value)}
-                                placeholder="Enter your booking ID"
-                                required
+                                placeholder="Leave blank to see all bookings"
                                 disabled={loading}
                             />
                             <small>You can find your booking ID in the confirmation email</small>
@@ -112,9 +111,9 @@ const TrackBooking: React.FC = () => {
                             <button
                                 type="submit"
                                 className="btn btn-primary"
-                                disabled={loading || !email || !bookingId}
+                                disabled={loading || !email}
                             >
-                                {loading ? '⏳ Looking up…' : '🔍 Find My Booking'}
+                                {loading ? '⏳ Looking up…' : '🔍 Find My Bookings'}
                             </button>
                             <button
                                 type="button"
@@ -130,165 +129,118 @@ const TrackBooking: React.FC = () => {
                     <div className="track-booking-result">
                         <div className="track-result-header">
                             <div className="track-success-icon">✅</div>
-                            <h2>Booking Found!</h2>
+                            <h2>{bookings.length === 1 ? 'Booking Found!' : `${bookings.length} Bookings Found`}</h2>
                         </div>
 
-                        <div className="track-booking-details">
+                        {bookings.map((booking, idx) => {
+                            const vessel = typeof booking.vessel === 'object' ? booking.vessel : null;
+                            const isMobileSauna = vessel?.type === 'mobile_sauna';
 
-                            {/* Booking Information */}
-                            <div className="track-detail-section">
-                                <h3>Booking Information</h3>
-                                <div className="track-detail-grid">
-                                    <div className="track-detail-item track-detail-full">
-                                        <span className="track-label">Booking ID</span>
-                                        <span className="track-value">{booking._id}</span>
-                                    </div>
-                                    <div className="track-detail-item">
-                                        <span className="track-label">Status</span>
-                                        <span className={getStatusBadge(booking.status)}>
-                                            {booking.status.toUpperCase()}
-                                        </span>
-                                    </div>
-                                    <div className="track-detail-item">
-                                        <span className="track-label">Payment Status</span>
-                                        <span className={`track-payment-badge track-payment-${booking.paymentStatus}`}>
-                                            {booking.paymentStatus?.toUpperCase() || 'PENDING'}
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
+                            return (
+                                <div key={booking._id || idx} className="track-booking-details">
 
-                            {/* Customer Details */}
-                            <div className="track-detail-section">
-                                <h3>Customer Details</h3>
-                                <div className="track-detail-grid">
-                                    <div className="track-detail-item">
-                                        <span className="track-label">Name</span>
-                                        <span className="track-value">{booking.customerName}</span>
-                                    </div>
-                                    <div className="track-detail-item">
-                                        <span className="track-label">Email</span>
-                                        <span className="track-value">{booking.customerEmail}</span>
-                                    </div>
-                                    <div className="track-detail-item">
-                                        <span className="track-label">Phone</span>
-                                        <span className="track-value">{booking.customerPhone}</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Trip Details */}
-                            {booking.trip && (
-                                <div className="track-detail-section">
-                                    <h3>Trip Details</h3>
-                                    <div className="track-detail-grid">
-                                        <div className="track-detail-item track-detail-full">
-                                            <span className="track-label">Vessel</span>
-                                            <span className="track-value">{booking.vessel?.name}</span>
-                                        </div>
-                                        <div className="track-detail-item track-detail-full">
-                                            <span className="track-label">Departure</span>
-                                            <span className="track-value">{formatDate(booking.trip.departureTime)}</span>
-                                        </div>
-                                        <div className="track-detail-item">
-                                            <span className="track-label">Seats</span>
-                                            <span className="track-value">{booking.numberOfSeats}</span>
-                                        </div>
-                                        {booking.isGroup && (
-                                            <div className="track-detail-item">
-                                                <span className="track-badge track-group-badge">GROUP BOOKING</span>
+                                    {/* Booking Information */}
+                                    <div className="track-detail-section">
+                                        <h3>Booking #{idx + 1}</h3>
+                                        <div className="track-detail-grid">
+                                            <div className="track-detail-item track-detail-full">
+                                                <span className="track-label">Booking ID</span>
+                                                <span className="track-value" style={{ fontFamily: 'monospace', fontSize: '0.85rem' }}>{booking._id}</span>
                                             </div>
-                                        )}
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* Mobile Sauna Rental */}
-                            {booking.deliveryAddress && (
-                                <div className="track-detail-section">
-                                    <h3>Mobile Sauna Rental</h3>
-                                    <div className="track-detail-grid">
-                                        <div className="track-detail-item track-detail-full">
-                                            <span className="track-label">Delivery Address</span>
-                                            <span className="track-value">{booking.deliveryAddress}</span>
-                                        </div>
-                                        <div className="track-detail-item">
-                                            <span className="track-label">Start Date</span>
-                                            <span className="track-value">
-                                                {booking.startTime && formatDate(booking.startTime)}
-                                            </span>
-                                        </div>
-                                        <div className="track-detail-item">
-                                            <span className="track-label">End Date</span>
-                                            <span className="track-value">
-                                                {booking.endTime && formatDate(booking.endTime)}
-                                            </span>
-                                        </div>
-                                        {booking.additionalWoodBins && booking.additionalWoodBins > 0 && (
                                             <div className="track-detail-item">
-                                                <span className="track-label">Wood Bins</span>
-                                                <span className="track-value">{booking.additionalWoodBins} additional</span>
+                                                <span className="track-label">Status</span>
+                                                <span className={getStatusBadge(booking.status)}>
+                                                    {booking.status.toUpperCase()}
+                                                </span>
                                             </div>
-                                        )}
+                                            <div className="track-detail-item">
+                                                <span className="track-label">Payment Status</span>
+                                                <span className={`track-payment-badge track-payment-${booking.paymentStatus}`}>
+                                                    {booking.paymentStatus?.toUpperCase() || 'PENDING'}
+                                                </span>
+                                            </div>
+                                            {vessel && (
+                                                <div className="track-detail-item">
+                                                    <span className="track-label">Vessel</span>
+                                                    <span className="track-value">{vessel.name}</span>
+                                                </div>
+                                            )}
+                                            <div className="track-detail-item">
+                                                <span className="track-label">Type</span>
+                                                <span className="track-value">{isMobileSauna ? 'Mobile Sauna Rental' : 'Boat Trip'}</span>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            )}
 
-                            {/* Payment */}
-                            <div className="track-detail-section">
-                                <h3>Payment</h3>
-                                <div className="track-detail-grid">
-                                    <div className="track-detail-item">
-                                        <span className="track-label">Total Amount</span>
-                                        <span className="track-value track-price">
-                                            {formatPrice(booking.totalAmount || booking.totalPriceCents)}
-                                        </span>
-                                    </div>
-                                    {booking.deliveryFee && (
-                                        <div className="track-detail-item">
-                                            <span className="track-label">Delivery Fee</span>
-                                            <span className="track-value">{formatPrice(booking.deliveryFee)}</span>
+                                    {/* Trip Dates */}
+                                    {(booking.startTime || booking.endTime) && (
+                                        <div className="track-detail-section">
+                                            <h3>{isMobileSauna ? 'Rental Period' : 'Trip Details'}</h3>
+                                            <div className="track-detail-grid">
+                                                {booking.startTime && (
+                                                    <div className="track-detail-item">
+                                                        <span className="track-label">Start Date</span>
+                                                        <span className="track-value">{formatDate(booking.startTime)}</span>
+                                                    </div>
+                                                )}
+                                                {booking.endTime && (
+                                                    <div className="track-detail-item">
+                                                        <span className="track-label">End Date</span>
+                                                        <span className="track-value">{formatDate(booking.endTime)}</span>
+                                                    </div>
+                                                )}
+                                                {booking.deliveryAddress && (
+                                                    <div className="track-detail-item track-detail-full">
+                                                        <span className="track-label">Delivery Address</span>
+                                                        <span className="track-value">{booking.deliveryAddress}</span>
+                                                    </div>
+                                                )}
+                                            </div>
                                         </div>
                                     )}
-                                    {booking.woodBinsFee && booking.woodBinsFee > 0 && (
-                                        <div className="track-detail-item">
-                                            <span className="track-label">Wood Bins Fee</span>
-                                            <span className="track-value">{formatPrice(booking.woodBinsFee)}</span>
+
+                                    {/* Payment */}
+                                    <div className="track-detail-section">
+                                        <h3>Payment</h3>
+                                        <div className="track-detail-grid">
+                                            <div className="track-detail-item">
+                                                <span className="track-label">Total Amount</span>
+                                                <span className="track-value track-price">
+                                                    {formatPrice(booking.totalAmount || booking.totalPriceCents)}
+                                                </span>
+                                            </div>
+                                            {booking.damageDepositCents && (
+                                                <div className="track-detail-item">
+                                                    <span className="track-label">Security Deposit</span>
+                                                    <span className="track-value">{formatPrice(booking.damageDepositCents)} ({booking.damageDepositStatus || 'held'})</span>
+                                                </div>
+                                            )}
                                         </div>
-                                    )}
-                                </div>
-                            </div>
-
-                            {/* Agreement Status */}
-                            <div className="track-detail-section">
-                                <h3>Agreement Status</h3>
-                                <div className="track-detail-grid">
-                                    <div className="track-detail-item">
-                                        <span className="track-label">Rules Agreed</span>
-                                        <span className="track-value">{booking.rulesAgreed ? '✅ Yes' : '❌ No'}</span>
                                     </div>
-                                    <div className="track-detail-item">
-                                        <span className="track-label">Waiver Signed</span>
-                                        <span className="track-value">{booking.waiverSigned ? '✅ Yes' : '❌ No'}</span>
+
+                                    {/* Booked on */}
+                                    <div className="track-booking-meta">
+                                        <span>Booked on {formatDate(booking.createdAt)}</span>
                                     </div>
+
                                 </div>
-                            </div>
+                            );
+                        })}
 
-                            {/* Support Box */}
-                            <div className="track-info-box">
-                                <h4>📧 Need Help?</h4>
-                                <p>If you have questions about your booking, please contact our support team:</p>
-                                <p><strong>Email:</strong> Info@victoriasaunarentals.ca</p>
-                            </div>
-
-                        </div>{/* /track-booking-details */}
+                        {/* Support Box */}
+                        <div className="track-info-box">
+                            <h4>📧 Need Help?</h4>
+                            <p>If you have questions about your booking, please contact our support team:</p>
+                            <p><strong>Email:</strong> Info@victoriasaunarentals.ca</p>
+                            <p><strong>Phone:</strong> 250-885-4955</p>
+                        </div>
 
                         <div className="track-form-actions">
                             <button
                                 className="btn btn-primary"
                                 onClick={handleReset}
                             >
-                                🔄 Look Up Another Booking
+                                🔄 Search Again
                             </button>
                             <button
                                 className="btn btn-secondary"

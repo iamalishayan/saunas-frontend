@@ -43,10 +43,10 @@ const AboutUs: React.FC = () => {
                     <h1>ABOUT US</h1>
                     <p className="hero-subtitle">OUR COMMITMENT TO EXCELLENCE</p>
                     <p className="hero-description">
-                        At Sauna Luxuries, we pride ourselves on delivering only the finest saunas and accessories 
+                        At Victoria Sauna Rentals, we pride ourselves on delivering only the finest saunas and accessories 
                         to elevate your relaxation experience. As a trusted reseller partner of top-tier suppliers, 
                         we ensure that every product meets the highest standards of craftsmanship, durability, and 
-                        performance. When you choose Sauna Luxuries, you're investing in unmatched quality and a 
+                        performance. When you choose Victoria Sauna Rentals, you're investing in unmatched quality and a 
                         superior sauna experience that stands the test of time.
                     </p>
                     
@@ -57,8 +57,8 @@ const AboutUs: React.FC = () => {
                             website to the day your sauna is installed, we're here to provide exceptional service 
                             every step of the way. Our knowledgeable team is dedicated to helping you find the 
                             perfect product to fit your needs and preferences. With responsive support and a 
-                            commitment to exceeding expectations, we aim to make every interaction with Sauna 
-                            Luxuries truly memorable.
+                            commitment to exceeding expectations, we aim to make every interaction with Victoria Sauna 
+                            Rentals truly memorable.
                         </p>
                     </div>
 

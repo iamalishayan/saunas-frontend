@@ -372,7 +372,7 @@ const Contact: React.FC = () => {
                   <FaPhone />
                 </div>
                 <h3>Call Us</h3>
-                <p className="card-value">(555) 123-4567</p>
+                <p className="card-value">250-885-4955</p>
                 <p className="card-subtitle">Mon-Fri, 9am-6pm PST</p>
               </div>
 

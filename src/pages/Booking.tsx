@@ -163,6 +163,29 @@ const Booking: React.FC = () => {
         return `$${(priceCents / 100).toFixed(2)}`;
     };
 
+    const getMinimumAdultBirthdate = (): string => {
+        const today = new Date();
+        const minAdultDate = new Date(today.getFullYear() - 18, today.getMonth(), today.getDate());
+        return minAdultDate.toISOString().split('T')[0];
+    };
+
+    const isAtLeast18 = (birthdate: string): boolean => {
+        if (!birthdate) return false;
+
+        const birth = new Date(birthdate);
+        if (Number.isNaN(birth.getTime())) return false;
+
+        const today = new Date();
+        let age = today.getFullYear() - birth.getFullYear();
+        const monthDiff = today.getMonth() - birth.getMonth();
+
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+            age -= 1;
+        }
+
+        return age >= 18;
+    };
+
     const handleBookTrip = (trip: Trip) => {
         // Allow everyone to view booking form - login required only at submission
         // Clear any previous errors
@@ -310,6 +333,7 @@ const Booking: React.FC = () => {
             mobileSaunaData.customerName.trim() !== '' &&
             mobileSaunaData.customerEmail.trim() !== '' &&
             mobileSaunaData.customerBirthdate !== '' &&
+            isAtLeast18(mobileSaunaData.customerBirthdate) &&
             mobileSaunaData.customerPhone.trim() !== '' &&
             mobileSaunaData.deliveryAddress.trim() !== '' &&
             mobileSaunaData.additionalWoodBins >= 0 &&
@@ -367,6 +391,10 @@ const Booking: React.FC = () => {
         }
         if (!mobileSaunaData.customerBirthdate) {
             setError('Please enter your birthdate');
+            return;
+        }
+        if (!isAtLeast18(mobileSaunaData.customerBirthdate)) {
+            setError('You must be at least 18 years old to book a mobile sauna');
             return;
         }
         if (!mobileSaunaData.customerPhone || !mobileSaunaData.customerPhone.trim()) {
@@ -1070,7 +1098,7 @@ const Booking: React.FC = () => {
                                                 type="date"
                                                 id="customerBirthdate"
                                                 value={mobileSaunaData.customerBirthdate}
-                                                max={new Date().toISOString().split('T')[0]}
+                                                max={getMinimumAdultBirthdate()}
                                                 onChange={(e) => setMobileSaunaData({
                                                     ...mobileSaunaData,
                                                     customerBirthdate: e.target.value
@@ -1226,10 +1254,26 @@ const Booking: React.FC = () => {
                                                         {pricingPreview && !loadingPricing && (
                                                             <div className="pricing-details">
                                                                 <div className="pricing-summary">
+                                                                    {parseFloat(pricingPreview.pricing.breakdown.rentalDiscount || '0') > 0 && (
+                                                                        <div className="pricing-row">
+                                                                            <span className="pricing-label">Rental Price (Before Discount):</span>
+                                                                            <span className="pricing-value">${pricingPreview.pricing.breakdown.rentalBase || pricingPreview.pricing.breakdown.rental}</span>
+                                                                        </div>
+                                                                    )}
                                                                     <div className="pricing-row">
-                                                                        <span className="pricing-label">Rental ({pricingPreview.dateRange.days} days):</span>
+                                                                        <span className="pricing-label">
+                                                                            {parseFloat(pricingPreview.pricing.breakdown.rentalDiscount || '0') > 0
+                                                                                ? `Rental (${pricingPreview.dateRange.days} days, After Discount):`
+                                                                                : `Rental (${pricingPreview.dateRange.days} days):`}
+                                                                        </span>
                                                                         <span className="pricing-value">${pricingPreview.pricing.breakdown.rental}</span>
                                                                     </div>
+                                                                    {parseFloat(pricingPreview.pricing.breakdown.rentalDiscount || '0') > 0 && (
+                                                                        <div className="pricing-row pricing-discount">
+                                                                            <span className="pricing-label">Discount:</span>
+                                                                            <span className="pricing-value">-${pricingPreview.pricing.breakdown.rentalDiscount}</span>
+                                                                        </div>
+                                                                    )}
                                                                     {pricingPreview.deliveryDetails && (
                                                                         <div className="pricing-row">
                                                                             <span className="pricing-label">
@@ -1250,7 +1294,15 @@ const Booking: React.FC = () => {
                                                                         </div>
                                                                     )}
                                                                     <div className="pricing-row pricing-subtotal">
-                                                                        <span className="pricing-label">Subtotal:</span>
+                                                                        <span className="pricing-label">Taxable Subtotal:</span>
+                                                                        <span className="pricing-value">${pricingPreview.pricing.breakdown.taxableSubtotal || pricingPreview.pricing.breakdown.total}</span>
+                                                                    </div>
+                                                                    <div className="pricing-row pricing-gst">
+                                                                        <span className="pricing-label">GST (5%):</span>
+                                                                        <span className="pricing-value">${pricingPreview.pricing.breakdown.gst || '0.00'}</span>
+                                                                    </div>
+                                                                    <div className="pricing-row pricing-subtotal">
+                                                                        <span className="pricing-label">Total Before Deposit:</span>
                                                                         <span className="pricing-value">${pricingPreview.pricing.breakdown.total}</span>
                                                                     </div>
                                                                     <div className="pricing-row pricing-deposit">
@@ -1258,11 +1310,13 @@ const Booking: React.FC = () => {
                                                                             🛡️ Security Deposit (Refundable):
                                                                             <span className="pricing-note"> - Auto-refunded 2 days after rental ends</span>
                                                                         </span>
-                                                                        <span className="pricing-value">$250.00</span>
+                                                                        <span className="pricing-value">${pricingPreview.pricing.breakdown.deposit || '250.00'}</span>
                                                                     </div>
                                                                     <div className="pricing-row pricing-total">
                                                                         <span className="pricing-label"><strong>Total Due Now:</strong></span>
-                                                                        <span className="pricing-value"><strong>${(parseFloat(pricingPreview.pricing.breakdown.total) + 250).toFixed(2)}</strong></span>
+                                                                        <span className="pricing-value">
+                                                                            <strong>${pricingPreview.pricing.breakdown.totalDueNow || (parseFloat(pricingPreview.pricing.breakdown.total) + parseFloat(pricingPreview.pricing.breakdown.deposit || '250.00')).toFixed(2)}</strong>
+                                                                        </span>
                                                                     </div>
                                                                 </div>
                                                                 <p className="pricing-info">

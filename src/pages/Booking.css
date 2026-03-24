@@ -2082,6 +2082,15 @@
   border-bottom: 1px solid rgba(139, 90, 43, 0.15);
 }
 
+.pricing-discount .pricing-value {
+  color: rgba(46, 125, 50, 1);
+}
+
+.pricing-gst .pricing-label,
+.pricing-gst .pricing-value {
+  color: rgba(61, 48, 40, 0.85);
+}
+
 .pricing-deposit {
   background: rgba(76, 175, 80, 0.08);
   padding: 0.75rem;

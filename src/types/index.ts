@@ -350,6 +350,11 @@ export interface PricingBreakdown {
   deliveryFee: number; // Delivery fee in cents
   deliveryDistance: number; // Distance in km
   deliveryFreeRadius: number; // Free delivery radius (20km)
+  taxableSubtotal?: number; // Rental + delivery + wood bins before GST
+  gstRate?: number; // GST rate (0.05)
+  gstAmount?: number; // GST in cents
+  totalBeforeDeposit?: number; // Total before refundable deposit
+  damageDeposit?: number; // Refundable deposit amount
   woodBins: {
     additional: number; // Number of additional bins ordered
     free: number; // Number of free bins (always 2)
@@ -382,15 +387,32 @@ export interface PricingPreviewResponse {
     dropoffDay: string;
   };
   pricing: {
+    baseRentalCostCents?: number;
+    discountApplied?: boolean;
+    discountPercent?: number;
+    discountThresholdDays?: number;
+    discountAmountCents?: number;
     rentalCostCents: number;
     deliveryFeeCents: number;
     woodBinsCostCents: number;
+    taxableSubtotalCents?: number;
+    gstRate?: number;
+    gstCents?: number;
     totalCostCents: number;
+    damageDepositCents?: number;
+    totalDueNowCents?: number;
+    dailyIncrementCents?: number;
     breakdown: {
+      rentalBase?: string;
+      rentalDiscount?: string;
       rental: string; // Formatted dollar amount
       delivery: string;
       woodBins: string;
+      taxableSubtotal?: string;
+      gst?: string;
       total: string;
+      deposit?: string;
+      totalDueNow?: string;
     };
   };
   deliveryDetails: {

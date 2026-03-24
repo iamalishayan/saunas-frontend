@@ -90,7 +90,8 @@ const MobileSaunaCalendar: React.FC<MobileSaunaCalendarProps> = ({
             const booked = new Set<string>();
             if (result.availability && Array.isArray(result.availability)) {
                 result.availability.forEach((day: any) => {
-                    if (day.available === 0) {
+                    // Backend returns `availableUnits` (not `available`)
+                    if (day.availableUnits === 0 || day.isAvailable === false) {
                         booked.add(day.date);
                     }
                 });

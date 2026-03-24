@@ -76,6 +76,7 @@ const Booking: React.FC = () => {
     // Agreement state (inline, not modal)
     const [bookingCreated, setBookingCreated] = useState<boolean>(false);
     const [pendingBookingId, setPendingBookingId] = useState<string | null>(null);
+    const [waiverPreAccepted, setWaiverPreAccepted] = useState<boolean>(false);
     const [agreementAccepted, setAgreementAccepted] = useState<boolean>(false);
     const [agreementHtml, setAgreementHtml] = useState<string>('');
 
@@ -135,6 +136,7 @@ const Booking: React.FC = () => {
         setGuestToken('');
         setBookingCreated(false);
         setPendingBookingId(null);
+        setWaiverPreAccepted(false);
         setAgreementAccepted(false);
         setAgreementHtml('');
     };
@@ -196,6 +198,7 @@ const Booking: React.FC = () => {
         // Reset booking and agreement states
         setBookingCreated(false);
         setPendingBookingId(null);
+        setWaiverPreAccepted(false);
         setAgreementAccepted(false);
         setAgreementHtml('');
 
@@ -336,6 +339,7 @@ const Booking: React.FC = () => {
             isAtLeast18(mobileSaunaData.customerBirthdate) &&
             mobileSaunaData.customerPhone.trim() !== '' &&
             mobileSaunaData.deliveryAddress.trim() !== '' &&
+            waiverPreAccepted &&
             mobileSaunaData.additionalWoodBins >= 0 &&
             mobileSaunaData.additionalWoodBins <= 10
         );
@@ -409,6 +413,10 @@ const Booking: React.FC = () => {
             setError('Additional wood bins must be between 0 and 10');
             return;
         }
+        if (!waiverPreAccepted) {
+            setError('Please accept the rental terms and waiver before continuing');
+            return;
+        }
 
         // If we get here, validation passed
         setProcessing(true);
@@ -433,17 +441,38 @@ const Booking: React.FC = () => {
             // Use booking.id (not _id) as per backend response
             const bookingId = booking.id || booking._id;
 
-            // Store booking ID and load agreement
+            // Store booking ID for fallback/manual flow
             setPendingBookingId(bookingId);
-            setBookingCreated(true);
-            
-            // Load agreement preview
+
+            // Auto-accept agreement (user has already accepted pre-booking waiver)
+            // and proceed directly to Stripe to avoid requiring a second click.
             try {
-                const { previewAgreement } = await import('../services/api');
-                const html = await previewAgreement(bookingId);
-                setAgreementHtml(html);
-            } catch (err: any) {
-                console.error('Failed to load agreement:', err);
+                const { acceptAgreement } = await import('../services/api');
+                await acceptAgreement(bookingId);
+                setAgreementAccepted(true);
+
+                const paymentResponse = await initiatePayment({
+                    bookingId,
+                    successUrl: `${window.location.origin}/booking/success?bookingId=${bookingId}`,
+                    cancelUrl: `${window.location.origin}/booking/cancel?bookingId=${bookingId}`
+                });
+
+                if (paymentResponse.url) {
+                    window.location.href = paymentResponse.url;
+                    return;
+                }
+            } catch (paymentErr: any) {
+                // Fallback to existing manual agreement/payment flow if auto step fails.
+                setBookingCreated(true);
+                setError(paymentErr.message || 'Booking created, but automatic payment redirect failed. Please continue manually.');
+
+                try {
+                    const { previewAgreement } = await import('../services/api');
+                    const html = await previewAgreement(bookingId);
+                    setAgreementHtml(html);
+                } catch (previewErr: any) {
+                    console.error('Failed to load agreement preview after payment failure:', previewErr);
+                }
             }
         } catch (err: any) {
             setError(err.message || 'Failed to create mobile sauna booking');
@@ -1167,6 +1196,35 @@ const Booking: React.FC = () => {
                                             )}
                                         </div>
                                     </div>
+
+                                    {/* Pre-booking waiver acceptance */}
+                                    {!bookingCreated && (
+                                        <div className="agreement-section booking-glass-panel pre-booking-agreement">
+                                            <h4>Rental Terms and Waiver</h4>
+                                            <p className="pre-booking-agreement__intro">
+                                                Please review and accept these terms before creating your booking.
+                                                The full personalized agreement is generated at checkout.
+                                            </p>
+                                            <ul className="pre-booking-agreement__list">
+                                                <li>You must be 18+ to complete this booking.</li>
+                                                <li>Security deposit is refundable and auto-refunded 2 days after rental end (unless damages are reported).</li>
+                                                <li>You agree to follow all safety and operating instructions in the final rental agreement.</li>
+                                            </ul>
+                                            <label className="pre-booking-agreement__checkbox">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={waiverPreAccepted}
+                                                    onChange={(e) => {
+                                                        setWaiverPreAccepted(e.target.checked);
+                                                        setError(null);
+                                                    }}
+                                                />
+                                                <span>
+                                                    I have read and accept the rental terms and liability waiver. *
+                                                </span>
+                                            </label>
+                                        </div>
+                                    )}
                                     
                                     {/* Agreement Section - Show after booking is created */}
                                     {bookingCreated && pendingBookingId && (
@@ -1344,6 +1402,7 @@ const Booking: React.FC = () => {
                                                 setError(null);
                                                 setBookingCreated(false);
                                                 setPendingBookingId(null);
+                                                setWaiverPreAccepted(false);
                                                 setAgreementAccepted(false);
                                                 setAgreementHtml('');
                                             }}
@@ -1358,7 +1417,7 @@ const Booking: React.FC = () => {
                                                 onClick={handleMobileSaunaBooking}
                                                 disabled={(!isAuthenticated && !guestVerified) || processing || !isValidMobileSaunaForm() || checkingAvailability || (availabilityData?.available || 0) === 0}
                                             >
-                                                {(!isAuthenticated && !guestVerified) ? '🔒 Verify Email Required' : processing ? 'Creating Booking...' : checkingAvailability ? 'Checking Availability...' : (availabilityData?.available || 0) === 0 ? 'No Units Available' : 'Create Booking'}
+                                                {(!isAuthenticated && !guestVerified) ? '🔒 Verify Email Required' : processing ? 'Creating Booking...' : checkingAvailability ? 'Checking Availability...' : (availabilityData?.available || 0) === 0 ? 'No Units Available' : !waiverPreAccepted ? 'Accept Waiver to Continue' : 'Create Booking & Proceed to Payment'}
                                             </button>
                                         ) : (
                                             <button 

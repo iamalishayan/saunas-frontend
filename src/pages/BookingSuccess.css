@@ -51,6 +51,16 @@
   font-size: var(--font-size-base);
 }
 
+.agreement-link {
+  color: var(--color-primary-brown);
+  font-weight: var(--font-weight-semibold, 600);
+  text-decoration: underline;
+}
+
+.agreement-link:hover {
+  opacity: 0.85;
+}
+
 .next-steps ul {
   margin: var(--spacing-md) 0;
   padding-left: var(--spacing-lg);

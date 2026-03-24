@@ -13,6 +13,8 @@ const BookingSuccess: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [paymentStatus, setPaymentStatus] = useState<any>(null);
 
+    const isPaymentComplete = paymentStatus?.paymentStatus === 'paid' || paymentStatus?.paymentStatus === 'succeeded';
+
     useEffect(() => {
         if (bookingId) {
             verifyPayment();
@@ -30,7 +32,7 @@ const BookingSuccess: React.FC = () => {
             const status = await checkPaymentStatus(bookingId);
             setPaymentStatus(status);
             
-            if (status.paymentStatus === 'succeeded') {
+            if (status.paymentStatus === 'paid' || status.paymentStatus === 'succeeded') {
                 // No auto-redirect — user navigates manually via buttons
             }
         } catch (err: any) {
@@ -38,7 +40,7 @@ const BookingSuccess: React.FC = () => {
             // If payment verification fails (likely due to auth), show generic success message
             // since the user was redirected here from Stripe success URL
             setPaymentStatus({ 
-                paymentStatus: 'succeeded', 
+                paymentStatus: 'paid', 
                 message: 'Payment completed successfully',
                 bookingId: bookingId
             });
@@ -86,7 +88,7 @@ const BookingSuccess: React.FC = () => {
         <div className="page-content">
             <div className="container">
                 <div className="success-container">
-                    {paymentStatus?.paymentStatus === 'succeeded' ? (
+                    {isPaymentComplete ? (
                         <>
                             <div className="success-icon">✅</div>
                             <h1>Booking Confirmed!</h1>
@@ -103,8 +105,29 @@ const BookingSuccess: React.FC = () => {
                                 <h3>What's Next?</h3>
                                 <ul>
                                     <li>You will receive a confirmation email shortly</li>
+                                    <li>Your full rental agreement will be available here once processing completes</li>
                                     <li>Contact us if you have any questions</li>
                                 </ul>
+                            </div>
+
+                            <div className="booking-details">
+                                <h3>Rental Agreement</h3>
+                                {paymentStatus?.agreementPdfUrl ? (
+                                    <p>
+                                        <a
+                                            className="agreement-link"
+                                            href={paymentStatus.agreementPdfUrl}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                        >
+                                            📄 View Rental Agreement PDF
+                                        </a>
+                                    </p>
+                                ) : (
+                                    <p>
+                                        Agreement PDF is being generated. Refresh this page in a minute if it is not visible yet.
+                                    </p>
+                                )}
                             </div>
 
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, lazy, Suspense } from 'react';
 
-import { getUpcomingTrips, createBooking, createMobileSaunaBooking, initiatePayment, checkMobileSaunaAvailability, getMobileSaunaPricingPreview } from '../services/api';
+import { getUpcomingTrips, createBooking, createMobileSaunaBooking, initiatePayment, checkMobileSaunaAvailability, getMobileSaunaPricingPreview, getPublicWaiverPDF } from '../services/api';
 import { Trip, BookingFormData, PricingPreviewResponse } from '../types';
 import { useAuth } from '../contexts/AuthContext';
 // Lazy load calendar component for better performance
@@ -79,6 +79,8 @@ const Booking: React.FC = () => {
     const [waiverPreAccepted, setWaiverPreAccepted] = useState<boolean>(false);
     const [agreementAccepted, setAgreementAccepted] = useState<boolean>(false);
     const [agreementHtml, setAgreementHtml] = useState<string>('');
+    const [waiverPdfLoading, setWaiverPdfLoading] = useState<boolean>(false);
+    const [waiverPdfError, setWaiverPdfError] = useState<string | null>(null);
 
     // Validate guest token on mount
     useEffect(() => {
@@ -539,6 +541,37 @@ const Booking: React.FC = () => {
                 </html>
             `);
             newWindow.document.close();
+        }
+    };
+
+    const handleOpenWaiverPdf = async () => {
+        if (waiverPdfLoading) return;
+
+        setWaiverPdfLoading(true);
+        setWaiverPdfError(null);
+
+        const popup = window.open('about:blank', '_blank');
+
+        if (!popup) {
+            setWaiverPdfLoading(false);
+            setWaiverPdfError('Please allow pop-ups to view the waiver PDF.');
+            return;
+        }
+
+        popup.document.write('<p style="font-family: sans-serif; padding: 1rem;">Loading waiver PDF...</p>');
+
+        try {
+            const pdfBlob = await getPublicWaiverPDF();
+            const blobUrl = URL.createObjectURL(pdfBlob);
+            popup.location.href = blobUrl;
+
+            // Give the browser enough time to open/use the object URL before cleanup.
+            window.setTimeout(() => URL.revokeObjectURL(blobUrl), 60_000);
+        } catch (err: any) {
+            popup.close();
+            setWaiverPdfError(err.message || 'Unable to load waiver PDF right now. Please try again.');
+        } finally {
+            setWaiverPdfLoading(false);
         }
     };
 
@@ -1210,6 +1243,24 @@ const Booking: React.FC = () => {
                                                 <li>Security deposit is refundable and auto-refunded 2 days after rental end (unless damages are reported).</li>
                                                 <li>You agree to follow all safety and operating instructions in the final rental agreement.</li>
                                             </ul>
+                                            <div className="pre-booking-agreement__actions">
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-secondary pre-booking-agreement__pdf-btn"
+                                                    onClick={handleOpenWaiverPdf}
+                                                    disabled={waiverPdfLoading}
+                                                >
+                                                    {waiverPdfLoading ? 'Opening Waiver...' : 'Read Waiver PDF'}
+                                                </button>
+                                                <p className="pre-booking-agreement__note">
+                                                    Review this general waiver before you agree. Your personalized agreement is still generated at checkout.
+                                                </p>
+                                                {waiverPdfError && (
+                                                    <p className="pre-booking-agreement__error" role="alert">
+                                                        {waiverPdfError}
+                                                    </p>
+                                                )}
+                                            </div>
                                             <label className="pre-booking-agreement__checkbox">
                                                 <input
                                                     type="checkbox"

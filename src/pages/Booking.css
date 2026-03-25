@@ -2152,6 +2152,28 @@
   line-height: 1.4;
 }
 
+.pre-booking-agreement__actions {
+  margin-bottom: 0.85rem;
+}
+
+.pre-booking-agreement__pdf-btn {
+  width: 100%;
+  margin-bottom: 0.6rem;
+}
+
+.pre-booking-agreement__note {
+  margin: 0;
+  font-size: 0.9rem;
+  color: rgba(61, 48, 40, 0.85);
+}
+
+.pre-booking-agreement__error {
+  margin: 0.5rem 0 0;
+  font-size: 0.9rem;
+  color: #b42318;
+  font-weight: 600;
+}
+
 .pre-booking-agreement__checkbox {
   display: flex;
   gap: 0.6rem;

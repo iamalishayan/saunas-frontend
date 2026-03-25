@@ -1311,6 +1311,20 @@ export const downloadAgreementPDF = async (agreementData: {
     }
 };
 
+// Get generic waiver PDF for pre-booking review
+export const getPublicWaiverPDF = async (): Promise<Blob> => {
+    try {
+        const response = await axios.get(
+            `${API_BASE_URL}/agreement/public-waiver-pdf`,
+            { responseType: 'blob' }
+        );
+        return response.data;
+    } catch (error: any) {
+        console.error('Error fetching public waiver PDF:', error);
+        throw new Error(error.response?.data?.message || 'Failed to open waiver PDF');
+    }
+};
+
 // ========================================
 // Contact Form API
 // ========================================

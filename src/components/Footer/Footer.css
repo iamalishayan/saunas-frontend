@@ -15,12 +15,11 @@
 }
 
 /* Brand Section */
-.footer__brand h3 {
-  color: var(--color-warm-white);
-  font-family: var(--font-secondary);
-  font-size: var(--font-size-2xl);
+.footer__logo {
+  max-width: 250px;
+  height: auto;
   margin-bottom: var(--spacing-lg);
-  text-align: justify;
+  object-fit: contain;
 }
 
 .footer__brand p {

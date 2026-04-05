@@ -33,7 +33,12 @@ const BookingSuccess: React.FC = () => {
             setPaymentStatus(status);
             
             if (status.paymentStatus === 'paid' || status.paymentStatus === 'succeeded') {
-                // No auto-redirect — user navigates manually via buttons
+                // Check if PDF is ready, if not, poll every 3 seconds (up to some reasonable timeframe)
+                if (!status.agreementPdfUrl) {
+                    setTimeout(() => {
+                        verifyPayment();
+                    }, 3000);
+                }
             }
         } catch (err: any) {
             console.log('Payment verification failed, showing generic success:', err.message);
@@ -41,7 +46,7 @@ const BookingSuccess: React.FC = () => {
             // since the user was redirected here from Stripe success URL
             setPaymentStatus({ 
                 paymentStatus: 'paid', 
-                message: 'Payment completed successfully',
+                message: 'Payment completed',
                 bookingId: bookingId
             });
         } finally {
@@ -120,7 +125,7 @@ const BookingSuccess: React.FC = () => {
                                             target="_blank"
                                             rel="noopener noreferrer"
                                         >
-                                            📄 View Rental Agreement PDF
+                                            View Rental Agreement PDF
                                         </a>
                                     </p>
                                 ) : (

@@ -23,7 +23,15 @@ const Header: React.FC<HeaderProps> = ({ onSidebarToggle, isSidebarOpen = false 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-  
+
+  // Cream logo on dark backgrounds: home page hero or scrolled (dark green) header
+  // Dark green logo only on light sticky header (non-home, not yet scrolled)
+  const logoSrc = (isHomePage || isScrolled)
+    ? '/logos/logo-dark-green.png'
+    : '/logos/logo-dark-green.png';
+
+  const logoAlt = 'Victoria Sauna Rentals';
+
   return (
     <header className={`header ${isHomePage ? 'header--with-background' : ''} ${!isHomePage && isScrolled ? 'header--scrolled' : ''}`}>
       <div className="container">
@@ -41,10 +49,14 @@ const Header: React.FC<HeaderProps> = ({ onSidebarToggle, isSidebarOpen = false 
             </span>
           </button>
 
-          {/* Centered Logo/Brand */}
+          {/* Centered Logo */}
           <div className="header__brand">
-            <Link to="/" className="header__logo">
-              <h2>Victoria Sauna Rentals</h2>
+            <Link to="/" className="header__logo" aria-label={logoAlt}>
+              <img
+                src={logoSrc}
+                alt={logoAlt}
+                className="header__logo-img"
+              />
             </Link>
           </div>
 

@@ -1,89 +1,99 @@
-/* Self-hosted fonts - loaded via /fonts/fonts.css in index.html */
-/* Moved to <link> tag to prevent render-blocking CSS @import */
-
-/* CSS Custom Properties - Design System */
+/* CSS Custom Properties - VSR Brand Design System */
 :root {
-  /* Color Palette - Earthy & Spa-like tones */
-  --color-primary-brown: #8B4513;
-  --color-primary-brown-light: #A0522D;
-  --color-primary-brown-dark: #654321;
-  --color-warm-brown: #964B00;
-  
-  --color-secondary-green: #4A6741;
-  --color-secondary-green-light: #6B8F5A;
-  --color-secondary-green-dark: #2E4A27;
-  
-  --color-accent-blue: #5B9BD5;
-  --color-accent-blue-light: #7DB3E3;
-  --color-accent-blue-dark: #3A7BC8;
-  
-  --color-neutral-beige: #F5F2E8;
-  --color-neutral-beige-light: #FAF8F3;
-  --color-neutral-beige-dark: #E8E2D3;
-  
-  --color-warm-white: #FEFCF7;
-  --color-soft-gray: #8E8E8E;
-  --color-charcoal: #333333;
-  --color-black: #1A1A1A;
-  --color-warm-beige: #F0E6D2;
-  --color-ocean-blue: #2E86AB;
-  --color-white: #FFFFFF;
-  --nordic-deep-blue: #1a2634;
-  --nordic-charcoal: #2c3e50;
+  /* ── Official VSR Brand Colors ── */
+  --color-dark-green:   #2f3a24;   /* Primary brand colour */
+  --color-rust:         #b46934;   /* CTA / accent colour */
+  --color-cream:        #fce9d0;   /* Light warm background */
+  --color-light-grey:   #e6e7e8;   /* Borders / dividers */
+  --color-black:        #000000;
+  --color-white:        #ffffff;
 
-  /* Typography */
-  --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-secondary: 'Playfair Display', Georgia, serif;
-  
-  --font-size-xs: 0.75rem;    /* 12px */
-  --font-size-sm: 0.875rem;   /* 14px */
-  --font-size-base: 1rem;     /* 16px */
-  --font-size-lg: 1.125rem;   /* 18px */
-  --font-size-xl: 1.25rem;    /* 20px */
-  --font-size-2xl: 1.5rem;    /* 24px */
-  --font-size-3xl: 1.875rem;  /* 30px */
-  --font-size-4xl: 2.25rem;   /* 36px */
-  --font-size-5xl: 3rem;      /* 48px */
-  
-  --font-weight-light: 300;
-  --font-weight-normal: 400;
-  --font-weight-medium: 500;
+  /* ── Semantic Aliases (used across all components) ── */
+  --color-primary:              var(--color-dark-green);
+  --color-primary-dark:         #1e2718;
+  --color-primary-light:        #3d4e30;
+
+  /* Keep old names mapped so existing components don't break */
+  --color-primary-brown:        var(--color-rust);
+  --color-primary-brown-light:  #c87a45;
+  --color-primary-brown-dark:   #8f5129;
+  --color-warm-brown:           var(--color-rust);
+  --color-secondary-green:      var(--color-dark-green);
+  --color-secondary-green-light:var(--color-primary-light);
+  --color-secondary-green-dark: var(--color-primary-dark);
+
+  --color-accent-blue:          #5B9BD5;
+  --color-accent-blue-light:    #7DB3E3;
+  --color-accent-blue-dark:     #3A7BC8;
+
+  --color-neutral-beige:        var(--color-cream);
+  --color-neutral-beige-light:  #fff7ee;
+  --color-neutral-beige-dark:   #e8d8bf;
+  --color-warm-white:           #fdf8f3;
+  --color-warm-beige:           var(--color-cream);
+  --color-soft-gray:            #666666;
+  --color-charcoal:             #2a2a2a;
+  --color-ocean-blue:           #2E86AB;
+  --nordic-deep-blue:           #1a2634;
+  --nordic-charcoal:            #2c3e50;
+
+  /* ── Typography ── */
+  /* Primary: Libre Baskerville (close match to brand's Baskerville) */
+  /* Secondary: Source Sans 3 (close match to ATF Franklin Gothic)   */
+  /* When Adobe Fonts kit arrives, replace the @import in index.html */
+  --font-primary:   'Source Sans 3', 'Franklin Gothic Medium', Arial, sans-serif;
+  --font-secondary: 'Libre Baskerville', Georgia, 'Times New Roman', serif;
+
+  --font-size-xs:   0.75rem;
+  --font-size-sm:   0.875rem;
+  --font-size-base: 1rem;
+  --font-size-md:   1rem;
+  --font-size-lg:   1.125rem;
+  --font-size-xl:   1.25rem;
+  --font-size-2xl:  1.5rem;
+  --font-size-3xl:  1.875rem;
+  --font-size-4xl:  2.25rem;
+  --font-size-5xl:  3rem;
+
+  --font-weight-light:    300;
+  --font-weight-normal:   400;
+  --font-weight-medium:   500;
   --font-weight-semibold: 600;
-  --font-weight-bold: 700;
-  
-  /* Spacing */
-  --spacing-xs: 0.25rem;    /* 4px */
-  --spacing-sm: 0.5rem;     /* 8px */
-  --spacing-md: 1rem;       /* 16px */
-  --spacing-lg: 1.5rem;     /* 24px */
-  --spacing-xl: 2rem;       /* 32px */
-  --spacing-2xl: 3rem;      /* 48px */
-  --spacing-3xl: 4rem;      /* 64px */
-  --spacing-4xl: 6rem;      /* 96px */
-  
-  /* Border Radius */
-  --radius-sm: 0.25rem;     /* 4px */
-  --radius-md: 0.5rem;      /* 8px */
-  --radius-lg: 0.75rem;     /* 12px */
-  --radius-xl: 1rem;        /* 16px */
+  --font-weight-bold:     700;
+
+  /* ── Spacing ── */
+  --spacing-xs:  0.25rem;
+  --spacing-sm:  0.5rem;
+  --spacing-md:  1rem;
+  --spacing-lg:  1.5rem;
+  --spacing-xl:  2rem;
+  --spacing-2xl: 3rem;
+  --spacing-3xl: 4rem;
+  --spacing-4xl: 6rem;
+
+  /* ── Border Radius ── */
+  --radius-sm:   0.25rem;
+  --radius-md:   0.5rem;
+  --radius-lg:   0.75rem;
+  --radius-xl:   1rem;
   --radius-full: 9999px;
-  
-  /* Shadows */
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  
-  /* Transitions */
-  --transition-fast: 0.15s ease-in-out;
+
+  /* ── Shadows ── */
+  --shadow-sm: 0 1px 2px 0 rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+
+  /* ── Transitions ── */
+  --transition-fast:   0.15s ease-in-out;
   --transition-normal: 0.3s ease-in-out;
-  --transition-slow: 0.5s ease-in-out;
-  
-  /* Breakpoints (for use in media queries) */
-  --breakpoint-sm: 640px;
-  --breakpoint-md: 768px;
-  --breakpoint-lg: 1024px;
-  --breakpoint-xl: 1280px;
+  --transition-slow:   0.5s ease-in-out;
+
+  /* ── Breakpoints ── */
+  --breakpoint-sm:  640px;
+  --breakpoint-md:  768px;
+  --breakpoint-lg:  1024px;
+  --breakpoint-xl:  1280px;
   --breakpoint-2xl: 1536px;
 }
 

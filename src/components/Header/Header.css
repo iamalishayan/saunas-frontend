@@ -477,13 +477,14 @@
     padding: var(--spacing-sm) 0;
     min-height: 60px;
     display: grid;
-    grid-template-columns: 44px 1fr auto;
+    grid-template-columns: 1fr auto 1fr;
     align-items: center;
     gap: var(--spacing-sm);
   }
   
   .header__sidebar-toggle {
     order: 1;
+    justify-self: start;
     background: var(--color-primary-brown);
     color: white;
     border-radius: var(--radius-md);
@@ -502,8 +503,8 @@
     transform: none;
     max-width: 100%;
     order: 2;
+    justify-self: center;
     text-align: center;
-    flex: 1;
     overflow: hidden;
     padding: 0 var(--spacing-xs);
   }
@@ -520,6 +521,7 @@
   
   .header__cta {
     order: 3;
+    justify-self: end;
     gap: var(--spacing-xs);
     flex-shrink: 0;
   }
@@ -541,7 +543,7 @@
     padding: clamp(8px, 2vw, 12px) 0;
     min-height: clamp(50px, 12vw, 60px);
     display: grid;
-    grid-template-columns: auto 1fr auto;
+    grid-template-columns: 1fr auto 1fr;
     align-items: center;
     gap: clamp(6px, 2vw, 10px);
   }
@@ -553,6 +555,7 @@
     background: var(--color-primary-brown);
     border-radius: var(--radius-md);
     order: 1;
+    justify-self: start;
     flex-shrink: 0;
     display: flex !important;
     z-index: 100;
@@ -573,7 +576,7 @@
     position: static;
     transform: none;
     max-width: 100%;
-    flex: 1;
+    justify-self: center;
     text-align: center;
     order: 2;
     overflow: hidden;
@@ -592,7 +595,7 @@
   
   .header__cta {
     gap: clamp(3px, 1vw, 5px);
-    justify-content: flex-end;
+    justify-self: end;
     flex-shrink: 0;
     order: 3;
     display: flex;

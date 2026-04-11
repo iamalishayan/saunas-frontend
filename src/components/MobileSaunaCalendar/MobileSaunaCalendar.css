@@ -109,6 +109,10 @@
   background: #f44336;
 }
 
+.mobile-sauna-legend-dot.maintenance {
+  background: #ef6c00;
+}
+
 .mobile-sauna-legend-dot.selected {
   background: #4caf50;
 }
@@ -189,6 +193,12 @@
   color: #ffffff;
   cursor: not-allowed;
   position: relative;
+}
+
+.mobile-sauna-day.maintenance {
+  background: #ef6c00;
+  border-color: #d65c00;
+  color: #ffffff;
 }
 
 .mobile-sauna-day.start-date,

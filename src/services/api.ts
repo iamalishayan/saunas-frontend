@@ -1013,6 +1013,47 @@ export const getMobileSaunaBookings = async (): Promise<any> => {
     }
 };
 
+export const listMobileSaunaBlockedDates = async (params?: {
+    vesselId?: string;
+    startDate?: string;
+    endDate?: string;
+    reason?: 'maintenance' | 'personal_use';
+}): Promise<any> => {
+    try {
+        const response = await axios.get(`${API_BASE_URL}/admin/mobile-saunas/blocked-dates`, { params });
+        return response.data;
+    } catch (error: any) {
+        console.error('Error fetching blocked dates:', error);
+        throw new Error(error.response?.data?.message || 'Failed to fetch blocked dates');
+    }
+};
+
+export const createMobileSaunaBlockedDate = async (payload: {
+    vesselId: string;
+    startDate: string;
+    endDate: string;
+    reason: 'maintenance' | 'personal_use';
+    adminNote?: string;
+}): Promise<any> => {
+    try {
+        const response = await axios.post(`${API_BASE_URL}/admin/mobile-saunas/blocked-dates`, payload);
+        return response.data;
+    } catch (error: any) {
+        console.error('Error creating blocked date:', error);
+        throw new Error(error.response?.data?.message || 'Failed to create blocked date');
+    }
+};
+
+export const deleteMobileSaunaBlockedDate = async (id: string): Promise<any> => {
+    try {
+        const response = await axios.delete(`${API_BASE_URL}/admin/mobile-saunas/blocked-dates/${id}`);
+        return response.data;
+    } catch (error: any) {
+        console.error('Error deleting blocked date:', error);
+        throw new Error(error.response?.data?.message || 'Failed to delete blocked date');
+    }
+};
+
 export const updateMobileSaunaBooking = async (id: string, bookingData: {
     customerName?: string;
     days?: number;

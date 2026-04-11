@@ -94,6 +94,31 @@
   border: 1px solid #ccffcc;
 }
 
+.maintenance-toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid #d9ecff;
+  border-radius: 8px;
+  background: #f6fbff;
+  font-weight: 600;
+  color: #224c7a;
+  margin-bottom: 12px;
+}
+
+.maintenance-toggle input {
+  width: 16px;
+  height: 16px;
+}
+
+.maintenance-fields {
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 14px;
+  background: #fff;
+}
+
 /* Create Trip Button */
 .create-trip-btn {
   background-color: #8B4513;

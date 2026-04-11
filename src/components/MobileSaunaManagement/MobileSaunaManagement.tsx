@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { getAllBookings, cancelBookingAdmin, updateAdminBooking, extendBookingRental, downloadAgreementPDF } from '../../services/api';
+import {
+    getAllBookings,
+    cancelBookingAdmin,
+    updateAdminBooking,
+    extendBookingRental,
+    downloadAgreementPDF
+} from '../../services/api';
 import './MobileSaunaManagement.css';
 
 interface MobileSaunaBooking {
@@ -268,6 +274,7 @@ const MobileSaunaManagement: React.FC<MobileSaunaManagementProps> = ({ isOpen, o
             setDownloadingPDF(null);
         }
     };
+
 
     const formatDate = (dateString?: string): string => {
         if (!dateString) return 'N/A';

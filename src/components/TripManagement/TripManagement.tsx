@@ -1,5 +1,14 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { createTrip, listTrips, updateTrip, deleteTrip, notifyTripStaff, listVessels, getStaffMembers } from '../../services/api';
+import {
+  createTrip,
+  listTrips,
+  updateTrip,
+  deleteTrip,
+  notifyTripStaff,
+  listVessels,
+  getStaffMembers,
+  createMobileSaunaBlockedDate,
+} from '../../services/api';
 import { Trip, TripFormData, Vessel, User } from '../../types';
 import './TripManagement.css';
 
@@ -18,6 +27,14 @@ const TripManagement: React.FC<TripManagementProps> = ({ isOpen, onClose }) => {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [showCreateForm, setShowCreateForm] = useState<boolean>(false);
   const [editingTrip, setEditingTrip] = useState<Trip | null>(null);
+  const [maintenanceBlockEnabled, setMaintenanceBlockEnabled] = useState<boolean>(false);
+  const [maintenanceBlockLoading, setMaintenanceBlockLoading] = useState<boolean>(false);
+  const [maintenanceBlock, setMaintenanceBlock] = useState({
+    startDate: '',
+    endDate: '',
+    reason: 'maintenance' as 'maintenance' | 'personal_use',
+    adminNote: '',
+  });
   const [formData, setFormData] = useState<TripFormData>({
     vesselId: '',
     departureTime: '',
@@ -56,7 +73,8 @@ const TripManagement: React.FC<TripManagementProps> = ({ isOpen, onClose }) => {
   const fetchVessels = async () => {
     try {
       const response = await listVessels();
-      setVessels(response);
+      const vesselList = Array.isArray(response) ? response : (response.vessels || []);
+      setVessels(vesselList);
     } catch (err: any) {
       console.error('Error fetching vessels:', err);
     }
@@ -79,6 +97,13 @@ const TripManagement: React.FC<TripManagementProps> = ({ isOpen, onClose }) => {
       durationMinutes: 180,
       assignedStaff: []
     });
+    setMaintenanceBlockEnabled(false);
+    setMaintenanceBlock({
+      startDate: '',
+      endDate: '',
+      reason: 'maintenance',
+      adminNote: '',
+    });
     setEditingTrip(null);
     setShowCreateForm(false);
   };
@@ -87,12 +112,40 @@ const TripManagement: React.FC<TripManagementProps> = ({ isOpen, onClose }) => {
     e.preventDefault();
     setProcessingTrip('form');
     setError(null);
+
+    const shouldCreateMaintenanceBlock = Boolean(editingTrip && isMobileSauna && maintenanceBlockEnabled);
+
+    if (shouldCreateMaintenanceBlock) {
+      if (!maintenanceBlock.startDate || !maintenanceBlock.endDate) {
+        setError('Please provide maintenance block start and end dates');
+        setProcessingTrip(null);
+        return;
+      }
+
+      if (new Date(maintenanceBlock.endDate) < new Date(maintenanceBlock.startDate)) {
+        setError('Maintenance block end date cannot be before start date');
+        setProcessingTrip(null);
+        return;
+      }
+    }
     
     try {
       if (editingTrip) {
         await updateTrip(editingTrip._id, formData);
+
+        if (shouldCreateMaintenanceBlock && formData.vesselId) {
+          setMaintenanceBlockLoading(true);
+          await createMobileSaunaBlockedDate({
+            vesselId: formData.vesselId,
+            startDate: maintenanceBlock.startDate,
+            endDate: maintenanceBlock.endDate,
+            reason: maintenanceBlock.reason,
+            adminNote: maintenanceBlock.adminNote || undefined,
+          });
+        }
+
         await fetchTrips(false);
-        setSuccessMessage('Trip updated successfully');
+        setSuccessMessage(shouldCreateMaintenanceBlock ? 'Trip updated and sauna blocked successfully' : 'Trip updated successfully');
       } else {
         await createTrip(formData);
         await fetchTrips(false);
@@ -104,6 +157,7 @@ const TripManagement: React.FC<TripManagementProps> = ({ isOpen, onClose }) => {
     } catch (err: any) {
       setError(err.message || 'Failed to save trip');
     } finally {
+      setMaintenanceBlockLoading(false);
       setProcessingTrip(null);
     }
   };
@@ -119,6 +173,13 @@ const TripManagement: React.FC<TripManagementProps> = ({ isOpen, onClose }) => {
       assignedStaff: trip.assignedStaff?.map(staff => staff._id) || []
     });
     setEditingTrip(trip);
+    setMaintenanceBlockEnabled(false);
+    setMaintenanceBlock({
+      startDate: '',
+      endDate: '',
+      reason: 'maintenance',
+      adminNote: '',
+    });
     setShowCreateForm(true);
   };
 
@@ -283,6 +344,76 @@ const TripManagement: React.FC<TripManagementProps> = ({ isOpen, onClose }) => {
                     </div>
                   )}
 
+                  {editingTrip && isMobileSauna && (
+                    <div className="form-group form-group--full">
+                      <label className="maintenance-toggle">
+                        <input
+                          type="checkbox"
+                          checked={maintenanceBlockEnabled}
+                          onChange={(e) => setMaintenanceBlockEnabled(e.target.checked)}
+                        />
+                        <span>
+                          Also block this sauna for maintenance/personal use after saving trip edits
+                        </span>
+                      </label>
+
+                      {maintenanceBlockEnabled && (
+                        <div className="maintenance-fields">
+                          <div className="form-row">
+                            <div className="form-group">
+                              <label htmlFor="maintenance-start">Maintenance Start Date *</label>
+                              <input
+                                type="date"
+                                id="maintenance-start"
+                                value={maintenanceBlock.startDate}
+                                onChange={(e) => setMaintenanceBlock(prev => ({ ...prev, startDate: e.target.value }))}
+                                required
+                              />
+                            </div>
+                            <div className="form-group">
+                              <label htmlFor="maintenance-end">Maintenance End Date *</label>
+                              <input
+                                type="date"
+                                id="maintenance-end"
+                                min={maintenanceBlock.startDate || undefined}
+                                value={maintenanceBlock.endDate}
+                                onChange={(e) => setMaintenanceBlock(prev => ({ ...prev, endDate: e.target.value }))}
+                                required
+                              />
+                            </div>
+                          </div>
+
+                          <div className="form-row">
+                            <div className="form-group">
+                              <label htmlFor="maintenance-reason">Reason *</label>
+                              <select
+                                id="maintenance-reason"
+                                value={maintenanceBlock.reason}
+                                onChange={(e) => setMaintenanceBlock(prev => ({
+                                  ...prev,
+                                  reason: e.target.value as 'maintenance' | 'personal_use'
+                                }))}
+                              >
+                                <option value="maintenance">Maintenance</option>
+                                <option value="personal_use">Personal Use</option>
+                              </select>
+                            </div>
+                            <div className="form-group">
+                              <label htmlFor="maintenance-note">Admin Note (Optional)</label>
+                              <input
+                                type="text"
+                                id="maintenance-note"
+                                value={maintenanceBlock.adminNote}
+                                onChange={(e) => setMaintenanceBlock(prev => ({ ...prev, adminNote: e.target.value }))}
+                                placeholder="Optional internal note"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
                   {editingTrip && (
                     <div className="form-group">
                       <label htmlFor="title">Trip Title</label>
@@ -320,7 +451,7 @@ const TripManagement: React.FC<TripManagementProps> = ({ isOpen, onClose }) => {
                   <button
                     type="submit"
                     className="submit-btn"
-                    disabled={processingTrip === 'form'}
+                    disabled={processingTrip === 'form' || maintenanceBlockLoading}
                   >
                     {processingTrip === 'form'
                       ? 'Saving...'

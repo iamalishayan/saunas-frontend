@@ -32,6 +32,7 @@ const MobileSaunaCalendar: React.FC<MobileSaunaCalendarProps> = ({
     const [currentMonth, setCurrentMonth] = useState(new Date());
     const [hoveredDate, setHoveredDate] = useState<string | null>(null);
     const [bookedDates, setBookedDates] = useState<Set<string>>(new Set());
+    const [unavailableReasons, setUnavailableReasons] = useState<Map<string, string>>(new Map());
     const [checkingAvailability, setCheckingAvailability] = useState(false);
 
     console.log('Calendar minDays:', minDays); // Prevents unused warning
@@ -88,15 +89,20 @@ const MobileSaunaCalendar: React.FC<MobileSaunaCalendarProps> = ({
 
             // Mark dates as booked if no availability
             const booked = new Set<string>();
+            const reasonMap = new Map<string, string>();
             if (result.availability && Array.isArray(result.availability)) {
                 result.availability.forEach((day: any) => {
                     // Backend returns `availableUnits` (not `available`)
                     if (day.availableUnits === 0 || day.isAvailable === false) {
                         booked.add(day.date);
+                        if (day.unavailableReason) {
+                            reasonMap.set(day.date, day.unavailableReason);
+                        }
                     }
                 });
             }
             setBookedDates(booked);
+            setUnavailableReasons(reasonMap);
         } catch (error) {
             console.error('Error checking availability:', error);
         } finally {
@@ -253,6 +259,10 @@ const MobileSaunaCalendar: React.FC<MobileSaunaCalendarProps> = ({
                     Booked
                 </span>
                 <span className="mobile-sauna-legend-item">
+                    <span className="mobile-sauna-legend-dot maintenance"></span>
+                    Maintenance
+                </span>
+                <span className="mobile-sauna-legend-item">
                     <span className="mobile-sauna-legend-dot selected"></span>
                     Selected
                 </span>
@@ -270,6 +280,7 @@ const MobileSaunaCalendar: React.FC<MobileSaunaCalendarProps> = ({
                 <div className="mobile-sauna-days">
                     {days.map((day, index) => {
                         const isBooked = day.isAvailable === false;
+                        const isMaintenanceBlocked = unavailableReasons.get(day.dateString) === 'maintenance';
                         const isDisabled = day.isPast || !day.isCurrentMonth || isBooked;
                         
                         return (
@@ -281,15 +292,19 @@ const MobileSaunaCalendar: React.FC<MobileSaunaCalendarProps> = ({
                                     day.isEndDate ? 'end-date' : ''
                                 } ${day.isInRange ? 'in-range' : ''} ${
                                     isBooked ? 'booked' : ''
+                                } ${
+                                    isMaintenanceBlocked ? 'maintenance' : ''
                                 } ${isDisabled ? 'disabled' : ''}`}
                                 onClick={() => handleDateClick(day)}
                                 onMouseEnter={() => setHoveredDate(day.dateString)}
                                 onMouseLeave={() => setHoveredDate(null)}
                                 disabled={isDisabled}
-                                aria-label={`${day.date.toDateString()}${isBooked ? ' - Fully booked' : ''}`}
+                                aria-label={`${day.date.toDateString()}${isMaintenanceBlocked ? ' - Maintenance' : (isBooked ? ' - Fully booked' : '')}`}
                             >
                                 <span className="mobile-sauna-day-number">{day.date.getDate()}</span>
-                                {isBooked && <span className="mobile-sauna-booked-marker">✕</span>}
+                                {isBooked && (
+                                    <span className="mobile-sauna-booked-marker">{isMaintenanceBlocked ? '🛠' : '✕'}</span>
+                                )}
                             </button>
                         );
                     })}

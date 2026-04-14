@@ -94,29 +94,124 @@
   border: 1px solid #ccffcc;
 }
 
-.maintenance-toggle {
+
+/* Blocked Periods Management */
+.blocked-periods-section {
+  border: 1px solid #e5d7cb;
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 24px;
+  background: #fffaf5;
+}
+
+.blocked-periods-header h3 {
+  margin: 0 0 6px 0;
+  color: #4e2d15;
+}
+
+.blocked-periods-header p {
+  margin: 0 0 14px 0;
+  color: #6f4f3b;
+  font-size: 0.9rem;
+}
+
+.blocked-periods-controls {
   display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.blocked-vessel-select {
+  max-width: 440px;
+}
+
+.blocked-periods-form {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+  align-items: end;
+}
+
+.blocked-note-group {
+  grid-column: span 2;
+}
+
+.blocked-form-actions {
+  display: flex;
+  align-items: end;
+}
+
+.blocked-periods-error {
+  margin-top: 12px;
+  display: flex;
+  justify-content: space-between;
   align-items: center;
   gap: 10px;
-  padding: 12px;
-  border: 1px solid #d9ecff;
+  background: #ffeceb;
+  border: 1px solid #ffc9c6;
+  color: #8f1e16;
   border-radius: 8px;
-  background: #f6fbff;
-  font-weight: 600;
-  color: #224c7a;
-  margin-bottom: 12px;
+  padding: 10px 12px;
 }
 
-.maintenance-toggle input {
-  width: 16px;
-  height: 16px;
+.blocked-periods-error button {
+  border: none;
+  background: #8f1e16;
+  color: #fff;
+  border-radius: 6px;
+  padding: 6px 10px;
+  cursor: pointer;
 }
 
-.maintenance-fields {
-  border: 1px solid #e9ecef;
+.blocked-periods-loading {
+  margin-top: 10px;
+  color: #6f4f3b;
+  font-size: 0.9rem;
+}
+
+.blocked-periods-table-container {
+  margin-top: 12px;
+  overflow-x: auto;
+  border: 1px solid #eadfd6;
   border-radius: 8px;
-  padding: 14px;
   background: #fff;
+}
+
+.blocked-periods-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.blocked-periods-table th,
+.blocked-periods-table td {
+  padding: 10px;
+  border-bottom: 1px solid #f0e7df;
+  text-align: left;
+  font-size: 0.9rem;
+}
+
+.blocked-periods-table th {
+  background: #f9f4ef;
+  color: #4e2d15;
+  font-weight: 600;
+}
+
+.blocked-reason-badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+.blocked-reason-badge.maintenance {
+  background: #ffe7b5;
+  color: #7c5200;
+}
+
+.blocked-reason-badge.personal_use {
+  background: #dceeff;
+  color: #1d4f8a;
 }
 
 /* Create Trip Button */
@@ -511,6 +606,14 @@
     padding: 4px 8px;
     font-size: 11px;
     min-width: 50px;
+  }
+
+  .blocked-periods-form {
+    grid-template-columns: 1fr;
+  }
+
+  .blocked-note-group {
+    grid-column: auto;
   }
 }
 

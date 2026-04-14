@@ -8,6 +8,8 @@ import {
   listVessels,
   getStaffMembers,
   createMobileSaunaBlockedDate,
+  listMobileSaunaBlockedDates,
+  deleteMobileSaunaBlockedDate,
 } from '../../services/api';
 import { Trip, TripFormData, Vessel, User } from '../../types';
 import './TripManagement.css';
@@ -15,6 +17,23 @@ import './TripManagement.css';
 interface TripManagementProps {
   isOpen: boolean;
   onClose: () => void;
+}
+
+interface BlockedPeriodItem {
+  _id: string;
+  vessel?: {
+    _id: string;
+    name: string;
+    type: string;
+  };
+  startDate: string;
+  endDate: string;
+  reason: 'maintenance' | 'personal_use';
+  adminNote?: string;
+  createdBy?: {
+    name?: string;
+    email?: string;
+  };
 }
 
 const TripManagement: React.FC<TripManagementProps> = ({ isOpen, onClose }) => {
@@ -27,9 +46,13 @@ const TripManagement: React.FC<TripManagementProps> = ({ isOpen, onClose }) => {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [showCreateForm, setShowCreateForm] = useState<boolean>(false);
   const [editingTrip, setEditingTrip] = useState<Trip | null>(null);
-  const [maintenanceBlockEnabled, setMaintenanceBlockEnabled] = useState<boolean>(false);
-  const [maintenanceBlockLoading, setMaintenanceBlockLoading] = useState<boolean>(false);
-  const [maintenanceBlock, setMaintenanceBlock] = useState({
+  const [selectedBlockedVesselId, setSelectedBlockedVesselId] = useState<string>('');
+  const [blockedPeriods, setBlockedPeriods] = useState<BlockedPeriodItem[]>([]);
+  const [blockedPeriodsLoading, setBlockedPeriodsLoading] = useState<boolean>(false);
+  const [blockedPeriodsSubmitting, setBlockedPeriodsSubmitting] = useState<boolean>(false);
+  const [blockedPeriodsDeletingId, setBlockedPeriodsDeletingId] = useState<string | null>(null);
+  const [blockedPeriodsError, setBlockedPeriodsError] = useState<string | null>(null);
+  const [blockedPeriodForm, setBlockedPeriodForm] = useState({
     startDate: '',
     endDate: '',
     reason: 'maintenance' as 'maintenance' | 'personal_use',
@@ -56,6 +79,19 @@ const TripManagement: React.FC<TripManagementProps> = ({ isOpen, onClose }) => {
       fetchStaffMembers();
     }
   }, [isOpen]);
+
+  useEffect(() => {
+    const firstMobileSauna = vessels.find(vessel => vessel.type === 'mobile_sauna');
+    if (!selectedBlockedVesselId && firstMobileSauna?._id) {
+      setSelectedBlockedVesselId(firstMobileSauna._id);
+    }
+  }, [vessels, selectedBlockedVesselId]);
+
+  useEffect(() => {
+    if (isOpen && selectedBlockedVesselId) {
+      fetchBlockedPeriods(selectedBlockedVesselId);
+    }
+  }, [isOpen, selectedBlockedVesselId]);
 
   const fetchTrips = async (showLoader: boolean = true) => {
     if (showLoader) setLoading(true);
@@ -90,19 +126,31 @@ const TripManagement: React.FC<TripManagementProps> = ({ isOpen, onClose }) => {
     }
   };
 
+  const fetchBlockedPeriods = async (vesselId: string, showLoader: boolean = true) => {
+    if (!vesselId) {
+      setBlockedPeriods([]);
+      return;
+    }
+
+    if (showLoader) setBlockedPeriodsLoading(true);
+
+    try {
+      const response = await listMobileSaunaBlockedDates({ vesselId });
+      setBlockedPeriods(Array.isArray(response?.blockedPeriods) ? response.blockedPeriods : []);
+      setBlockedPeriodsError(null);
+    } catch (err: any) {
+      setBlockedPeriodsError(err.message || 'Failed to load blocked periods');
+    } finally {
+      if (showLoader) setBlockedPeriodsLoading(false);
+    }
+  };
+
   const resetForm = () => {
     setFormData({
       vesselId: '',
       departureTime: '',
       durationMinutes: 180,
       assignedStaff: []
-    });
-    setMaintenanceBlockEnabled(false);
-    setMaintenanceBlock({
-      startDate: '',
-      endDate: '',
-      reason: 'maintenance',
-      adminNote: '',
     });
     setEditingTrip(null);
     setShowCreateForm(false);
@@ -112,40 +160,12 @@ const TripManagement: React.FC<TripManagementProps> = ({ isOpen, onClose }) => {
     e.preventDefault();
     setProcessingTrip('form');
     setError(null);
-
-    const shouldCreateMaintenanceBlock = Boolean(editingTrip && isMobileSauna && maintenanceBlockEnabled);
-
-    if (shouldCreateMaintenanceBlock) {
-      if (!maintenanceBlock.startDate || !maintenanceBlock.endDate) {
-        setError('Please provide maintenance block start and end dates');
-        setProcessingTrip(null);
-        return;
-      }
-
-      if (new Date(maintenanceBlock.endDate) < new Date(maintenanceBlock.startDate)) {
-        setError('Maintenance block end date cannot be before start date');
-        setProcessingTrip(null);
-        return;
-      }
-    }
     
     try {
       if (editingTrip) {
         await updateTrip(editingTrip._id, formData);
-
-        if (shouldCreateMaintenanceBlock && formData.vesselId) {
-          setMaintenanceBlockLoading(true);
-          await createMobileSaunaBlockedDate({
-            vesselId: formData.vesselId,
-            startDate: maintenanceBlock.startDate,
-            endDate: maintenanceBlock.endDate,
-            reason: maintenanceBlock.reason,
-            adminNote: maintenanceBlock.adminNote || undefined,
-          });
-        }
-
         await fetchTrips(false);
-        setSuccessMessage(shouldCreateMaintenanceBlock ? 'Trip updated and sauna blocked successfully' : 'Trip updated successfully');
+        setSuccessMessage('Trip updated successfully');
       } else {
         await createTrip(formData);
         await fetchTrips(false);
@@ -157,7 +177,6 @@ const TripManagement: React.FC<TripManagementProps> = ({ isOpen, onClose }) => {
     } catch (err: any) {
       setError(err.message || 'Failed to save trip');
     } finally {
-      setMaintenanceBlockLoading(false);
       setProcessingTrip(null);
     }
   };
@@ -173,14 +192,74 @@ const TripManagement: React.FC<TripManagementProps> = ({ isOpen, onClose }) => {
       assignedStaff: trip.assignedStaff?.map(staff => staff._id) || []
     });
     setEditingTrip(trip);
-    setMaintenanceBlockEnabled(false);
-    setMaintenanceBlock({
-      startDate: '',
-      endDate: '',
-      reason: 'maintenance',
-      adminNote: '',
-    });
     setShowCreateForm(true);
+  };
+
+  const handleCreateBlockedPeriod = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!selectedBlockedVesselId) {
+      setBlockedPeriodsError('Please select a mobile sauna vessel first');
+      return;
+    }
+
+    if (!blockedPeriodForm.startDate || !blockedPeriodForm.endDate) {
+      setBlockedPeriodsError('Start date and end date are required');
+      return;
+    }
+
+    if (new Date(blockedPeriodForm.endDate) < new Date(blockedPeriodForm.startDate)) {
+      setBlockedPeriodsError('End date cannot be before start date');
+      return;
+    }
+
+    setBlockedPeriodsSubmitting(true);
+    setBlockedPeriodsError(null);
+
+    try {
+      await createMobileSaunaBlockedDate({
+        vesselId: selectedBlockedVesselId,
+        startDate: blockedPeriodForm.startDate,
+        endDate: blockedPeriodForm.endDate,
+        reason: blockedPeriodForm.reason,
+        adminNote: blockedPeriodForm.adminNote || undefined,
+      });
+
+      setBlockedPeriodForm({
+        startDate: '',
+        endDate: '',
+        reason: 'maintenance',
+        adminNote: '',
+      });
+
+      await fetchBlockedPeriods(selectedBlockedVesselId, false);
+      setSuccessMessage('Blocked period created successfully');
+      setTimeout(() => setSuccessMessage(null), 3000);
+    } catch (err: any) {
+      setBlockedPeriodsError(err.message || 'Failed to create blocked period');
+    } finally {
+      setBlockedPeriodsSubmitting(false);
+    }
+  };
+
+  const handleDeleteBlockedPeriod = async (blockedPeriod: BlockedPeriodItem) => {
+    if (!confirm(`Remove blocked period ${formatDate(blockedPeriod.startDate)} to ${formatDate(blockedPeriod.endDate)}?`)) {
+      return;
+    }
+
+    setBlockedPeriodsDeletingId(blockedPeriod._id);
+    setBlockedPeriodsError(null);
+
+    try {
+      await deleteMobileSaunaBlockedDate(blockedPeriod._id);
+      await fetchBlockedPeriods(selectedBlockedVesselId, false);
+      setSuccessMessage('Blocked period removed successfully');
+      setTimeout(() => setSuccessMessage(null), 3000);
+    } catch (err: any) {
+      setBlockedPeriodsError(err.message || 'Failed to remove blocked period');
+    } finally {
+      setBlockedPeriodsDeletingId(null);
+    }
   };
 
   const handleDelete = async (trip: Trip) => {
@@ -231,6 +310,10 @@ const TripManagement: React.FC<TripManagementProps> = ({ isOpen, onClose }) => {
     });
   };
 
+  const formatDate = (dateString: string): string => {
+    return new Date(dateString).toISOString().split('T')[0];
+  };
+
   const formatDuration = (minutes: number): string => {
     const hours = Math.floor(minutes / 60);
     const mins  = minutes % 60;
@@ -246,6 +329,11 @@ const TripManagement: React.FC<TripManagementProps> = ({ isOpen, onClose }) => {
         : prev.assignedStaff.filter(id => id !== staffId)
     }));
   };
+
+  const mobileSaunaVessels = useMemo(
+    () => vessels.filter(vessel => vessel.type === 'mobile_sauna'),
+    [vessels]
+  );
 
   if (!isOpen) return null;
 
@@ -268,6 +356,157 @@ const TripManagement: React.FC<TripManagementProps> = ({ isOpen, onClose }) => {
           {successMessage && (
             <div className="success-message">{successMessage}</div>
           )}
+
+          <section className="blocked-periods-section">
+            <div className="blocked-periods-header">
+              <h3>Mobile Sauna Blocked Dates</h3>
+              <p>Create, view, and remove maintenance/personal-use date ranges.</p>
+            </div>
+
+            <div className="blocked-periods-controls">
+              <div className="form-group blocked-vessel-select">
+                <label htmlFor="blocked-vessel">Mobile Sauna Vessel</label>
+                <select
+                  id="blocked-vessel"
+                  value={selectedBlockedVesselId}
+                  onChange={(e) => setSelectedBlockedVesselId(e.target.value)}
+                >
+                  <option value="">Select a mobile sauna vessel</option>
+                  {mobileSaunaVessels.map(vessel => (
+                    <option key={vessel._id} value={vessel._id}>
+                      {vessel.name || 'Unnamed Vessel'}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <form className="blocked-periods-form" onSubmit={handleCreateBlockedPeriod}>
+                <div className="form-group">
+                  <label htmlFor="blocked-start-date">Start Date</label>
+                  <input
+                    type="date"
+                    id="blocked-start-date"
+                    value={blockedPeriodForm.startDate}
+                    onChange={(e) => setBlockedPeriodForm(prev => ({ ...prev, startDate: e.target.value }))}
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="blocked-end-date">End Date</label>
+                  <input
+                    type="date"
+                    id="blocked-end-date"
+                    min={blockedPeriodForm.startDate || undefined}
+                    value={blockedPeriodForm.endDate}
+                    onChange={(e) => setBlockedPeriodForm(prev => ({ ...prev, endDate: e.target.value }))}
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="blocked-reason">Reason</label>
+                  <select
+                    id="blocked-reason"
+                    value={blockedPeriodForm.reason}
+                    onChange={(e) => setBlockedPeriodForm(prev => ({
+                      ...prev,
+                      reason: e.target.value as 'maintenance' | 'personal_use'
+                    }))}
+                  >
+                    <option value="maintenance">Maintenance</option>
+                    <option value="personal_use">Personal Use</option>
+                  </select>
+                </div>
+
+                <div className="form-group blocked-note-group">
+                  <label htmlFor="blocked-note">Admin Note (Optional)</label>
+                  <input
+                    type="text"
+                    id="blocked-note"
+                    value={blockedPeriodForm.adminNote}
+                    onChange={(e) => setBlockedPeriodForm(prev => ({ ...prev, adminNote: e.target.value }))}
+                    placeholder="Optional internal note"
+                    maxLength={500}
+                  />
+                </div>
+
+                <div className="blocked-form-actions">
+                  <button
+                    type="submit"
+                    className="submit-btn"
+                    disabled={!selectedBlockedVesselId || blockedPeriodsSubmitting}
+                  >
+                    {blockedPeriodsSubmitting ? 'Saving...' : 'Add Blocked Period'}
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            {blockedPeriodsError && (
+              <div className="blocked-periods-error">
+                <span>{blockedPeriodsError}</span>
+                <button
+                  type="button"
+                  onClick={() => selectedBlockedVesselId && fetchBlockedPeriods(selectedBlockedVesselId)}
+                >
+                  Retry
+                </button>
+              </div>
+            )}
+
+            {blockedPeriodsLoading ? (
+              <div className="blocked-periods-loading">Loading blocked periods...</div>
+            ) : (
+              <div className="blocked-periods-table-container">
+                <table className="blocked-periods-table">
+                  <thead>
+                    <tr>
+                      <th>Start</th>
+                      <th>End</th>
+                      <th>Reason</th>
+                      <th>Note</th>
+                      <th>Created By</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {blockedPeriods.length === 0 ? (
+                      <tr>
+                        <td colSpan={6} className="no-results">
+                          {selectedBlockedVesselId ? 'No blocked periods found for this vessel' : 'Select a vessel to view blocked periods'}
+                        </td>
+                      </tr>
+                    ) : (
+                      blockedPeriods.map(period => (
+                        <tr key={period._id}>
+                          <td>{formatDate(period.startDate)}</td>
+                          <td>{formatDate(period.endDate)}</td>
+                          <td>
+                            <span className={`blocked-reason-badge ${period.reason}`}>
+                              {period.reason === 'maintenance' ? 'Maintenance' : 'Personal Use'}
+                            </span>
+                          </td>
+                          <td>{period.adminNote?.trim() || '—'}</td>
+                          <td>{period.createdBy?.name || period.createdBy?.email || '—'}</td>
+                          <td>
+                            <button
+                              type="button"
+                              className="action-btn delete-btn"
+                              onClick={() => handleDeleteBlockedPeriod(period)}
+                              disabled={blockedPeriodsDeletingId === period._id}
+                            >
+                              {blockedPeriodsDeletingId === period._id ? 'Removing...' : 'Remove'}
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </section>
 
           <button
             className="create-trip-btn"
@@ -344,76 +583,6 @@ const TripManagement: React.FC<TripManagementProps> = ({ isOpen, onClose }) => {
                     </div>
                   )}
 
-                  {editingTrip && isMobileSauna && (
-                    <div className="form-group form-group--full">
-                      <label className="maintenance-toggle">
-                        <input
-                          type="checkbox"
-                          checked={maintenanceBlockEnabled}
-                          onChange={(e) => setMaintenanceBlockEnabled(e.target.checked)}
-                        />
-                        <span>
-                          Also block this sauna for maintenance/personal use after saving trip edits
-                        </span>
-                      </label>
-
-                      {maintenanceBlockEnabled && (
-                        <div className="maintenance-fields">
-                          <div className="form-row">
-                            <div className="form-group">
-                              <label htmlFor="maintenance-start">Maintenance Start Date *</label>
-                              <input
-                                type="date"
-                                id="maintenance-start"
-                                value={maintenanceBlock.startDate}
-                                onChange={(e) => setMaintenanceBlock(prev => ({ ...prev, startDate: e.target.value }))}
-                                required
-                              />
-                            </div>
-                            <div className="form-group">
-                              <label htmlFor="maintenance-end">Maintenance End Date *</label>
-                              <input
-                                type="date"
-                                id="maintenance-end"
-                                min={maintenanceBlock.startDate || undefined}
-                                value={maintenanceBlock.endDate}
-                                onChange={(e) => setMaintenanceBlock(prev => ({ ...prev, endDate: e.target.value }))}
-                                required
-                              />
-                            </div>
-                          </div>
-
-                          <div className="form-row">
-                            <div className="form-group">
-                              <label htmlFor="maintenance-reason">Reason *</label>
-                              <select
-                                id="maintenance-reason"
-                                value={maintenanceBlock.reason}
-                                onChange={(e) => setMaintenanceBlock(prev => ({
-                                  ...prev,
-                                  reason: e.target.value as 'maintenance' | 'personal_use'
-                                }))}
-                              >
-                                <option value="maintenance">Maintenance</option>
-                                <option value="personal_use">Personal Use</option>
-                              </select>
-                            </div>
-                            <div className="form-group">
-                              <label htmlFor="maintenance-note">Admin Note (Optional)</label>
-                              <input
-                                type="text"
-                                id="maintenance-note"
-                                value={maintenanceBlock.adminNote}
-                                onChange={(e) => setMaintenanceBlock(prev => ({ ...prev, adminNote: e.target.value }))}
-                                placeholder="Optional internal note"
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  )}
-
                   {editingTrip && (
                     <div className="form-group">
                       <label htmlFor="title">Trip Title</label>
@@ -451,7 +620,7 @@ const TripManagement: React.FC<TripManagementProps> = ({ isOpen, onClose }) => {
                   <button
                     type="submit"
                     className="submit-btn"
-                    disabled={processingTrip === 'form' || maintenanceBlockLoading}
+                    disabled={processingTrip === 'form'}
                   >
                     {processingTrip === 'form'
                       ? 'Saving...'

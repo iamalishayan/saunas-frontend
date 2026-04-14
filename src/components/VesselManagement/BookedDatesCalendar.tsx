@@ -44,7 +44,10 @@ const BookedDatesCalendar: React.FC<BookedDatesCalendarProps> = ({ vesselId, ves
         const dateStr = date.toISOString().split('T')[0];
         return bookedPeriods.filter(period => {
             if (!period.startDate || !period.endDate) return false;
-            return dateStr >= period.startDate && dateStr <= period.endDate;
+            if (period.status === 'blocked') {
+                return dateStr >= period.startDate && dateStr <= period.endDate;
+            }
+            return dateStr >= period.startDate && dateStr < period.endDate;
         });
     };
 
